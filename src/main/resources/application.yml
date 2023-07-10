@@ -6,3 +6,8 @@ spring:
       database: ${MONGO_RIOTDATA_DB}
       username: ${MONGO_USERNAME}
       password: ${MONGO_PASSWORD}
+      uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}
+
+server:
+  servlet:
+    context-path: /statistics
