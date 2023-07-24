@@ -11,3 +11,9 @@ spring:
 server:
   servlet:
     context-path: /statistics
+
+
+# MongoRepository logger setting
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG

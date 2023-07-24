@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/07/07        solmin       최초 생성
+ * 2023/07/24        solmin       잘못 참조된 필드 수정 및 summonerId 추가, @toString 삭제
  */
 @Document(collection = "summoners")
 @Getter
@@ -24,33 +25,22 @@ public class Summoner {
     @Id
     private String id;
     private String puuid;
-    private String profileIconId;
+    private Integer profileIconId;
     private String queue;
     private LocalDateTime updatedAt;
-    private Integer SummmonerLevel;
-    private Integer tier;
+    private Integer summonerLevel;
 
-    @Field("league_points")
+    @Field("tier")
+    private Integer division;
+
+    @Field("id")
+    private String summonerId;
+
+    @Field("leaguePoints")
     private Integer lp;
 
     private String name;
 
     @Field("internal_name")
     private String internalName;
-
-    @Override
-    public String toString() {
-        return "Summoner{" +
-            "puuid='" + puuid + '\'' +
-            ", profileIconId='" + profileIconId + '\'' +
-            ", queue='" + queue + '\'' +
-            ", updatedAt=" + updatedAt +
-            ", SummmonerLevel=" + SummmonerLevel +
-            ", tier=" + tier +
-            ", lp=" + lp +
-            ", name='" + name + '\'' +
-            ", internalName='" + internalName + '\'' +
-            '}';
-    }
-
 }
