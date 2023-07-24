@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.api.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.dto.SummonerDto;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
@@ -27,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/summoners")
 @RequiredArgsConstructor
+@Slf4j
 public class SummonerController {
     private final SummonerService summonerService;
 

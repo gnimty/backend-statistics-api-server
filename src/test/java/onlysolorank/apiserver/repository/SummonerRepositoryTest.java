@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/07/07        solmin       최초 생성
+ * 2023/07/24        solmin       internalName test 추가
  */
 
 
@@ -34,7 +35,7 @@ class SummonerRepositoryTest {
     private SummonerRepository summonerRepository;
 
     @Test
-    public void getAllUserTest(){
+    public void getAllUserInternalNameTest(){
         List<Summoner> allSummoners = summonerRepository.findAll();
 
         allSummoners.forEach(summoner -> {
@@ -46,11 +47,9 @@ class SummonerRepositoryTest {
     public void getTop20UserTest(){
         Page<Summoner> allSummoners = summonerRepository.findAll(PageRequest.of(0, 20));
 
-//        allSummoners.forEach(summoner -> {
-//            System.out.printf("%s | %s\n", summoner.getName(), summoner.getInternalName());
-//        });
-        for (Summoner summoner : allSummoners) {
-            System.out.println(summoner);
-        }
+        allSummoners.forEach(summoner -> {
+            System.out.printf("%s | %d level | %s | %d | %d \n",
+                summoner.getName(), summoner.getSummonerLevel(), summoner.getQueue(), summoner.getDivision(), summoner.getLp());
+        });
     }
 }

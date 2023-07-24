@@ -35,8 +35,7 @@ class SummonerServiceTest {
 
     @Test
     void keywordToInternalName() {
-        String keyword = "h &^ I de on bu& S h";
+        String keyword = "h &^ ____I de on bu& S h";
         assertEquals(summonerService.keywordToInternalName(keyword), "hideonbush");
-
     }
 }
