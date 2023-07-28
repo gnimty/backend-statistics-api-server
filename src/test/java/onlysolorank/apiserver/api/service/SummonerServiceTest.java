@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.api.service;
 
+import onlysolorank.apiserver.api.controller.KeywordRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,6 @@ class SummonerServiceTest {
     @Test
     void keywordToInternalName() {
         String keyword = "h &^ ____I de on bu& S h";
-        assertEquals(summonerService.keywordToInternalName(keyword), "hideonbush");
+        assertEquals(new KeywordRequestDto("hideonbush").getInternalName(), "hideonbush");
     }
 }

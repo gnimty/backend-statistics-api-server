@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.dto.SummonerDto;
 import onlysolorank.apiserver.repository.SummonerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,31 +21,22 @@ import java.util.stream.Collectors;
  * -----------------------------------------------------------
  * 2023/07/10        solmin       최초 생성
  * 2023/07/24        solmin       internalName으로 SummonerDto 조회하는 기능 구현
+ * 2023/07/28        solmin       keywordToInternalName 메소드를 KeywordRequestDto로 이관
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class SummonerService {
 
     private final SummonerRepository summonerRepository;
-    public List<SummonerDto> getSummonerByInternalName(String keyword){
+    public List<SummonerDto> getSummonerByInternalName(String internalName){
 
-        String internalName = keywordToInternalName(keyword);
-
-        // internalName으로 찾기
+        // internal name으로 찾기
         List<SummonerDto> result = summonerRepository.findTop5ByInternalNameStartsWithOrderByInternalName(internalName)
             .stream().map(summoner -> SummonerDto.builder().summoner(summoner).build()).collect(Collectors.toList());
 
         return result;
-    }
-
-
-    public String keywordToInternalName(String keyword){
-        // 영어, 한글, 숫자를 제외한 모든 문자 및 공백 제거 후 소문자로 변환
-        return keyword
-            .replaceAll("[^a-zA-Z가-힣0-9]", "")
-            .replaceAll("\\s", "")
-            .toLowerCase();
     }
 
 }
