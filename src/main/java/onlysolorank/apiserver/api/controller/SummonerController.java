@@ -23,6 +23,7 @@ import java.util.List;
  * -----------------------------------------------------------
  * 2023/07/10        solmin       최초 생성
  * 2023/07/24        solmin       ModelAttribute로 쿼리 파라미터 DTO 변환 후 검증하는 로직 추가
+ * 2023/07/31        solmin       소환사 정보 가져오기 API 작업 중
  */
 @RestController
 @RequestMapping("/summoners")
@@ -32,8 +33,15 @@ import java.util.List;
 public class SummonerController {
     private final SummonerService summonerService;
     @GetMapping("/autocomplete")
-    public ResponseEntity test(@ModelAttribute @Valid KeywordRequestDto keywordRequestDto) {
+    public ResponseEntity getSummonerByInternalName(@ModelAttribute @Valid KeywordRequestDto keywordRequestDto) {
         List<SummonerDto> data = summonerService.getSummonerByInternalName(keywordRequestDto.getInternalName());
+        return CommonResponse.success(data);
+    }
+
+    @GetMapping("/matches/{summoner_name}")
+    public ResponseEntity getSummonerMatchInfoBySummonerName(@PathVariable("summoner_name") String summonerName) {
+        SummonerMatchResponseDto data = summonerService.getSummonerMatchInfoBySummonerName(summonerName);
+
         return CommonResponse.success(data);
     }
 

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Summoner;
+import onlysolorank.apiserver.domain.Tier;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -15,6 +16,7 @@ import onlysolorank.apiserver.domain.Summoner;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/07/24        solmin       최초 생성
+ * 2023/07/31        solmin       Getter 이름 일부 변경
  */
 
 @Data
@@ -26,9 +28,8 @@ public class SoloTierDto {
 
     @Builder
     public SoloTierDto(Summoner summoner){
-        // 문제될 수도 있음
         this.tier = Tier.valueOf(summoner.getQueue());
-        this.division = summoner.getDivision();
-        this.lp = summoner.getLp();
+        this.division = summoner.getTier();
+        this.lp = summoner.getLeaguePoints();
     }
 }
