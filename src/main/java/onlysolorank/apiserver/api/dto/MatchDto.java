@@ -38,15 +38,15 @@ public class MatchDto {
     private List<TeamDto> teams;
 
     @Builder
-    public MatchDto(Match match, Map<Summoner, Participant> summonerParticipantPair, List<Team> teams) {
+    public MatchDto(Match match, List<ParticipantDto> participants, List<TeamDto> teams) {
         this.matchId = match.getMatchId();
         this.gameVersion = match.getVersion();
         this.gameEndAt = match.getGameEndAt();
         this.queueInfo = QueueDto.builder().queueId(match.getQueueId()).build();
         this.gameEndedInEarlySurrender = match.getEarlyEnded();
         this.gameDuration = match.getGameDuration();
-        this.participants = summonerParticipantPair.entrySet().stream()
-            .map(sp -> ParticipantDto.builder().summoner(sp.getKey()).participant(sp.getValue()).build()).toList();
-        this.teams = teams.stream().map(TeamDto::new).toList();
+        this.participants = participants;
+        this.teams = teams;
     }
+
 }

@@ -37,9 +37,13 @@ public class Participant {
     private Integer wardsPlaced;
     private Integer wardsKilled;
     private Integer visionWardsBoughtInGame;
-    private Tier queue;
-    private Integer tier;
-    private Integer leaguePoints;
+
+    /* null로 받아 왔을 때 예외 처리 후 enum 변환할 것 */
+    private String queue;
+    private String tier;
+    private String leaguePoints;
+    /* -------------------------------------- */
+
     private Integer championLevel;
     private Integer championId;
     private String championName;

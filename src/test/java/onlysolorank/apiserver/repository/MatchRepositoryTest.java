@@ -33,7 +33,7 @@ class MatchRepositoryTest {
     @Test
     public void getMatchesByMatchIdList(){
         // 리스트 여러개 생성
-        List<String> matchIds = List.of("KR_6574436959", "KR_6574418157");
+        List<String> matchIds = List.of("KR_6625112620", "KR_6625061672");
 
         // 쿼리 수행
         List<Match> matches = matchRepository.findByMatchIdInCustom(matchIds);
@@ -42,7 +42,7 @@ class MatchRepositoryTest {
             System.out.println("match = " + match);
 
         }
-        assertEquals(matches.size(), 2);
+        assertEquals(2, matches.size());
     }
 
 }

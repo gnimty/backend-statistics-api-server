@@ -2,10 +2,7 @@ package onlysolorank.apiserver.api.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.domain.Participant;
-import onlysolorank.apiserver.domain.Perk;
-import onlysolorank.apiserver.domain.Position;
-import onlysolorank.apiserver.domain.Summoner;
+import onlysolorank.apiserver.domain.*;
 
 import java.util.List;
 
@@ -19,6 +16,7 @@ import java.util.List;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/07/28        solmin       최초 생성
+ * 2023/08/09        solmin       summoner entry 정보에 존재하지 않는 소환사 티어 정보 null 처리
  */
 
 @Data
@@ -57,9 +55,17 @@ public class ParticipantDto {
     private List<Integer> skillBuilds;
 
     @Builder
-    public ParticipantDto(Participant participant, Summoner summoner) {
+    public ParticipantDto(Participant participant) {
         this.participantId = participant.getParticipantId();
-        this.soloTier = SoloTierDto.builder().summoner(summoner).build();
+
+        // queue, tier, leaguepoints가 하나라도 null이면 soloTier를 null로
+        if (!participant.getQueue().equals("null") && !participant.getTier().equals("null") && !participant.getLeaguePoints().equals("null")){
+            this.soloTier = new SoloTierDto(
+                Tier.valueOf(participant.getQueue()),
+                Integer.parseInt(participant.getTier()),
+                Integer.parseInt(participant.getLeaguePoints()));
+        }
+
         this.championId = participant.getChampionId();
         this.championName = participant.getChampionName();
         this.win = participant.getWin();

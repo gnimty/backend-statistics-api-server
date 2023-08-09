@@ -1,12 +1,10 @@
 package onlysolorank.apiserver.api.controller;
 
 import lombok.Getter;
-import lombok.NonNull;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
-import static onlysolorank.apiserver.utils.NameToInternalNameConverter.keywordToInternalName;
+import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller
