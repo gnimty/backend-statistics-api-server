@@ -31,6 +31,7 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
  * 2023/07/24        solmin       internalName으로 SummonerDto 조회하는 기능 구현
  * 2023/07/28        solmin       keywordToInternalName 메소드를 KeywordRequestDto로 이관
  * 2023/07/31        solmin       getSummonerMatchInfoBySummonerName에 필요한 DTO 구현 거의 완성 (미완료)
+ * 2023/08/09        solmin       getAllChampionPlayInfoByPuuid 서비스 메소드 구현 , 이전 코드 일부 활용
  */
 @Service
 @RequiredArgsConstructor
@@ -38,13 +39,15 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
 @Validated
 public class SummonerService {
 
+    // 모든 챔피언 범위 내의 검색 결과 가져오기 위해서 큰 숫자로 세팅
+    public static final int LIMIT = 2000;
     private final SummonerRepository summonerRepository;
     private final SummonerMatchRepository summonerMatchRepository;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
     private final ParticipantRepository participantRepository;
 
-    public List<SummonerDto> getSummonerByInternalName(String internalName) {
+    public List<SummonerDto> getSummonerDtoListByInternalName(String internalName) {
         // internal name으로 찾기
         List<SummonerDto> result = summonerRepository.findTop5ByInternalNameStartsWithOrderByInternalName(internalName)
             .stream().map(summoner -> SummonerDto.builder().summoner(summoner).build())
@@ -55,40 +58,38 @@ public class SummonerService {
 
     public SummonerMatchResponseDto getSummonerMatchInfoBySummonerName(String summonerName) {
 
-        // SummonerDto, DateTime, ChampionPlaysBriefDto, MatchDto
-        Summoner summoner = getSummoner(summonerName);
+        Summoner summoner = getSummonerBySummonerName(summonerName);
 
-        // 3. MatchId List 가져오기
+        // MatchId 및 MatchDto List 가져오기
         List<MatchDto> matchDtoList = new ArrayList<>();
         Optional<SummonerMatch> summonerMatch = summonerMatchRepository.findOneByPuuid(summoner.getPuuid());
 
-        // 4-1. Match List 가져오기
         if (summonerMatch.isPresent()) {
             List<String> matchIds = summonerMatch.get().getSummonerMatchIds().stream()
                     .limit(20).toList();
             matchDtoList = getMatchDtoList(matchIds);
         }
 
-        // 2. datetime 가져오기 : updated 시점으로부터 2분 이후의 시간을 리턴
+        // renewableAt 가져오기 : updated 시점으로부터 2분 이후의 시간을 리턴
         LocalDateTime renewableAt = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES);
-        // 5. summoner의 most top3 play 챔피언 정보 가져오기
-        List<ChampionPlaysBriefDto> ChampionPlaysBriefDtoList = participantRepository.findTop10ChampionStatsByPuuid(summoner.getPuuid());
+
+        // 소환사의 top 10 챔피언 플레이 정보 가져오기
+        List<ChampionPlaysBriefDto> championPlaysBriefDtoList = participantRepository.findTopChampionStatsByPuuid(summoner.getPuuid(), 10);
 
         return SummonerMatchResponseDto.builder()
             .summoner(SummonerDto.builder().summoner(summoner).build())
             .renewableAt(renewableAt)
             .matches(matchDtoList)
-            .mostPlayed(ChampionPlaysBriefDtoList).build();
+            .mostPlayed(championPlaysBriefDtoList).build();
     }
 
-    public List<MatchDto> getOnly20MatchByLastMatchId(String summonerName, String lastMatchId) {
-        Summoner summoner = getSummoner(summonerName);
+    public List<MatchDto> get20MatchesByLastMatchId(String summonerName, String lastMatchId) {
+        Summoner summoner = getSummonerBySummonerName(summonerName);
 
-        // 3. MatchId List 가져오기
+        // MatchId 및 MatchDto List 가져오기
         List<MatchDto> matchDtoList = new ArrayList<>();
         Optional<SummonerMatch> summonerMatch = summonerMatchRepository.findOneByPuuid(summoner.getPuuid());
 
-        // 4-1. Match List 가져오기
         if (summonerMatch.isPresent()) {
             List<String> matchIds = summonerMatch.get().getSummonerMatchIds().stream()
                 // 특정 아이디 값이 최초로 작은 시점을 찾기
@@ -101,10 +102,16 @@ public class SummonerService {
         return matchDtoList;
     }
 
-    private Summoner getSummoner(String summonerName) {
+    private Summoner getSummonerBySummonerName(String summonerName) {
         String internalName = keywordToInternalName(summonerName);
         Summoner summoner = summonerRepository.findOneByInternalName(internalName)
-            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "소환사 검색 결과가 존재하지 않습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "summoner_name에 해당하는 소환사 데이터가 존재하지 않습니다."));
+        return summoner;
+    }
+
+    private Summoner getSummonerByPuuid(String puuid) {
+        Summoner summoner = summonerRepository.findOneByPuuid(puuid)
+            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다."));
         return summoner;
     }
 
@@ -129,5 +136,16 @@ public class SummonerService {
                     .stream().map(TeamDto::new).toList();
                 return MatchDto.builder().match(match).participants(participantDtoList).teams(teamDtoList).build();
             }).toList();
+    }
+
+    public List<ChampionPlaysBriefDto> getAllChampionPlayInfoByPuuid(String puuid) {
+
+        if(summonerRepository.existsByPuuid(puuid)){
+            // 소환사의 모든 챔피언 플레이 정보 가져오기
+            List<ChampionPlaysBriefDto> championPlaysBriefDtoList = participantRepository.findTopChampionStatsByPuuid(puuid, LIMIT);
+            return championPlaysBriefDtoList;
+        }else{
+            throw new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다.");
+        }
     }
 }

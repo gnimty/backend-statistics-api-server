@@ -20,6 +20,7 @@ import java.util.List;
  * -----------------------------------------------------------
  * 2023/07/28        solmin       최초 생성
  * 2023/08/09        solmin       findTop10ChampionStatsByPuuid 추가
+ * 2023/08/10        solmin       totalDeath=0인 경우의 예외 처리
  */
 public interface ParticipantRepository extends MongoRepository<Participant, String> {
     List<Participant> findByMatchId(String matchId);
@@ -49,10 +50,11 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "avgDeath: {$round: ['$avgDeath', 2]}," +
             "avgAssist: {$round: ['$avgAssist', 2]}," +
             "avgKill: {$round: ['$avgKill', 2]}," +
-            "winRate: {$round: [{$divide:['$totalWin','$totalPlays']}, 2]}," +
-            "avgKda: {$round: [{$divide:[{$add: ['$totalKill','$totalAssist']},'$totalDeath']}, 3]}" +
+            "winRate: {$round: [{$divide:['$totalWin','$totalPlays']}, 2]}" +
+//            "avgKda: {$round: [{$divide:[{$add: ['$totalKill','$totalAssist']},'$totalDeath']}, 3]}" +
         "}}",
-        "{ $sort: { totalPlays: -1 } }", "{ $limit: 10 }",
+        "{ $sort: { totalPlays: -1 } }",
+        "{ $limit: ?1 }",
         "{$project: { " +
             "_id: 0, " +
             "championId: '$_id.championId', " +
@@ -61,13 +63,15 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "totalPlays: 1," +
             "totalGameDuration: 1," +
             "totalCs: 1," +
-            "avgKda: 1," +
+//            "avgKda: 1," +
             "avgKill: 1," +
             "avgDeath: 1," +
             "avgAssist: 1," +
             "winRate: 1," +
             "totalWin: 1," +
-            "totalDefeat: 1" +
+            "totalKill: 1," +
+            "totalDeath: 1," +
+            "totalAssist: 1" +
         "}}"})
-    List<ChampionPlaysBriefDto> findTop10ChampionStatsByPuuid(@Param("puuid") String puuid);
+    List<ChampionPlaysBriefDto> findTopChampionStatsByPuuid(@Param("puuid") String puuid, @Param("limit") Integer limit);
 }

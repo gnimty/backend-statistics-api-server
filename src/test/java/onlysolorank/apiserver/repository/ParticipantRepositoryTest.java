@@ -41,7 +41,7 @@ class ParticipantRepositoryTest {
 
     @Test
     public void getMost10Plays(){
-        List<ChampionPlaysBriefDto> topChampionStatsByPuuid = participantRepository.findTop10ChampionStatsByPuuid(testPuuid);
+        List<ChampionPlaysBriefDto> topChampionStatsByPuuid = participantRepository.findTopChampionStatsByPuuid(testPuuid, 10);
 
         for (ChampionPlaysBriefDto championPlaysBriefDto : topChampionStatsByPuuid) {
             System.out.println(championPlaysBriefDto);

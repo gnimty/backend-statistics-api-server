@@ -2,6 +2,7 @@ package onlysolorank.apiserver.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onlysolorank.apiserver.api.dto.ChampionPlaysBriefDto;
 import onlysolorank.apiserver.api.dto.MatchDto;
 import onlysolorank.apiserver.api.dto.SummonerDto;
 import onlysolorank.apiserver.api.response.CommonResponse;
@@ -27,6 +28,7 @@ import java.util.Optional;
  * 2023/07/24        solmin       ModelAttribute로 쿼리 파라미터 DTO 변환 후 검증하는 로직 추가
  * 2023/07/31        solmin       소환사 정보 가져오기 API 작업 중
  * 2023/08/09        solmin       소환사 정보 가져오기 API 작업 완료
+ * 2023/08/09        solmin       Javadocs 추가 및 소환사 전적정보 챔피언별 세부 조회 구현
  */
 @RestController
 @RequestMapping("/summoners")
@@ -35,12 +37,27 @@ import java.util.Optional;
 @Validated
 public class SummonerController {
     private final SummonerService summonerService;
+
+
+    /**
+     * Gets summoner by internal name.
+     *
+     * @param keywordRequestDto the keyword request dto
+     * @return the summoner by internal name
+     */
     @GetMapping("/autocomplete")
     public ResponseEntity getSummonerByInternalName(@ModelAttribute @Valid KeywordRequestDto keywordRequestDto) {
-        List<SummonerDto> data = summonerService.getSummonerByInternalName(keywordRequestDto.getInternalName());
+        List<SummonerDto> data = summonerService.getSummonerDtoListByInternalName(keywordRequestDto.getInternalName());
         return CommonResponse.success(data);
     }
 
+    /**
+     * Gets summoner match info by summoner name.
+     *
+     * @param summonerName the summoner name
+     * @param lastMatchId  the last match id
+     * @return the summoner match info by summoner name
+     */
     @GetMapping("/matches/{summoner_name}")
     public ResponseEntity getSummonerMatchInfoBySummonerName(@PathVariable("summoner_name") String summonerName,
                                                              @RequestParam("ended") Optional<String> lastMatchId) {
@@ -50,7 +67,16 @@ public class SummonerController {
             SummonerMatchResponseDto data = summonerService.getSummonerMatchInfoBySummonerName(summonerName);
             return CommonResponse.success(data);
         }
-        List<MatchDto> data = summonerService.getOnly20MatchByLastMatchId(summonerName, lastMatchId.get());
+        List<MatchDto> data = summonerService.get20MatchesByLastMatchId(summonerName, lastMatchId.get());
         return CommonResponse.success(data);
     }
+
+    @GetMapping("/champion/{puuid}")
+    public ResponseEntity getAllChampionPlayInfoByPuuid(@PathVariable("puuid") String puuid){
+        List<ChampionPlaysBriefDto> data = summonerService.getAllChampionPlayInfoByPuuid(puuid);
+
+        return CommonResponse.success(data);
+    }
+
+
 }

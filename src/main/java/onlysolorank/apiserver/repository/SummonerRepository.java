@@ -28,6 +28,7 @@ public interface SummonerRepository extends MongoRepository<Summoner, String> {
     Optional<Summoner> findOneByInternalName(String internalName);
     Optional<Summoner> findOneByPuuid(String puuid);
 
+    Boolean existsByPuuid(String puuid);
 
     @Query("{'puuid': {$in: ?0}}")
     List<Summoner> findSummonersByPuuidInCustom(List<String> puuids);
