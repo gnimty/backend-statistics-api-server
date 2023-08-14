@@ -29,6 +29,7 @@ import java.util.Optional;
  * 2023/07/31        solmin       소환사 정보 가져오기 API 작업 중
  * 2023/08/09        solmin       소환사 정보 가져오기 API 작업 완료
  * 2023/08/09        solmin       Javadocs 추가 및 소환사 전적정보 챔피언별 세부 조회 구현
+
  */
 @RestController
 @RequestMapping("/summoners")
@@ -37,7 +38,6 @@ import java.util.Optional;
 @Validated
 public class SummonerController {
     private final SummonerService summonerService;
-
 
     /**
      * Gets summoner by internal name.
@@ -68,8 +68,8 @@ public class SummonerController {
             return CommonResponse.success(data);
         }
         List<MatchDto> data = summonerService.get20MatchesByLastMatchId(summonerName, lastMatchId.get());
-        return CommonResponse.success(data);
-    }
+
+
 
     @GetMapping("/champion/{puuid}")
     public ResponseEntity getAllChampionPlayInfoByPuuid(@PathVariable("puuid") String puuid){

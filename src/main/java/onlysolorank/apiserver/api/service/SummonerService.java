@@ -2,6 +2,7 @@ package onlysolorank.apiserver.api.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import onlysolorank.apiserver.api.controller.SummonerMatchResponseDto;
 import onlysolorank.apiserver.api.dto.*;
 import onlysolorank.apiserver.api.exception.CustomException;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName;
 
+
 /**
  * packageName    : onlysolorank.apiserver.api.service
  * fileName       : SummonerService
@@ -32,6 +34,7 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
  * 2023/07/28        solmin       keywordToInternalName 메소드를 KeywordRequestDto로 이관
  * 2023/07/31        solmin       getSummonerMatchInfoBySummonerName에 필요한 DTO 구현 거의 완성 (미완료)
  * 2023/08/09        solmin       getAllChampionPlayInfoByPuuid 서비스 메소드 구현 , 이전 코드 일부 활용
+
  */
 @Service
 @RequiredArgsConstructor
@@ -42,6 +45,7 @@ public class SummonerService {
     // 모든 챔피언 범위 내의 검색 결과 가져오기 위해서 큰 숫자로 세팅
     public static final int LIMIT = 2000;
     private final SummonerRepository summonerRepository;
+
     private final SummonerMatchRepository summonerMatchRepository;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;

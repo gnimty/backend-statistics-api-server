@@ -49,6 +49,7 @@ class SummonerRepositoryTest {
 
         allSummoners.forEach(summoner -> {
             System.out.println("summoner = " + summoner);
+
         });
     }
 }

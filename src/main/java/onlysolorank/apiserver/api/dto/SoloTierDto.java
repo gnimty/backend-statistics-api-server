@@ -17,6 +17,7 @@ import onlysolorank.apiserver.domain.Tier;
  * -----------------------------------------------------------
  * 2023/07/24        solmin       최초 생성
  * 2023/07/31        solmin       Getter 이름 일부 변경
+
  */
 
 @Data
@@ -31,5 +32,5 @@ public class SoloTierDto {
         this.tier = Tier.valueOf(summoner.getQueue());
         this.division = summoner.getTier();
         this.lp = summoner.getLeaguePoints();
-    }
+
 }

@@ -18,6 +18,7 @@ import java.util.Optional;
  * 2023/07/07        solmin       최초 생성
  * 2023/07/24        solmin       findTop5ByInternalNameStartsWithOrderByInternalName 추가
  * 2023/07/31        solmin       findSummonersByPuuidInCustom 추가
+
  */
 
 public interface SummonerRepository extends MongoRepository<Summoner, String> {
@@ -32,6 +33,5 @@ public interface SummonerRepository extends MongoRepository<Summoner, String> {
 
     @Query("{'puuid': {$in: ?0}}")
     List<Summoner> findSummonersByPuuidInCustom(List<String> puuids);
-
 
 }

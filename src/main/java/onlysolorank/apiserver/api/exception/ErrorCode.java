@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
  * 2023/07/10        solmin       최초 생성
  * 2023/07/28        solmin       CONSTRAINT_VIOLATION 추가
  * 2023/07/31        solmin       RESULT_NOT_FOUND 추가
+
  */
 
 @Getter

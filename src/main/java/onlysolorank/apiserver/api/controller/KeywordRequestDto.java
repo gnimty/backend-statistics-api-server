@@ -18,6 +18,7 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
  * 2023/07/24        solmin       최초 생성
  */
 
+
 @Getter
 public class KeywordRequestDto {
 

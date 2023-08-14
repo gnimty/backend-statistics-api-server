@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
  * 2023/07/24        solmin       잘못 참조된 필드 수정 및 summonerId 추가, @toString 삭제
  * 2023/07/31        solmin       필드명 mongo structure로 통일, internalName getter 추가
  * 2023/08/09        solmin       @Field 어노테이션으로 받아오도록 수정
+
  */
 @Document(collection = "summoners")
 @Getter
@@ -38,6 +39,7 @@ public class Summoner {
     @Field("id")
     private String summonerId;
     private Integer leaguePoints;
+
 
     private String name;
 
