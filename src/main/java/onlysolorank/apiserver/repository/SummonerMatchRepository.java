@@ -1,13 +1,8 @@
 package onlysolorank.apiserver.repository;
 
-import onlysolorank.apiserver.api.dto.SummonerMatchDTO;
-import onlysolorank.apiserver.domain.Match;
 import onlysolorank.apiserver.domain.SummonerMatch;
-import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

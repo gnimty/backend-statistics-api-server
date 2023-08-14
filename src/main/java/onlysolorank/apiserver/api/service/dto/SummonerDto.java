@@ -1,9 +1,10 @@
-package onlysolorank.apiserver.api.dto;
+package onlysolorank.apiserver.api.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Summoner;
+import onlysolorank.apiserver.domain.dto.SoloTierDto;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto

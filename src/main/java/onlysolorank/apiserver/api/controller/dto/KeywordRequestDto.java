@@ -1,4 +1,4 @@
-package onlysolorank.apiserver.api.controller;
+package onlysolorank.apiserver.api.controller.dto;
 
 import lombok.Getter;
 

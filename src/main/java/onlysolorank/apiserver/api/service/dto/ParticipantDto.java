@@ -1,8 +1,13 @@
-package onlysolorank.apiserver.api.dto;
+package onlysolorank.apiserver.api.service.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.domain.*;
+import onlysolorank.apiserver.domain.Participant;
+import onlysolorank.apiserver.domain.Perk;
+import onlysolorank.apiserver.domain.Position;
+import onlysolorank.apiserver.domain.dto.ItemBundleDto;
+import onlysolorank.apiserver.domain.dto.SoloTierDto;
+import onlysolorank.apiserver.domain.dto.Tier;
 
 import java.util.List;
 

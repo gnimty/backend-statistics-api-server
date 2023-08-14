@@ -1,10 +1,9 @@
-package onlysolorank.apiserver.api.dto;
+package onlysolorank.apiserver.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Summoner;
-import onlysolorank.apiserver.domain.Tier;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -28,9 +27,9 @@ public class SoloTierDto {
     private Integer lp;
 
     @Builder
-    public SoloTierDto(Summoner summoner){
+    public SoloTierDto(Summoner summoner) {
         this.tier = Tier.valueOf(summoner.getQueue());
         this.division = summoner.getTier();
         this.lp = summoner.getLeaguePoints();
-
+    }
 }
