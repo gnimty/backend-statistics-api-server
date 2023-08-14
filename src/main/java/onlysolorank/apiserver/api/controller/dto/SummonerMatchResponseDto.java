@@ -1,11 +1,11 @@
-package onlysolorank.apiserver.api.controller;
+package onlysolorank.apiserver.api.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.api.dto.ChampionPlaysBriefDto;
-import onlysolorank.apiserver.api.dto.MatchDto;
-import onlysolorank.apiserver.api.dto.SummonerDto;
+import onlysolorank.apiserver.api.service.dto.ChampionPlaysBriefDto;
+import onlysolorank.apiserver.api.service.dto.MatchDto;
+import onlysolorank.apiserver.api.service.dto.SummonerDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

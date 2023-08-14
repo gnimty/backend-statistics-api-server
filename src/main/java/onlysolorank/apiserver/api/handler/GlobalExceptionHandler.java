@@ -6,11 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.response.CommonResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
 import java.util.ArrayList;
@@ -29,20 +31,29 @@ import java.util.stream.Collectors;
  * -----------------------------------------------------------
  * 2023/07/10        solmin       최초 생성
  * 2023/07/28        solmin       BindException, CustomException, ConstraintViolationException 공통 에러 처리
+ * 2023/08/14        solmin       IllegalArgumentException 공통 예외 처리
  */
-@ControllerAdvice
+@RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
     // 공통 Exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonResponse> CommonExceptionHandler(Exception ex, BindingResult bindingResult) {
-        return CommonResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<CommonResponse> CustomExceptionHandler(CustomException ex) {
-        return CommonResponse.fail(ex.getErrorCode());
+
+        return new ResponseEntity<>(CommonResponse.fail(ex.getErrorCode()), ex.getErrorCode().getStatus());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<CommonResponse> IllegalArgumentExceptionHandler(IllegalArgumentException ex) {
+
+        ErrorCode ec = ErrorCode.INVALID_INPUT_VALUE;
+        return new ResponseEntity<>(CommonResponse.fail(ec), ec.getStatus());
     }
 
     @ExceptionHandler(BindException.class)
@@ -55,7 +66,7 @@ public class GlobalExceptionHandler {
                 .build()
             ).collect(Collectors.toList());
 
-        return CommonResponse.fail(ErrorCode.CONSTRAINT_VIOLATION, validateErrors);
+        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.CONSTRAINT_VIOLATION, validateErrors),HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -71,7 +82,7 @@ public class GlobalExceptionHandler {
                     .build());
             });
 
-        return CommonResponse.fail(ErrorCode.CONSTRAINT_VIOLATION, validateErrors);
+        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.CONSTRAINT_VIOLATION, validateErrors),HttpStatus.BAD_REQUEST);
     }
 
     @Data

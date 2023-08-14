@@ -1,8 +1,9 @@
-package onlysolorank.apiserver.api.dto;
+package onlysolorank.apiserver.api.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.domain.dto.QueueType;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto

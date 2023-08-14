@@ -1,10 +1,9 @@
-package onlysolorank.apiserver.api.dto;
+package onlysolorank.apiserver.domain.dto;
 
 import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * packageName    : onlysolorank.apiserver.domain

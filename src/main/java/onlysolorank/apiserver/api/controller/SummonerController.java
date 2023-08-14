@@ -2,12 +2,13 @@ package onlysolorank.apiserver.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.api.dto.ChampionPlaysBriefDto;
-import onlysolorank.apiserver.api.dto.MatchDto;
-import onlysolorank.apiserver.api.dto.SummonerDto;
+import onlysolorank.apiserver.api.controller.dto.KeywordRequestDto;
+import onlysolorank.apiserver.api.controller.dto.SummonerMatchResponseDto;
+import onlysolorank.apiserver.api.service.dto.ChampionPlaysBriefDto;
+import onlysolorank.apiserver.api.service.dto.MatchDto;
+import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,7 @@ public class SummonerController {
      * @return the summoner by internal name
      */
     @GetMapping("/autocomplete")
-    public ResponseEntity getSummonerByInternalName(@ModelAttribute @Valid KeywordRequestDto keywordRequestDto) {
+    public CommonResponse<List<SummonerDto>> getSummonerByInternalName(@ModelAttribute @Valid KeywordRequestDto keywordRequestDto) {
         List<SummonerDto> data = summonerService.getSummonerDtoListByInternalName(keywordRequestDto.getInternalName());
         return CommonResponse.success(data);
     }
@@ -59,20 +60,21 @@ public class SummonerController {
      * @return the summoner match info by summoner name
      */
     @GetMapping("/matches/{summoner_name}")
-    public ResponseEntity getSummonerMatchInfoBySummonerName(@PathVariable("summoner_name") String summonerName,
+    public CommonResponse getSummonerMatchInfoBySummonerName(@PathVariable("summoner_name") String summonerName,
                                                              @RequestParam("ended") Optional<String> lastMatchId) {
 
         // TODO lastMatchId 검증 필요
-        if(!lastMatchId.isPresent() || lastMatchId.get().isBlank()){
+        if (!lastMatchId.isPresent() || lastMatchId.get().isBlank()) {
             SummonerMatchResponseDto data = summonerService.getSummonerMatchInfoBySummonerName(summonerName);
             return CommonResponse.success(data);
         }
         List<MatchDto> data = summonerService.get20MatchesByLastMatchId(summonerName, lastMatchId.get());
 
-
+        return CommonResponse.success(data);
+    }
 
     @GetMapping("/champion/{puuid}")
-    public ResponseEntity getAllChampionPlayInfoByPuuid(@PathVariable("puuid") String puuid){
+    public CommonResponse<List<ChampionPlaysBriefDto>> getAllChampionPlayInfoByPuuid(@PathVariable("puuid") String puuid){
         List<ChampionPlaysBriefDto> data = summonerService.getAllChampionPlayInfoByPuuid(puuid);
 
         return CommonResponse.success(data);

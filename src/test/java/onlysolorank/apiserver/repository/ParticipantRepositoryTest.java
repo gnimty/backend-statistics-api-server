@@ -1,6 +1,6 @@
 package onlysolorank.apiserver.repository;
 
-import onlysolorank.apiserver.api.dto.ChampionPlaysBriefDto;
+import onlysolorank.apiserver.api.service.dto.ChampionPlaysBriefDto;
 import onlysolorank.apiserver.domain.Participant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

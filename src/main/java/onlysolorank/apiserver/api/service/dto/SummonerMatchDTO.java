@@ -1,4 +1,4 @@
-package onlysolorank.apiserver.api.dto;
+package onlysolorank.apiserver.api.service.dto;
 
 import lombok.Data;
 import onlysolorank.apiserver.domain.Match;
