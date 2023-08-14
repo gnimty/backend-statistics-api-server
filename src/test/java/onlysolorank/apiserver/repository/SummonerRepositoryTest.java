@@ -48,8 +48,8 @@ class SummonerRepositoryTest {
         Page<Summoner> allSummoners = summonerRepository.findAll(PageRequest.of(0, 20));
 
         allSummoners.forEach(summoner -> {
-            System.out.printf("%s | %d level | %s | %d | %d \n",
-                summoner.getName(), summoner.getSummonerLevel(), summoner.getQueue(), summoner.getDivision(), summoner.getLp());
+            System.out.println("summoner = " + summoner);
+
         });
     }
 }

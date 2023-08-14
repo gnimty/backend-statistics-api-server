@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/07/10        solmin       최초 생성
+ * 2023/07/31        solmin       parameter 없는 success 메소드 오버라이드
  */
 @Getter
 @AllArgsConstructor
@@ -30,6 +31,13 @@ public class CommonResponse<T> {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
+
+    public static ResponseEntity<CommonResponse> success() {
+        return new ResponseEntity<>(
+            CommonResponse.builder().build(),
+            HttpStatus.OK);
+    }
+
 
     public static <T> ResponseEntity<CommonResponse<T>> success(T data) {
         return new ResponseEntity<>(
