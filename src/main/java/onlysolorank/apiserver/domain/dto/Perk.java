@@ -1,4 +1,4 @@
-package onlysolorank.apiserver.domain;
+package onlysolorank.apiserver.domain.dto;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -24,12 +24,12 @@ public class Perk {
         this.styles = styles;
     }
 
-    private StatPerk statPerks;
+    private final StatPerk statPerks;
     private List<PerkDetail> styles;
 
     @Getter
     @ToString
-    private static class StatPerk{
+    private static final class StatPerk{
         private Integer defense;
         private Integer offense;
         private Integer flex;

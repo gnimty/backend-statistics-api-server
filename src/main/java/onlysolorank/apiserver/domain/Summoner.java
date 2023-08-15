@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
  * 2023/07/24        solmin       잘못 참조된 필드 수정 및 summonerId 추가, @toString 삭제
  * 2023/07/31        solmin       필드명 mongo structure로 통일, internalName getter 추가
  * 2023/08/09        solmin       @Field 어노테이션으로 받아오도록 수정
+ * 2023/08/15        solmin       HistoryList (소환사 티어 변동 정보) 가져오기, 약 2시간 텀
 
  */
 @Document(collection = "summoners")
@@ -35,6 +37,7 @@ public class Summoner {
     private LocalDateTime updatedAt;
     private Integer summonerLevel;
     private Integer tier;
+    private List<History> history;
 
     @Field("id")
     private String summonerId;
