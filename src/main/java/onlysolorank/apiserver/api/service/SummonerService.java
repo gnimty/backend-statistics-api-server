@@ -42,6 +42,8 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
  *                                  - MatchService
  *                                     - ParticipantService
  *                                     - TeamService
+ * 2023/08/15        solmin       소환사 랭크 티어 그래프 조회 메소드 추가
+ * 2023/08/15        solmin       일부 중복되는 코드 Inline
 
  */
 @Service
@@ -56,16 +58,6 @@ public class SummonerService {
     private final SummonerMatchService summonerMatchService;
     private final MatchService matchService;
     private final ParticipantService participantService;
-
-
-    public List<SummonerDto> getSummonerDtoListByInternalName(String internalName) {
-        // internal name으로 찾기
-        List<SummonerDto> result = summonerRepository.findTop5ByInternalNameStartsWithOrderByInternalName(internalName)
-            .stream().map(summoner -> SummonerDto.builder().summoner(summoner).build())
-            .toList();
-
-        return result;
-    }
 
     public SummonerMatchResponseDto getSummonerMatchInfoBySummonerName(String summonerName) {
 
@@ -114,19 +106,6 @@ public class SummonerService {
         return matchDtoList;
     }
 
-    private Summoner getSummonerBySummonerName(String summonerName) {
-        String internalName = keywordToInternalName(summonerName);
-        Summoner summoner = summonerRepository.findOneByInternalName(internalName)
-            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "summoner_name에 해당하는 소환사 데이터가 존재하지 않습니다."));
-        return summoner;
-    }
-
-    private Summoner getSummonerByPuuid(String puuid) {
-        Summoner summoner = summonerRepository.findOneByPuuid(puuid)
-            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다."));
-        return summoner;
-    }
-
     public List<MatchDto> getMatchDtoList(List<String> matchIds) {
         List<Match> matches = matchService.getMatchListByMatchIdList(matchIds);
         // Participant와 이에 대응되는 Summoner List 가져오기
@@ -158,5 +137,32 @@ public class SummonerService {
         }else{
             throw new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다.");
         }
+    }
+
+    public List<SoloTierWithTimeDto> getSummonerHistory(String puuid) {
+        Summoner summoner = getSummonerByPuuid(puuid);
+
+        return summoner.getHistory().stream()
+            .map(h -> SoloTierWithTimeDto.builder().history(h).build()).toList();
+    }
+
+
+    private Summoner getSummonerBySummonerName(String summonerName) {
+        String internalName = keywordToInternalName(summonerName);
+        return summonerRepository.findOneByInternalName(internalName)
+            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "summoner_name에 해당하는 소환사 데이터가 존재하지 않습니다."));
+    }
+
+    private Summoner getSummonerByPuuid(String puuid) {
+        return summonerRepository.findOneByPuuid(puuid)
+            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다."));
+    }
+
+    public List<SummonerDto> getSummonerDtoListByInternalName(String internalName) {
+        // internal name으로 찾기
+
+        return summonerRepository.findTop5ByInternalNameStartsWithOrderByInternalName(internalName)
+            .stream().map(summoner -> SummonerDto.builder().summoner(summoner).build())
+            .toList();
     }
 }

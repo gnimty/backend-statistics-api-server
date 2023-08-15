@@ -1,4 +1,4 @@
-package onlysolorank.apiserver.domain;
+package onlysolorank.apiserver.domain.dto;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -18,7 +18,7 @@ public enum Position {
     BOTTOM("원딜"),
     UTILITY("서폿");
 
-    private String value;
+    private final String value;
 
     Position(String value){
         this.value= value;

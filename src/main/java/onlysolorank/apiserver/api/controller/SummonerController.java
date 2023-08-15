@@ -6,6 +6,7 @@ import onlysolorank.apiserver.api.controller.dto.KeywordRequestDto;
 import onlysolorank.apiserver.api.controller.dto.SummonerMatchResponseDto;
 import onlysolorank.apiserver.api.service.dto.ChampionPlaysBriefDto;
 import onlysolorank.apiserver.api.service.dto.MatchDto;
+import onlysolorank.apiserver.api.service.dto.SoloTierWithTimeDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
@@ -30,7 +31,7 @@ import java.util.Optional;
  * 2023/07/31        solmin       소환사 정보 가져오기 API 작업 중
  * 2023/08/09        solmin       소환사 정보 가져오기 API 작업 완료
  * 2023/08/09        solmin       Javadocs 추가 및 소환사 전적정보 챔피언별 세부 조회 구현
-
+ * 2023/08/15        solmin       소환사 랭크 티어 그래프 조회 메소드 추가
  */
 @RestController
 @RequestMapping("/summoners")
@@ -73,6 +74,12 @@ public class SummonerController {
         return CommonResponse.success(data);
     }
 
+    /**
+     * Gets all champion play info by puuid.
+     *
+     * @param puuid the puuid
+     * @return the all champion play info by puuid
+     */
     @GetMapping("/champion/{puuid}")
     public CommonResponse<List<ChampionPlaysBriefDto>> getAllChampionPlayInfoByPuuid(@PathVariable("puuid") String puuid){
         List<ChampionPlaysBriefDto> data = summonerService.getAllChampionPlayInfoByPuuid(puuid);
@@ -80,5 +87,17 @@ public class SummonerController {
         return CommonResponse.success(data);
     }
 
+    /**
+     * Gets summoner history.
+     *
+     * @param puuid the puuid
+     * @return List<SoloTierWithTimeDto>
+     */
+    @GetMapping("/tier/{puuid}")
+    public CommonResponse<List<SoloTierWithTimeDto>> getSummonerHistory(@PathVariable("puuid") String puuid){
+        List<SoloTierWithTimeDto> data = summonerService.getSummonerHistory(puuid);
+
+        return CommonResponse.success(data);
+    }
 
 }
