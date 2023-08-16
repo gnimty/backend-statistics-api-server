@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.repository;
 
 import onlysolorank.apiserver.api.service.dto.ChampionPlaysBriefDto;
+import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
 import onlysolorank.apiserver.domain.Participant;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -21,6 +22,7 @@ import java.util.List;
  * 2023/07/28        solmin       최초 생성
  * 2023/08/09        solmin       findTop10ChampionStatsByPuuid 추가
  * 2023/08/10        solmin       totalDeath=0인 경우의 예외 처리
+ * 2023/08/16        solmin       findTopChampionStatsByPuuid 추가
  */
 public interface ParticipantRepository extends MongoRepository<Participant, String> {
     List<Participant> findByMatchId(String matchId);
@@ -29,7 +31,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
     List<Participant> findByMatchIdInCustom(List<String> matchIds);
 
     // Most 10 Champion 전적 정보 집계, TODO 이후 챔피언 탭에서 재사용 예정
-    @Aggregation(pipeline = {"{ $match: { puuid: ?0 } }",
+    @Aggregation(pipeline = {"{ $match: { 'puuid': ?0 } }",
         "{ $group: { " +
             "_id: { championId: '$championId', championName: '$championName' }, " +
             "totalPlays: { $sum: 1 }, " +
@@ -74,4 +76,26 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "totalAssist: 1" +
         "}}"})
     List<ChampionPlaysBriefDto> findTopChampionStatsByPuuid(@Param("puuid") String puuid, @Param("limit") Integer limit);
+
+
+    /**
+     * puuid 리스트를 받아서 각 소환사별로 most N champion list 생성하기
+     * 1. puuid in 조건으로 모든 participant 가져오기
+     * 2. puuid별로 grouping 하여 챔피언 플레이 횟수를 내림차순으로 가져오기
+     *
+     * @param summonerIds the summoner ids
+     * @param limit       the limit
+     * @return the list
+     */
+    @Aggregation(pipeline = {
+        "{$match:{puuid:{$in: ?0}}}",
+        "{$group:{ _id: {puuid:$puuid,championId: $championId}, plays:{$sum: 1}}}",
+        "{$project:{ _id:0 , puuid: '$_id.puuid', championId:'$_id.championId', plays:1}}",
+        "{$sort:{puuid:1, plays:-1}}",
+        "{$group:{_id:$puuid, champions:{$push:{championId:$championId,plays:$plays}}}}",
+        "{$project:{_id:0,puuid:$_id,champions:{$slice:[$champions, ?1]}}}",
+        "{$project:{_id:0,puuid:1,championIds:'$champions.championId'}}"
+        })
+    List<mostChampionsBySummonerDto> findTopChampionsForEachSummoner(List<String> summonerIds, int limit);
+
 }
