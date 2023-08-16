@@ -97,7 +97,7 @@ public class SummonerController {
 
         return CommonResponse.success(data);
     }
-
+  
     /**
      * Gets summoner rank.
      *
