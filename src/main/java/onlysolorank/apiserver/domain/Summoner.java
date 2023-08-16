@@ -2,6 +2,7 @@ package onlysolorank.apiserver.domain;
 
 import lombok.Getter;
 import lombok.ToString;
+import onlysolorank.apiserver.domain.dto.History;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -23,6 +24,8 @@ import java.util.List;
  * 2023/07/31        solmin       필드명 mongo structure로 통일, internalName getter 추가
  * 2023/08/09        solmin       @Field 어노테이션으로 받아오도록 수정
  * 2023/08/15        solmin       HistoryList (소환사 티어 변동 정보) 가져오기, 약 2시간 텀
+ * 2023/08/16        solmin       기존 league_entries 컬렉션 summoners 통합에 따라서 소환사 승패정보 추가
+ *                                leaguePoints to lp로 필드명 변경
 
  */
 @Document(collection = "summoners")
@@ -41,12 +44,19 @@ public class Summoner {
 
     @Field("id")
     private String summonerId;
-    private Integer leaguePoints;
 
-
+    @Field("leaguePoints")
+    private Integer lp;
+    private Integer mmr;
     private String name;
+    @Field("wins")
+    private Integer totalWin;
+    @Field("losses")
+    private Integer totalDefeat;
+
 
     @Field("internal_name")
     private String internalName;
+
 
 }

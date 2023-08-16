@@ -2,7 +2,7 @@ package onlysolorank.apiserver.api.service.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.domain.History;
+import onlysolorank.apiserver.domain.dto.History;
 import onlysolorank.apiserver.domain.dto.Tier;
 
 import java.time.LocalDateTime;

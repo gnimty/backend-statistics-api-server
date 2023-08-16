@@ -19,14 +19,26 @@ import java.math.RoundingMode;
 
 
 public class CustomConverter {
+    /**
+     * 영어, 한글, 숫자를 제외한 모든 문자 및 공백 제거 후 소문자로 변환
+     *
+     * @param keyword the keyword
+     * @return the string
+     */
     public static String keywordToInternalName(String keyword){
-        // 영어, 한글, 숫자를 제외한 모든 문자 및 공백 제거 후 소문자로 변환
         return keyword
             .replaceAll("[^a-zA-Z가-힣0-9]", "")
             .replaceAll("\\s", "")
             .toLowerCase();
     }
 
+    /**
+     * 반올림할 Double 값과 반올림할 자릿수를 넘겨 주어 그 값을 받음
+     *
+     * @param value the value
+     * @param scale the scale: scale번째 자리수에서 반올림
+     * @return the double
+     */
     public static Double doubleValueToHalfUp(Double value, int scale){
         return new BigDecimal(value).setScale(scale, RoundingMode.HALF_UP).doubleValue();
     }

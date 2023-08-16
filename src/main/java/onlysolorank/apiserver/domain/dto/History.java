@@ -1,4 +1,4 @@
-package onlysolorank.apiserver.domain;
+package onlysolorank.apiserver.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

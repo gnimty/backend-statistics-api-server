@@ -10,12 +10,16 @@ import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.service.dto.*;
 import onlysolorank.apiserver.domain.*;
 import onlysolorank.apiserver.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName;
@@ -44,6 +48,7 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
  *                                     - TeamService
  * 2023/08/15        solmin       소환사 랭크 티어 그래프 조회 메소드 추가
  * 2023/08/15        solmin       일부 중복되는 코드 Inline
+ * 2023/08/16        solmin       MMR 기준 소환사 랭킹 정보 조회 메소드 추가 구현
 
  */
 @Service
@@ -147,6 +152,35 @@ public class SummonerService {
     }
 
 
+    public SummonerRankPageDto getSummonerRankByMMR(Integer page) {
+        // mmr을 기준으로 내림차순하여 랭크 정보 생성
+        Sort sort = Sort.by(Sort.Direction.DESC, "mmr");
+        int pageSize = 100;
+
+        int limit = 3;
+
+        // 1. MMR 기준 Summoner page 조회
+        Page<Summoner> summoners = getSummonerPage(page, sort, pageSize);
+        Map<String, List<Integer>> mostChampionMap = participantService.getTopNChampionIdsByPuuids(summoners.stream().map(Summoner::getPuuid).toList(), limit);
+
+        AtomicInteger startRank = new AtomicInteger(page * pageSize);
+
+        // 2. 각 summoner별 랭크 정보 매기기 + most 3 champion ID 정보 가져오기
+        List<SummonerRankDto> summonerRanks = summoners.stream()
+            .map(s -> {
+                int rank = startRank.incrementAndGet();
+                return SummonerRankDto.builder().summoner(s).championIds(mostChampionMap.get(s.getPuuid())).rank(rank).build();
+            }).toList();
+
+        return SummonerRankPageDto.builder().summonerPage(summoners).summonerRanks(summonerRanks).build();
+    }
+
+    private Page<Summoner> getSummonerPage(Integer page, Sort sort, int size) {
+        Page<Summoner> summoners = summonerRepository.findAll(PageRequest.of(page, size, sort));
+        return summoners;
+    }
+
+    /* --------------------------- Repository 직접 접근 메소드 --------------------------- */
     private Summoner getSummonerBySummonerName(String summonerName) {
         String internalName = keywordToInternalName(summonerName);
         return summonerRepository.findOneByInternalName(internalName)
@@ -165,4 +199,5 @@ public class SummonerService {
             .stream().map(summoner -> SummonerDto.builder().summoner(summoner).build())
             .toList();
     }
+    /* --------------------------- Repository 직접 접근 메소드 --------------------------- */
 }

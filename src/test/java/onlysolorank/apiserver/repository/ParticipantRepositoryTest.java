@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.repository;
 
 import onlysolorank.apiserver.api.service.dto.ChampionPlaysBriefDto;
+import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
 import onlysolorank.apiserver.domain.Participant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import java.util.List;
  * -----------------------------------------------------------
  * 2023/07/31        solmin       최초 생성
  * 2023/08/09        solmin       findTop10ChampionStatsByPuuid 테스트
+ * 2023/08/09        solmin       findTopChampionStatsByPuuid 테스트
+ * 2023/08/16        solmin       findTopChampionsForEachSummoner 테스트
  */
 
 @ActiveProfiles("test")
@@ -29,7 +32,8 @@ class ParticipantRepositoryTest {
     private ParticipantRepository participantRepository;
 
     private final String matchId = "KR_6574632344";
-    private final String testPuuid = "E_Dv1ATl2pdem7ZvwOvES-ATHBr9j2QEkQNMUS7MSpjNEZYWjjpab0o8oD-76dX1V17OQfvtchsGDA";
+    private final String testPuuid1 = "foXeHpqOrzJdIq3nXyjUZCcksCERlqkKnjT0NQ77zmT26ydwv6I3UzWcr4awGSsJvFOghhfdZrRdZA";
+    private final String testPuuid2 = "EGwfiiFYMXwYxIRx1Fl1b2NhGFWAQiQfe2gb5SskB2nVTNQWqRkio9wpjlr0L1xKiJ2QGGraW1PpPg";
     @Test
     public void getParticipantsInMatch(){
         List<Participant> results = participantRepository.findByMatchId(matchId);
@@ -41,10 +45,22 @@ class ParticipantRepositoryTest {
 
     @Test
     public void getMost10Plays(){
-        List<ChampionPlaysBriefDto> topChampionStatsByPuuid = participantRepository.findTopChampionStatsByPuuid(testPuuid, 10);
+        List<ChampionPlaysBriefDto> topChampionStatsByPuuid = participantRepository.findTopChampionStatsByPuuid(testPuuid1, 10);
 
         for (ChampionPlaysBriefDto championPlaysBriefDto : topChampionStatsByPuuid) {
             System.out.println(championPlaysBriefDto);
+        }
+    }
+
+    @Test
+    public void testGetTop3ChampionsByPuuids(){
+
+        List<mostChampionsBySummonerDto> topChampionsForEachSummoner = participantRepository.findTopChampionsForEachSummoner(List.of(testPuuid1, testPuuid2), 3);
+
+        for (mostChampionsBySummonerDto mostChampionsBySummonerDto : topChampionsForEachSummoner) {
+            for(Integer championId : mostChampionsBySummonerDto.getChampionIds()){
+                System.out.println("championId = " + championId);
+            }
         }
 
 
