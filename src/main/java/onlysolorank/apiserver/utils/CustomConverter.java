@@ -26,6 +26,10 @@ public class CustomConverter {
      * @return the string
      */
     public static String keywordToInternalName(String keyword){
+        if(keyword==null){
+            return null;
+        }
+
         return keyword
             .replaceAll("[^a-zA-Z가-힣0-9]", "")
             .replaceAll("\\s", "")

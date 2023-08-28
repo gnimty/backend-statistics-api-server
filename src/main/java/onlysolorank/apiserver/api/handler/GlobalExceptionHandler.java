@@ -10,15 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller
@@ -32,6 +31,7 @@ import java.util.stream.Collectors;
  * 2023/07/10        solmin       최초 생성
  * 2023/07/28        solmin       BindException, CustomException, ConstraintViolationException 공통 에러 처리
  * 2023/08/14        solmin       IllegalArgumentException 공통 예외 처리
+ * 2023/08/28        solmin       Validation Error 처리방식 변경: 단일 필드에 대해서만 처리
  */
 @RestControllerAdvice
 @Slf4j
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<CommonResponse> CustomExceptionHandler(CustomException ex) {
 
-        return new ResponseEntity<>(CommonResponse.fail(ex.getErrorCode()), ex.getErrorCode().getStatus());
+        return new ResponseEntity<>(CommonResponse.fail(ex.getErrorCode(), ex.getMessage()), ex.getErrorCode().getStatus());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -57,41 +57,43 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<CommonResponse<List<ValidateError>>> BindExceptionHandler(BindException ex, BindingResult result) {
+    public ResponseEntity<CommonResponse> BindExceptionHandler(BindException ex, BindingResult result) {
+        // BindingResult에서 하나만 가져오기
+        FieldError err = result.getFieldErrors().stream().findFirst().get();
 
-        List<ValidateError> validateErrors = result.getFieldErrors().stream()
-            .map(e -> ValidateError.builder()
-                .field(e.getField())
-                .message(e.getDefaultMessage())
+//        List<ValidateError> validateErrors = result.getFieldErrors().stream()
+//            .map(e -> ValidateError.builder()
+//                .field(e.getField())
+//                .message(e.getDefaultMessage())
+//                .build()
+//            ).collect(Collectors.toList());
+
+        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.CONSTRAINT_VIOLATION,
+            CustomFieldError.builder()
+                .message(err.getDefaultMessage())
+                .field(err.getField())
                 .build()
-            ).collect(Collectors.toList());
-
-        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.CONSTRAINT_VIOLATION, validateErrors),HttpStatus.BAD_REQUEST);
+            ),HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<CommonResponse<List<ValidateError>>> ConstraintViolationExceptionHandler(ConstraintViolationException ex) {
-        List<ValidateError> validateErrors= new ArrayList<>();
+    public ResponseEntity<CommonResponse> ConstraintViolationExceptionHandler(ConstraintViolationException ex) {
+        ConstraintViolation<?> violation = ex.getConstraintViolations().stream().findFirst().get();
 
-        ex.getConstraintViolations()
-            .stream()
-            .forEach(constraintViolation -> {
-                validateErrors.add(ValidateError.builder()
-                    .propertypath(constraintViolation.getPropertyPath())
-                    .message(constraintViolation.getMessage())
-                    .build());
-            });
-
-        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.CONSTRAINT_VIOLATION, validateErrors),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.CONSTRAINT_VIOLATION,
+            CustomFieldError.builder()
+                .message(violation.getMessage())
+                .propertypath(violation.getPropertyPath())
+                .build()),HttpStatus.BAD_REQUEST);
     }
 
     @Data
-    private static class ValidateError{
+    public static class CustomFieldError{
         private String field;
         private String message;
 
         @Builder
-        public ValidateError(Path propertypath, String field, String message){
+        public CustomFieldError(Path propertypath, String field, String message){
             if (field ==null){
                 this.field =  Arrays.stream(propertypath.toString().split("\\.")).reduce((first, second) -> second).orElse("none");
             }else{

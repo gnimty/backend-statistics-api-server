@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/07/28        solmin       최초 생성
+ * 2023/08/28        solmin       pickturn, 전령정보 추가
  */
 
 @Document(collection = "teams")
@@ -33,20 +35,22 @@ public class Team {
     private List<Ban> bans;
     private Integer baron;
     private Integer dragon;
+    private Integer riftHerald;
     private Integer tower;
-    private Integer totalKills;
+
+    @Field("totalKills")
+    private Integer totalKill;
 
 
     @ToString
     @Getter
-    private class Ban {
+    public static class Ban {
         private Integer championId;
+        private Integer pickTurn;
 
         public Ban(Integer championId, Integer pickTurn) {
             this.championId = championId;
             this.pickTurn = pickTurn;
         }
-
-        private Integer pickTurn;
     }
 }

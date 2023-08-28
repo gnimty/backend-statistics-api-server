@@ -22,7 +22,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
     // Error Code 정의
-    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "Input Value Erroer"),
+    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "Input Value Error"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error"),
     CONSTRAINT_VIOLATION(HttpStatus.BAD_REQUEST, "입력값 중 검증에 실패한 값이 있습니다."),
     RESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "조회 결과가 존재하지 않습니다.");

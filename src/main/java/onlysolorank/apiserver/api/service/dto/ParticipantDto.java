@@ -64,7 +64,7 @@ public class ParticipantDto {
         this.participantId = participant.getParticipantId();
 
         // queue, tier, leaguepoints가 하나라도 null이면 soloTier를 null로
-        if (!participant.getQueue().equals("null") && !participant.getTier().equals("null") && !participant.getLeaguePoints().equals("null")){
+        if (participant.getQueue()!=null && participant.getTier()!=null && participant.getLeaguePoints()!=null){
             this.soloTier = new SoloTierDto(
                 Tier.valueOf(participant.getQueue()),
                 Integer.parseInt(participant.getTier()),

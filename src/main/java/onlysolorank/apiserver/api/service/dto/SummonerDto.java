@@ -21,7 +21,7 @@ import onlysolorank.apiserver.domain.dto.SoloTierDto;
 @Data
 @AllArgsConstructor
 public class SummonerDto {
-    private String name;
+    private String summonerName;
     private String internalName;
     private String summonerId;
     private String puuid;
@@ -31,7 +31,7 @@ public class SummonerDto {
 
     @Builder
     public SummonerDto(Summoner summoner){
-        this.name = summoner.getName();
+        this.summonerName = summoner.getName();
         this.internalName = summoner.getInternalName();
         this.summonerId = summoner.getSummonerId();
         this.puuid = summoner.getPuuid();
