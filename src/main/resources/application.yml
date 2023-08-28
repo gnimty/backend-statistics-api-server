@@ -1,4 +1,6 @@
 spring:
+  config:
+    import:
   data:
     mongodb:
       host: ${MONGO_HOST}
@@ -12,8 +14,22 @@ server:
   servlet:
     context-path: /statistics
 
-
 # MongoRepository logger setting
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+
+# dev properties
+---
+spring.config.activate.on-profile: dev
+spring:
+  data:
+    mongodb:
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      database: ${MONGO_RIOTDATA_DB}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
+      admin_db: ${MONGO_ADMIN_DB}
+      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}?authSource=${MONGO_ADMIN_DB}
