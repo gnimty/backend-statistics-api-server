@@ -11,8 +11,8 @@ jobs:
       - name: repository 내용 가져오기
         uses: actions/checkout@master
 
-      - name: ENV, MONGO_ENV 환경변수 생성
-        run: |
+      - name: Build with Gradle
+        run: ./gradlew build -x test
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -57,7 +57,7 @@ jobs:
             touch .env
             sudo echo "${{ secrets.DEV_ENV }}" > .env
 
-            sudo docker rm -f $(docker ps -qa)
+            sudo docker run --rm statistics-api-server
             sudo docker pull solmin2/statistics-api-server:latest
             docker run --env-file .env -p 8080:8080 -it statistics-api-server
             
