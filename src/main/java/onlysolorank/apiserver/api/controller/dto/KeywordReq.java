@@ -20,17 +20,13 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
 
 
 @Getter
-public class KeywordRequestDto {
+public class KeywordReq {
 
-    @NotBlank(message = "internalName 기준으로 1글자 이상 입력해야 합니다.")
+    @NotBlank(message = "keyword는 internalName 기준으로 1글자 이상 입력해야 합니다.")
     private String keyword;
 
-    public KeywordRequestDto(String keyword){
+    public KeywordReq(String keyword){
         this.keyword = keywordToInternalName(keyword);
-    }
-
-    public String getInternalName(){
-        return this.keyword;
     }
 
 }

@@ -3,12 +3,14 @@ package onlysolorank.apiserver.api.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import onlysolorank.apiserver.api.controller.dto.SummonerMatchResponseDto;
+import onlysolorank.apiserver.api.controller.dto.HasPlayedRes;
+import onlysolorank.apiserver.api.controller.dto.SummonerMatchRes;
 
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.service.dto.*;
 import onlysolorank.apiserver.domain.*;
+import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName;
@@ -40,16 +43,16 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
  * 2023/07/31        solmin       getSummonerMatchInfoBySummonerName에 필요한 DTO 구현 거의 완성 (미완료)
  * 2023/08/09        solmin       getAllChampionPlayInfoByPuuid 서비스 메소드 구현 , 이전 코드 일부 활용
  * 2023/08/09        solmin       계층적으로 match, team, participant에 대하여 순차적인 layer로 단계 나누기
- *                                SummonerService
- *                                  - SummonerMatchService
- *                                  - ParticipantService
- *                                  - MatchService
- *                                     - ParticipantService
- *                                     - TeamService
+ * SummonerService
+ * - SummonerMatchService
+ * - ParticipantService
+ * - MatchService
+ * - ParticipantService
+ * - TeamService
  * 2023/08/15        solmin       소환사 랭크 티어 그래프 조회 메소드 추가
  * 2023/08/15        solmin       일부 중복되는 코드 Inline
  * 2023/08/16        solmin       MMR 기준 소환사 랭킹 정보 조회 메소드 추가 구현
-
+ * 2023/08/28        solmin       챔피언 장인랭킹 구현
  */
 @Service
 @RequiredArgsConstructor
@@ -64,9 +67,9 @@ public class SummonerService {
     private final MatchService matchService;
     private final ParticipantService participantService;
 
-    public SummonerMatchResponseDto getSummonerMatchInfoBySummonerName(String summonerName) {
+    public SummonerMatchRes getSummonerMatchInfoByInternalName(String internalName) {
 
-        Summoner summoner = getSummonerBySummonerName(summonerName);
+        Summoner summoner = getSummonerBySummonerName(internalName);
 
         // MatchId 및 MatchDto List 가져오기
         List<MatchDto> matchDtoList = new ArrayList<>();
@@ -74,22 +77,22 @@ public class SummonerService {
 
         if (summonerMatch.isPresent()) {
             List<String> matchIds = summonerMatch.get().getSummonerMatchIds().stream()
-                    .limit(20).toList();
+                .limit(20).toList();
             matchDtoList = getMatchDtoList(matchIds);
         }
 
-        // renewableAt 가져오기 : updated 시점으로부터 2분 이후의 시간을 리턴
-        LocalDateTime renewableAt = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES);
+        // renewableAfter 가져오기 : updated 시점으로부터 2분 이후의 시간을 리턴
+        LocalDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES);
 
         // 소환사의 top 10 챔피언 플레이 정보 가져오기
-        List<ChampionPlaysBriefDto> top10ChampionPlaysBriefDtoList =
-            participantService.getChampionStatus(summoner.getPuuid(), 10);
+        List<ChampionPlayWithChampionDto> top10ChampionPlaysDetailDtoList =
+            participantService.getChampionStatus(summoner.getPuuid(), 10).stream().map(t->ChampionPlayWithChampionDto.builder().championPlay(t).build()).toList();
 
-        return SummonerMatchResponseDto.builder()
+        return SummonerMatchRes.builder()
             .summoner(SummonerDto.builder().summoner(summoner).build())
-            .renewableAt(renewableAt)
+            .renewableAfter(renewableAfter)
             .matches(matchDtoList)
-            .mostPlayed(top10ChampionPlaysBriefDtoList).build();
+            .mostPlayed(top10ChampionPlaysDetailDtoList).build();
     }
 
     public List<MatchDto> get20MatchesByLastMatchId(String summonerName, String lastMatchId) {
@@ -123,25 +126,25 @@ public class SummonerService {
 
         return matches.stream()
             .map(match -> {
+                AtomicReference<Integer> totalGold = new AtomicReference<>(0);
                 List<ParticipantDto> participantDtoList = participantMap.get(match.getMatchId()).stream()
-                    .map(p -> ParticipantDto.builder().participant(p).build())
+                    .map(p -> {
+                        totalGold.updateAndGet(v -> v + p.getGoldEarned());
+                        return ParticipantDto.builder().participant(p).build();
+                    })
                     .toList();
                 List<TeamDto> teamDtoList = teamMap.get(match.getMatchId())
-                    .stream().map(TeamDto::new).toList();
+                    .stream().map(t-> new TeamDto(t, totalGold.get())).toList();
                 return MatchDto.builder().match(match).participants(participantDtoList).teams(teamDtoList).build();
             }).toList();
     }
 
-    public List<ChampionPlaysBriefDto> getAllChampionPlayInfoByPuuid(String puuid) {
+    public List<ChampionPlayWithChampionDto> getAllChampionPlayInfoByPuuid(String internalName) {
+        Summoner summoner = summonerRepository.findOneByInternalName(internalName)
+            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "summoner_name에 해당하는 소환사 데이터가 존재하지 않습니다."));
 
-        if(summonerRepository.existsByPuuid(puuid)){
-            // 소환사의 모든 챔피언 플레이 정보 가져오기
-            List<ChampionPlaysBriefDto> championPlaysBriefDtoList =
-                participantService.getChampionStatus(puuid, LIMIT);
-            return championPlaysBriefDtoList;
-        }else{
-            throw new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다.");
-        }
+        // 소환사의 모든 챔피언 플레이 정보 가져오기
+        return participantService.getChampionStatus(summoner.getPuuid(), LIMIT).stream().map(s->ChampionPlayWithChampionDto.builder().championPlay(s).build()).toList();
     }
 
     public List<SoloTierWithTimeDto> getSummonerHistory(String puuid) {
@@ -167,10 +170,7 @@ public class SummonerService {
 
         // 2. 각 summoner별 랭크 정보 매기기 + most 3 champion ID 정보 가져오기
         List<SummonerRankDto> summonerRanks = summoners.stream()
-            .map(s -> {
-                int rank = startRank.incrementAndGet();
-                return SummonerRankDto.builder().summoner(s).championIds(mostChampionMap.get(s.getPuuid())).rank(rank).build();
-            }).toList();
+            .map(s -> SummonerRankDto.builder().summoner(s).championIds(mostChampionMap.get(s.getPuuid())).rank(startRank.incrementAndGet()).build()).toList();
 
         return SummonerRankPageDto.builder().summonerPage(summoners).summonerRanks(summonerRanks).build();
     }
@@ -179,6 +179,35 @@ public class SummonerService {
         Page<Summoner> summoners = summonerRepository.findAll(PageRequest.of(page, size, sort));
         return summoners;
     }
+
+
+    public List<ChampionPlayWithSummonerDto> getSpecialistsByChampionName(String championName, Tier stdTier) {
+        // 1. 특정 티어 이상인 소환사 정보 전부 가져오기
+        Map<String, Summoner> summonerByTierGt = summonerRepository.findSummonersByMmrGreaterThanEqual(stdTier.getBasisMMR()).stream()
+            .collect(Collectors.toMap(Summoner::getPuuid, s->s));
+
+        List<String> puuids = summonerByTierGt.keySet().stream().toList();
+
+        // 2. participants 정보에서 특정 championName과 puuid 정보가 담긴 정보를 필터링하여 가져오기
+        List<ChampionPlaysDetailDto> result = participantService.getSpecialistsByCondition(puuids, championName);
+
+        AtomicInteger startRank = new AtomicInteger(0);
+        // 3. DTO 엮기
+        List<ChampionPlayWithSummonerDto> specialists = result.stream().map(s -> ChampionPlayWithSummonerDto.builder()
+                .championPlay(s)
+                .summoner(new SummonerDto(summonerByTierGt.get(s.getPuuid())))
+                .rank(startRank.incrementAndGet())
+                .build())
+            .toList();
+        return specialists;
+    }
+
+    public HasPlayedRes hasPlayedTogether(String myName, String friendName) {
+        // (gameId 내림차순) 내 최근 20개의 matchID로 나와 같은 팀에서
+
+        return null;
+    }
+
 
     /* --------------------------- Repository 직접 접근 메소드 --------------------------- */
     private Summoner getSummonerBySummonerName(String summonerName) {
@@ -192,6 +221,11 @@ public class SummonerService {
             .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다."));
     }
 
+    private List<Summoner> getSummonerByMMRGt(Tier stdTier) {
+        return new ArrayList<>();
+    }
+
+
     public List<SummonerDto> getSummonerDtoListByInternalName(String internalName) {
         // internal name으로 찾기
 
@@ -199,5 +233,6 @@ public class SummonerService {
             .stream().map(summoner -> SummonerDto.builder().summoner(summoner).build())
             .toList();
     }
+
     /* --------------------------- Repository 직접 접근 메소드 --------------------------- */
 }

@@ -2,18 +2,22 @@ package onlysolorank.apiserver.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.api.controller.dto.KeywordRequestDto;
-import onlysolorank.apiserver.api.controller.dto.SummonerMatchResponseDto;
+import onlysolorank.apiserver.api.controller.dto.HasPlayedRes;
+import onlysolorank.apiserver.api.controller.dto.KeywordReq;
+import onlysolorank.apiserver.api.controller.dto.SummonerMatchRes;
+import onlysolorank.apiserver.api.controller.dto.SummonerNamePairReq;
 import onlysolorank.apiserver.api.service.dto.*;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.Optional;
+
+import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller
@@ -31,23 +35,30 @@ import java.util.Optional;
  * 2023/08/09        solmin       Javadocs 추가 및 소환사 전적정보 챔피언별 세부 조회 구현
  * 2023/08/15        solmin       소환사 랭크 티어 그래프 조회 컨트롤러 구현
  * 2023/08/16        solmin       소환사 랭크 조회 컨트롤러 구현
+ * 2023/08/16        solmin       같이 플레이한 소환사인지 여부 구현 중
  */
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@RequestMapping("/summoners")
 public class SummonerController {
     private final SummonerService summonerService;
+
+    @Value("${admin_db}")
+    private static String admin;
 
     /**
      * Gets summoner by internal name.
      *
-     * @param keywordRequestDto the keyword request dto
+     * @param keywordReq the keyword request dto
      * @return the summoner by internal name
      */
-    @GetMapping("/summoners/autocomplete")
-    public CommonResponse<List<SummonerDto>> getSummonerByInternalName(@ModelAttribute @Valid KeywordRequestDto keywordRequestDto) {
-        List<SummonerDto> data = summonerService.getSummonerDtoListByInternalName(keywordRequestDto.getInternalName());
+    @GetMapping("/autocomplete")
+    public CommonResponse<List<SummonerDto>> getSummonerByInternalName(@ModelAttribute @Valid KeywordReq keywordReq) {
+        String internalName = keywordReq.getKeyword();
+
+        List<SummonerDto> data = summonerService.getSummonerDtoListByInternalName(internalName);
         return CommonResponse.success(data);
     }
 
@@ -58,16 +69,18 @@ public class SummonerController {
      * @param lastMatchId  the last match id
      * @return the summoner match info by summoner name
      */
-    @GetMapping("/summoners/matches/{summoner_name}")
+    @GetMapping("/matches/{summoner_name}")
     public CommonResponse getSummonerMatchInfoBySummonerName(@PathVariable("summoner_name") String summonerName,
                                                              @RequestParam("ended") Optional<String> lastMatchId) {
 
+        String internalName = keywordToInternalName(summonerName);
+
         // TODO lastMatchId 검증 필요
         if (!lastMatchId.isPresent() || lastMatchId.get().isBlank()) {
-            SummonerMatchResponseDto data = summonerService.getSummonerMatchInfoBySummonerName(summonerName);
+            SummonerMatchRes data = summonerService.getSummonerMatchInfoByInternalName(internalName);
             return CommonResponse.success(data);
         }
-        List<MatchDto> data = summonerService.get20MatchesByLastMatchId(summonerName, lastMatchId.get());
+        List<MatchDto> data = summonerService.get20MatchesByLastMatchId(internalName, lastMatchId.get());
 
         return CommonResponse.success(data);
     }
@@ -75,12 +88,15 @@ public class SummonerController {
     /**
      * Gets all champion play info by puuid.
      *
-     * @param puuid the puuid
+     * @param summonerName the summoner name
      * @return the all champion play info by puuid
      */
-    @GetMapping("/summoners/champion/{puuid}")
-    public CommonResponse<List<ChampionPlaysBriefDto>> getAllChampionPlayInfoByPuuid(@PathVariable("puuid") String puuid){
-        List<ChampionPlaysBriefDto> data = summonerService.getAllChampionPlayInfoByPuuid(puuid);
+    @GetMapping("/champion/{summoner_name}")
+    public CommonResponse<List<ChampionPlayWithChampionDto>> getAllChampionPlayInfoByPuuid(@PathVariable("summoner_name") String summonerName){
+
+        String internalName = keywordToInternalName(summonerName);
+
+        List<ChampionPlayWithChampionDto> data = summonerService.getAllChampionPlayInfoByPuuid(internalName);
 
         return CommonResponse.success(data);
     }
@@ -91,24 +107,21 @@ public class SummonerController {
      * @param puuid the puuid
      * @return List<SoloTierWithTimeDto>
      */
-    @GetMapping("/summoners/tier/{puuid}")
+    @GetMapping("/tier/{puuid}")
     public CommonResponse<List<SoloTierWithTimeDto>> getSummonerHistory(@PathVariable("puuid") String puuid){
+        log.info("{}",admin);
         List<SoloTierWithTimeDto> data = summonerService.getSummonerHistory(puuid);
 
         return CommonResponse.success(data);
     }
-  
-    /**
-     * Gets summoner rank.
-     *
-     * @param page the page
-     * @return the summoner rank
-     */
-    @GetMapping("/entries/tier")
-    public CommonResponse getSummonerRank(@RequestParam(value = "page", defaultValue = "0") @PositiveOrZero(message = "page는 0보다 큰 값이어야 합니다.") Integer page){
-        SummonerRankPageDto summonerRankByMMR = summonerService.getSummonerRankByMMR(page);
 
-        return CommonResponse.success(summonerRankByMMR);
+
+    @GetMapping("/together/pair")
+    public CommonResponse<HasPlayedRes> hasPlayedTogether(@ModelAttribute @Valid SummonerNamePairReq summonerNamePairReq) {
+        String myName = summonerNamePairReq.getMyName();
+        String friendName = summonerNamePairReq.getFriendName();
+
+        HasPlayedRes data = summonerService.hasPlayedTogether(myName, friendName);
+        return CommonResponse.success(data);
     }
-
 }

@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.api.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
@@ -17,14 +18,12 @@ import static onlysolorank.apiserver.utils.CustomConverter.doubleValueToHalfUp;
  * -----------------------------------------------------------
  * 2023/08/09        solmin       최초 생성
  * 2023/08/10        solmin       totalDeath=0인 경우의 예외 처리를 위한 @JsonIgnore 필드 추가
+ * 2023/08/28        solmin       필드 추가
  */
 
 @Data
 @ToString
-public class ChampionPlaysBriefDto {
-    private String championId;
-    private String championName;
-    private Double avgCs;
+public class ChampionPlaysDetailDto {
     private Integer totalPlays;
     private Double avgCsPerMinute;
     private Double avgKda;
@@ -37,6 +36,12 @@ public class ChampionPlaysBriefDto {
     private boolean isPerfect = false;
 
     @JsonIgnore
+    private Integer championId;
+    @JsonIgnore
+    private String championName;
+    @JsonIgnore
+    private String puuid;
+    @JsonIgnore
     private Integer totalCs;
     @JsonIgnore
     private Integer totalGameDuration;
@@ -47,14 +52,17 @@ public class ChampionPlaysBriefDto {
     @JsonIgnore
     private Integer totalAssist;
 
-    public ChampionPlaysBriefDto(String championId, String championName, Double avgCs, Integer totalPlays, Double avgCsPerMinute, Double avgKill, Double avgDeath, Double avgAssist, Double winRate, Integer totalWin, Integer totalDefeat, Integer totalCs, Integer totalGameDuration,
-                                 Integer totalKill, Integer totalDeath, Integer totalAssist) {
+    @Builder
+    public ChampionPlaysDetailDto(String puuid, Integer championId, String championName, Integer totalPlays, Double avgCsPerMinute, Double avgKill, Double avgDeath, Double avgAssist, Double winRate, Integer totalWin, Integer totalDefeat, Integer totalCs, Integer totalGameDuration,
+                                  Integer totalKill, Integer totalDeath, Integer totalAssist) {
+        this.puuid = puuid;
         this.championId = championId;
         this.championName = championName;
-        this.avgCs = avgCs;
         this.totalPlays = totalPlays;
         this.avgCsPerMinute = avgCsPerMinute;
-
+        this.totalKill = totalKill;
+        this.totalDeath = totalDeath;
+        this.totalAssist = totalAssist;
         // totalDeath == 0인 경우 Perfect 처리
         if(totalDeath!=0){
             this.avgKda = doubleValueToHalfUp((totalKill.doubleValue()+totalAssist.doubleValue())/totalDeath.doubleValue(),3);

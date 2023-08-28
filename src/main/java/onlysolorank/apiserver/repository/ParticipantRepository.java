@@ -1,6 +1,6 @@
 package onlysolorank.apiserver.repository;
 
-import onlysolorank.apiserver.api.service.dto.ChampionPlaysBriefDto;
+import onlysolorank.apiserver.api.service.dto.ChampionPlaysDetailDto;
 import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
 import onlysolorank.apiserver.domain.Participant;
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -65,17 +65,17 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "totalPlays: 1," +
             "totalGameDuration: 1," +
             "totalCs: 1," +
-//            "avgKda: 1," +
             "avgKill: 1," +
             "avgDeath: 1," +
             "avgAssist: 1," +
             "winRate: 1," +
             "totalWin: 1," +
+            "totalDefeat: 1," +
             "totalKill: 1," +
             "totalDeath: 1," +
             "totalAssist: 1" +
         "}}"})
-    List<ChampionPlaysBriefDto> findTopChampionStatsByPuuid(@Param("puuid") String puuid, @Param("limit") Integer limit);
+    List<ChampionPlaysDetailDto> findTopChampionStatsByPuuid(@Param("puuid") String puuid, @Param("limit") Integer limit);
 
 
     /**
@@ -89,7 +89,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
      */
     @Aggregation(pipeline = {
         "{$match:{puuid:{$in: ?0}}}",
-        "{$group:{ _id: {puuid:$puuid,championId: $championId}, plays:{$sum: 1}}}",
+        "{$group:{ _id: {puuid:$puuid,championId: $championId, }, plays:{$sum: 1}}}",
         "{$project:{ _id:0 , puuid: '$_id.puuid', championId:'$_id.championId', plays:1}}",
         "{$sort:{puuid:1, plays:-1}}",
         "{$group:{_id:$puuid, champions:{$push:{championId:$championId,plays:$plays}}}}",
@@ -98,4 +98,52 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
         })
     List<mostChampionsBySummonerDto> findTopChampionsForEachSummoner(List<String> summonerIds, int limit);
 
+
+    @Aggregation(pipeline = {
+        "{$match:{puuid:{$in: ?0}, championName: {$eq: ?1}}}",
+        "{$group: {" +
+            "_id: {puuid:$puuid,championId: $championId, championName: '$championName'}," +
+            "plays: {$sum: 1}, " +
+            "totalPlays: { $sum: 1 }, " +
+            "totalWin: { $sum: { $cond: [{ $eq: ['$win', 'true'] }, 1, 0] } }," +
+            "totalDefeat: { $sum: { $cond: [{ $eq: ['$win', 'false'] }, 1, 0] } }," +
+            "totalGameDuration: {$sum: '$gameDuration'}," +
+            "totalCs: {$sum: '$cs'}," +
+            "avgCs: { $avg: '$cs' }, " +
+            "avgKill: { $avg: '$kills' }, " +
+            "totalKill: { $sum: '$kills' }, " +
+            "avgDeath: { $avg: '$deaths' }, " +
+            "totalDeath: { $sum: '$deaths' }, " +
+            "avgAssist: { $avg: '$assists' }, " +
+            "totalAssist: { $sum: '$assists' }}} ",
+        "{$sort:{plays:-1}}",
+        "{$limit:?2}",
+        "{ $addFields: { " +
+            "avgCs: {$round: ['$avgCs', 2]}," +
+            "avgDeath: {$round: ['$avgDeath', 2]}," +
+            "avgAssist: {$round: ['$avgAssist', 2]}," +
+            "avgKill: {$round: ['$avgKill', 2]}," +
+            "winRate: {$round: [{$divide:['$totalWin','$totalPlays']}, 2]}" +
+        "}}",
+        "{$project: { " +
+            "_id: 0, " +
+            "puuid: '$_id.puuid', " +
+            "championId: '$_id.championId', " +
+            "championName: '$_id.championName'," +
+            "avgCs: 1," +
+            "totalPlays: 1," +
+            "totalGameDuration: 1," +
+            "totalCs: 1," +
+            "avgKill: 1," +
+            "avgDeath: 1," +
+            "avgAssist: 1," +
+            "winRate: 1," +
+            "totalWin: 1," +
+            "totalDefeat: 1," +
+            "totalKill: 1," +
+            "totalDeath: 1," +
+            "totalAssist: 1" +
+            "}}"
+    })
+    List<ChampionPlaysDetailDto> findTopChampionStatsByChampionNameAndPuuids(List<String> puuids, String championName, Integer stdPlays);
 }

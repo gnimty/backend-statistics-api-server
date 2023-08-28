@@ -1,6 +1,6 @@
 package onlysolorank.apiserver.repository;
 
-import onlysolorank.apiserver.api.service.dto.ChampionPlaysBriefDto;
+import onlysolorank.apiserver.api.service.dto.ChampionPlaysDetailDto;
 import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
 import onlysolorank.apiserver.domain.Participant;
 import org.junit.jupiter.api.Test;
@@ -45,10 +45,10 @@ class ParticipantRepositoryTest {
 
     @Test
     public void getMost10Plays(){
-        List<ChampionPlaysBriefDto> topChampionStatsByPuuid = participantRepository.findTopChampionStatsByPuuid(testPuuid1, 10);
+        List<ChampionPlaysDetailDto> topChampionStatsByPuuid = participantRepository.findTopChampionStatsByPuuid(testPuuid1, 10);
 
-        for (ChampionPlaysBriefDto championPlaysBriefDto : topChampionStatsByPuuid) {
-            System.out.println(championPlaysBriefDto);
+        for (ChampionPlaysDetailDto championPlaysDetailDto : topChampionStatsByPuuid) {
+            System.out.println(championPlaysDetailDto);
         }
     }
 

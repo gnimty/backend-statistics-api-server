@@ -1,17 +1,17 @@
 package onlysolorank.apiserver.repository;
 
 import onlysolorank.apiserver.domain.Summoner;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
+
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * packageName    : onlysolorank.apiserver.repository
@@ -34,6 +34,7 @@ class SummonerRepositoryTest {
     @Autowired
     private SummonerRepository summonerRepository;
 
+    private final static Integer STD_MMR = 2400;
     @Test
     public void getAllUserInternalNameTest(){
         List<Summoner> allSummoners = summonerRepository.findAll();
@@ -50,6 +51,17 @@ class SummonerRepositoryTest {
         allSummoners.forEach(summoner -> {
             System.out.println("summoner = " + summoner);
 
+        });
+    }
+
+
+    @Test
+    public void getSummonersByMmrGreaterThanEqual(){
+        List<Summoner> summoners = summonerRepository.findSummonersByMmrGreaterThanEqual(STD_MMR);
+
+        summoners.forEach(summoner -> {
+            Assertions.assertThat(summoner.getMmr()).isGreaterThanOrEqualTo(STD_MMR);
+            System.out.println("mmr =  " + summoner.getMmr());
         });
     }
 }

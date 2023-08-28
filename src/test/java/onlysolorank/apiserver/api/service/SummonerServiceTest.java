@@ -1,6 +1,6 @@
 package onlysolorank.apiserver.api.service;
 
-import onlysolorank.apiserver.api.controller.dto.KeywordRequestDto;
+import onlysolorank.apiserver.api.controller.dto.KeywordReq;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +31,6 @@ class SummonerServiceTest {
     @Test
     void keywordToInternalName() {
         String keyword = "h &^ ____I de on bu& S h";
-        assertEquals(new KeywordRequestDto("hideonbush").getInternalName(), "hideonbush");
+        assertEquals(new KeywordReq("hideonbush").getKeyword(), "hideonbush");
     }
 }

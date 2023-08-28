@@ -36,6 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
-
-
+### testyml ###
 src/test/resources/application-test.yml
+
+### envfile ###
+.env
