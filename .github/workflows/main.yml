@@ -20,6 +20,15 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
+      - name: test
+        run: |
+          pwd
+          ls -al
+          cd build
+          ls -al
+              
+
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
