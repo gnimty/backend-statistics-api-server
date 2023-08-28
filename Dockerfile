@@ -3,7 +3,7 @@ FROM openjdk:17
 
 ARG JAR_FILE=build/libs/api-server-0.0.1-SNAPSHOT.jar
 
-COPY ${JAR_FILE} app.jar
+COPY ${JAR_FILE} ./app.jar
 
 ENV SPRING_PROFILES_ACTIVE dev
 ENV MONGO_HOST ${MONGO_HOST}
@@ -13,6 +13,6 @@ ENV MONGO_USERNAME ${MONGO_USERNAME}
 ENV MONGO_PASSWORD ${MONGO_PASSWORD}
 ENV MONGO_ADMIN_DB ${MONGO_ADMIN_DB}
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "./app.jar"]
 
 EXPOSE 8080
