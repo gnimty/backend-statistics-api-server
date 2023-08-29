@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.domain.dto;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * packageName    : onlysolorank.apiserver.domain
  * fileName       : Position
@@ -11,6 +13,8 @@ package onlysolorank.apiserver.domain.dto;
  * -----------------------------------------------------------
  * 2023/07/31        solmin       최초 생성
  */
+
+@Slf4j
 public enum Position {
     TOP("탑"),
     JUNGLE("정글"),
@@ -33,12 +37,14 @@ public enum Position {
         return UNKNOWN;
     }
 
-    public static Position fromValue(String value) {
-        for (Position position : Position.values()) {
-            if (position.value.equals(value)) {
-                return position;
-            }
-        }
-        return defaultValue();
-    }
+//    public static Position fromValue(String value) {
+//
+//        log.info(value);
+//        for (Position position : Position.values()) {
+//            if (position.value.equals(value)) {
+//                return position;
+//            }
+//        }
+//        return defaultValue();
+//    }
 }
