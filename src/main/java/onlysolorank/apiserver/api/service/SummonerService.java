@@ -135,9 +135,15 @@ public class SummonerService {
         List<Match> matches = matchService.getMatchListByMatchIdList(matchIds);
         // Participant와 이에 대응되는 Summoner List 가져오기
         // 8월 9일 수정 : 각각의 participant는 이미 tier정보가 주어지기 때문에 summoner list에서 가져오지 않음
-        Map<String, List<Participant>> participantMap =
-            participantService.getParticipantListByMatchId(matchIds)
-                .stream().collect(Collectors.groupingBy(Participant::getMatchId));
+
+        List<Participant> participants = participantService.getParticipantListByMatchId(matchIds);
+
+        Map<String, String> summonerMap = summonerRepository.findSummonersByPuuidInCustom(participants.stream().map(Participant::getPuuid).toList()).stream()
+            .collect(Collectors.toMap(Summoner::getPuuid, s -> s.getName()));
+
+
+        Map<String, List<Participant>> participantMap = participants
+            .stream().collect(Collectors.groupingBy(Participant::getMatchId));
 
         Map<String, List<Team>> teamMap = matchService.getTeamMapMappedByMatchId(matchIds);
 
@@ -147,7 +153,8 @@ public class SummonerService {
                 List<ParticipantDto> participantDtoList = participantMap.get(match.getMatchId()).stream()
                     .map(p -> {
                         totalGold.updateAndGet(v -> v + p.getGoldEarned());
-                        return ParticipantDto.builder().participant(p).build();
+
+                        return ParticipantDto.builder().participant(p).summonerName(summonerMap.get(p.getPuuid())).build();
                     })
                     .toList();
                 List<TeamDto> teamDtoList = teamMap.get(match.getMatchId())
