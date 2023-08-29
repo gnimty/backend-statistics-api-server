@@ -1,6 +1,4 @@
 spring:
-  config:
-    import:
   data:
     mongodb:
       host: ${MONGO_HOST}
@@ -8,7 +6,8 @@ spring:
       database: ${MONGO_RIOTDATA_DB}
       username: ${MONGO_USERNAME}
       password: ${MONGO_PASSWORD}
-      uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}
+      timeZone: Asia/Seoul
+      uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}?timezone=Asia/Seoul
 
 server:
   servlet:
@@ -19,6 +18,10 @@ logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 
+# Batch Resource
+batch:
+  host: ${BATCH_HOST}
+  port: ${BATCH_PORT}
 
 # dev properties
 ---

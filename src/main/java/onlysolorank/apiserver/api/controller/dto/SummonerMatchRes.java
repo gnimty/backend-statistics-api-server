@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.ChampionPlayWithChampionDto;
-import onlysolorank.apiserver.api.service.dto.ChampionPlaysDetailDto;
 import onlysolorank.apiserver.api.service.dto.MatchDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
-
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -28,7 +26,7 @@ import java.util.List;
 @Builder
 public class SummonerMatchRes {
     private SummonerDto summoner;
-    private LocalDateTime renewableAfter;
+    private ZonedDateTime renewableAfter;
     private List<MatchDto> matches;
     private List<ChampionPlayWithChampionDto> mostPlayed;
 }
