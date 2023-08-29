@@ -57,7 +57,7 @@ public class ParticipantDto {
     private Integer accessory;
     private List<ItemBundleDto> itemBuilds;
     private List<Integer> skillBuilds;
-    private String summonerName = "unknown";
+    private String summonerName;
 
     @Builder
     public ParticipantDto(Participant participant, String summonerName) {
@@ -110,7 +110,7 @@ public class ParticipantDto {
 
         try {
             this.position = Position.valueOf(participant.getLane());
-        }catch(Exception e){
+        }catch(IllegalArgumentException e){
             this.position = Position.UNKNOWN;
         }
 

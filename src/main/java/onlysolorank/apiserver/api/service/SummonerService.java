@@ -234,9 +234,12 @@ public class SummonerService {
 
         // 2. 해당 소환사의 최종 갱신일 필드를 보고 2분이 지났는지 판단
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        LocalDateTime now = ZonedDateTime.now().toLocalDateTime(); // 현재시간
+        LocalDateTime now = LocalDateTime.now(); // 현재시간
+        log.info("현재 : {}",now.format(formatter));
         LocalDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES).toLocalDateTime(); // 갱신가능 시간
+        log.info("갱신가능시각 : {}",renewableAfter.format(formatter));
 
         // 만약 현재 시간이 최종 갱신 시점 + 120초보다 이전이라면
         if (now.isBefore(renewableAfter)) {
