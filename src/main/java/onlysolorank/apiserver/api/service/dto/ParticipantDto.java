@@ -8,8 +8,6 @@ import onlysolorank.apiserver.domain.dto.Position;
 import onlysolorank.apiserver.domain.dto.ItemBundleDto;
 import onlysolorank.apiserver.domain.dto.SoloTierDto;
 import onlysolorank.apiserver.domain.dto.Tier;
-
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -108,5 +106,6 @@ public class ParticipantDto {
         this.itemBuilds = participant.getItemBuild().entrySet()
             .stream().map(build->new ItemBundleDto(build.getKey(), build.getValue())).toList();
         this.skillBuilds = participant.getSkillBuild();
+        this.position = participant.getLane();
     }
 }
