@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.api.service;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,13 +14,22 @@ import onlysolorank.apiserver.api.service.dto.*;
 import onlysolorank.apiserver.domain.*;
 import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.repository.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -67,6 +78,12 @@ public class SummonerService {
     private final MatchService matchService;
     private final ParticipantService participantService;
 
+    @Value("${batch.host}")
+    private String BATCH_HOST;
+
+    @Value("${batch.port}")
+    private String BATCH_PORT;
+
     public SummonerMatchRes getSummonerMatchInfoByInternalName(String internalName) {
 
         Summoner summoner = getSummonerBySummonerName(internalName);
@@ -82,7 +99,7 @@ public class SummonerService {
         }
 
         // renewableAfter 가져오기 : updated 시점으로부터 2분 이후의 시간을 리턴
-        LocalDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES);
+        ZonedDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES);
 
         // 소환사의 top 10 챔피언 플레이 정보 가져오기
         List<ChampionPlayWithChampionDto> top10ChampionPlaysDetailDtoList =
@@ -147,6 +164,7 @@ public class SummonerService {
         return participantService.getChampionStatus(summoner.getPuuid(), LIMIT).stream().map(s->ChampionPlayWithChampionDto.builder().championPlay(s).build()).toList();
     }
 
+    // TODO 추후 시간대 체크해야 함
     public List<SoloTierWithTimeDto> getSummonerHistory(String puuid) {
         Summoner summoner = getSummonerByPuuid(puuid);
 
@@ -202,12 +220,51 @@ public class SummonerService {
         return specialists;
     }
 
+    public void refreshSummoner(String puuid) {
+        // 1. puuid 소환사 존재 여부 확인
+        Summoner summoner = summonerRepository.findOneByPuuid(puuid)
+            .orElseThrow(()-> new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다."));
+
+        // 2. 해당 소환사의 최종 갱신일 필드를 보고 2분이 지났는지 판단
+
+
+        LocalDateTime now = ZonedDateTime.now().toLocalDateTime(); // 현재시간
+        LocalDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES).toLocalDateTime(); // 갱신가능 시간
+
+        // 만약 현재 시간이 최종 갱신 시점 + 120초보다 이전이라면
+        if (now.isBefore(renewableAfter)) {
+            throw new CustomException(ErrorCode.TOO_MANY_REQUESTS, "소환사에 대한 요청이 너무 많습니다. "+Duration.between(now, renewableAfter).getSeconds()+"초 후에 다시 시도해주세요.");
+        }
+
+        // 3. RestTemplate으로 Request 보내기
+        URI uri = UriComponentsBuilder
+            .fromUriString(String.format("http://%s:%s", BATCH_HOST, BATCH_PORT))
+            .path("/batch/summoner/refresh/" + summoner.getInternalName())
+            .encode()
+            .build()
+            .toUri();
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<RefreshRes> responseEntity = restTemplate.postForEntity(uri, null, RefreshRes.class);
+
+        // 4. 결과 코드로 바로 return
+        if (responseEntity.getStatusCode()!= HttpStatus.OK){
+            throw new CustomException(ErrorCode.SUMMONER_REFRESH_FAILED);
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    private static class RefreshRes{
+        private String message;
+    }
+
+    // 보류
     public HasPlayedRes hasPlayedTogether(String myName, String friendName) {
         // (gameId 내림차순) 내 최근 20개의 matchID로 나와 같은 팀에서
 
         return null;
     }
-
 
     /* --------------------------- Repository 직접 접근 메소드 --------------------------- */
     private Summoner getSummonerBySummonerName(String summonerName) {

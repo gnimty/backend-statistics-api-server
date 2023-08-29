@@ -9,7 +9,7 @@ import onlysolorank.apiserver.api.controller.dto.SummonerNamePairReq;
 import onlysolorank.apiserver.api.service.dto.*;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +36,7 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
  * 2023/08/15        solmin       소환사 랭크 티어 그래프 조회 컨트롤러 구현
  * 2023/08/16        solmin       소환사 랭크 조회 컨트롤러 구현
  * 2023/08/16        solmin       같이 플레이한 소환사인지 여부 구현 중
+ * 2023/08/29        solmin       소환사 전적갱신 배치서버와 연동
  */
 @RestController
 @RequiredArgsConstructor
@@ -44,9 +45,6 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
 @RequestMapping("/summoners")
 public class SummonerController {
     private final SummonerService summonerService;
-
-    @Value("${admin_db}")
-    private static String admin;
 
     /**
      * Gets summoner by internal name.
@@ -72,7 +70,6 @@ public class SummonerController {
     @GetMapping("/matches/{summoner_name}")
     public CommonResponse getSummonerMatchInfoBySummonerName(@PathVariable("summoner_name") String summonerName,
                                                              @RequestParam("ended") Optional<String> lastMatchId) {
-
         String internalName = keywordToInternalName(summonerName);
 
         // TODO lastMatchId 검증 필요
@@ -109,13 +106,19 @@ public class SummonerController {
      */
     @GetMapping("/tier/{puuid}")
     public CommonResponse<List<SoloTierWithTimeDto>> getSummonerHistory(@PathVariable("puuid") String puuid){
-        log.info("{}",admin);
         List<SoloTierWithTimeDto> data = summonerService.getSummonerHistory(puuid);
 
         return CommonResponse.success(data);
     }
 
+    @PostMapping("/{puuid}")
+    public CommonResponse refreshSummoner(@PathVariable("puuid") String puuid){
+        summonerService.refreshSummoner(puuid);
 
+        return CommonResponse.success("소환사 정보를 성공적으로 갱신했습니다.", HttpStatus.OK);
+    }
+
+    // 보류
     @GetMapping("/together/pair")
     public CommonResponse<HasPlayedRes> hasPlayedTogether(@ModelAttribute @Valid SummonerNamePairReq summonerNamePairReq) {
         String myName = summonerNamePairReq.getMyName();
@@ -124,4 +127,6 @@ public class SummonerController {
         HasPlayedRes data = summonerService.hasPlayedTogether(myName, friendName);
         return CommonResponse.success(data);
     }
+
+
 }

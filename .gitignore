@@ -41,3 +41,4 @@ src/test/resources/application-test.yml
 
 ### envfile ###
 .env
+dev.env

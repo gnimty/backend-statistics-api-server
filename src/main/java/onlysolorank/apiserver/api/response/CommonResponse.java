@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.exception.ErrorCode;
+import org.springframework.http.HttpStatus;
 
 import static onlysolorank.apiserver.api.handler.GlobalExceptionHandler.*;
 
@@ -33,8 +34,8 @@ public class CommonResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
-    public static CommonResponse success() {
-        return CommonResponse.builder().build();
+    public static CommonResponse success(String message, HttpStatus status) {
+        return CommonResponse.builder().status(new ApiStatus(message, status.value())).build();
     }
 
     public static <T> CommonResponse<T> success(T data) {
@@ -55,8 +56,6 @@ public class CommonResponse<T> {
         return CommonResponse.<T>builder()
             .status(new ApiStatus(data.getMessage(), errorCode.getStatus().value(), data.getField())).build();
     }
-
-
 
     @Data
     private static class ApiStatus {
