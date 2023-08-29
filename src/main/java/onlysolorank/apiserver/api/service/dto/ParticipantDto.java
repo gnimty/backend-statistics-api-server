@@ -9,6 +9,7 @@ import onlysolorank.apiserver.domain.dto.ItemBundleDto;
 import onlysolorank.apiserver.domain.dto.SoloTierDto;
 import onlysolorank.apiserver.domain.dto.Tier;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -75,7 +76,13 @@ public class ParticipantDto {
         this.championName = participant.getChampionName();
         this.win = participant.getWin();
         this.teamId = participant.getTeamId();
-        this.position = participant.getLane();
+
+
+        if (Arrays.asList(Position.values()).contains(participant.getLane())){
+
+        }
+
+        this.position = participant.getLane() ? ;
         this.kill = participant.getKills();
         this.death = participant.getDeaths();
         this.assist = participant.getAssists();

@@ -16,11 +16,29 @@ public enum Position {
     JUNGLE("정글"),
     MIDDLE("미드"),
     BOTTOM("원딜"),
-    UTILITY("서폿");
+    UTILITY("서폿"),
+    UNKNOWN("알 수 없음");
 
     private final String value;
 
-    Position(String value){
-        this.value= value;
+    Position(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public static Position defaultValue() {
+        return UNKNOWN;
+    }
+
+    public static Position fromValue(String value) {
+        for (Position position : Position.values()) {
+            if (position.value.equals(value)) {
+                return position;
+            }
+        }
+        return defaultValue();
     }
 }
