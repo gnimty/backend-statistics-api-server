@@ -76,13 +76,6 @@ public class ParticipantDto {
         this.championName = participant.getChampionName();
         this.win = participant.getWin();
         this.teamId = participant.getTeamId();
-
-
-        if (Arrays.asList(Position.values()).contains(participant.getLane())){
-
-        }
-
-        this.position = participant.getLane() ? ;
         this.kill = participant.getKills();
         this.death = participant.getDeaths();
         this.assist = participant.getAssists();
