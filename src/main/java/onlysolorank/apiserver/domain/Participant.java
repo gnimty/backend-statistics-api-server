@@ -44,6 +44,7 @@ public class Participant {
     private String queue;
     private String tier;
     private String leaguePoints;
+    private String lane;
     /* -------------------------------------- */
 
     private Integer championLevel;
@@ -52,7 +53,6 @@ public class Participant {
     private Integer kills;
     private Integer deaths;
     private Integer assists;
-    private Position lane;
     private Integer cs;
     private Double killParticipation;
     private Integer goldEarned;
