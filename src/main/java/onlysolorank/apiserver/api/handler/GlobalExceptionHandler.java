@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<CommonResponse> IllegalArgumentExceptionHandler(IllegalArgumentException ex) {
-
+        log.info(ex.getMessage());
         ErrorCode ec = ErrorCode.INVALID_INPUT_VALUE;
         return new ResponseEntity<>(CommonResponse.fail(ec), ec.getStatus());
     }
