@@ -44,7 +44,7 @@ public class Participant {
     private String queue;
     private String tier;
     private String leaguePoints;
-    private String lane;
+    private Position lane;
     /* -------------------------------------- */
 
     private Integer championLevel;
