@@ -57,9 +57,10 @@ public class ParticipantDto {
     private Integer accessory;
     private List<ItemBundleDto> itemBuilds;
     private List<Integer> skillBuilds;
+    private String summonerName = "unknown";
 
     @Builder
-    public ParticipantDto(Participant participant) {
+    public ParticipantDto(Participant participant, String summonerName) {
         this.participantId = participant.getParticipantId();
 
         // queue, tier, leaguepoints가 하나라도 null이면 soloTier를 null로
@@ -106,6 +107,13 @@ public class ParticipantDto {
         this.itemBuilds = participant.getItemBuild().entrySet()
             .stream().map(build->new ItemBundleDto(build.getKey(), build.getValue())).toList();
         this.skillBuilds = participant.getSkillBuild();
-        this.position = participant.getLane();
+
+        try {
+            this.position = Position.valueOf(participant.getLane());
+        }catch(Exception e){
+            this.position = Position.UNKNOWN;
+        }
+
+        if(summonerName!=null) this.summonerName =summonerName;
     }
 }
