@@ -17,6 +17,7 @@ import onlysolorank.apiserver.domain.dto.SoloTierDto;
  * -----------------------------------------------------------
  * 2023/07/10        solmin       최초 생성
  * 2023/07/24        solmin       필드 이름 수정 및 @Builder 추가
+ * 2023/08/30        solmin       총 승리/패배 및 플레이수 필드 추가
  */
 @Data
 @AllArgsConstructor
@@ -28,9 +29,12 @@ public class SummonerDto {
     private Integer profileIconId;
     private Integer summonerLevel;
     private SoloTierDto soloTierInfo;
+    private Integer totalWin;
+    private Integer totalDefeat;
+    private Integer totalPlays;
 
     @Builder
-    public SummonerDto(Summoner summoner){
+    public SummonerDto(Summoner summoner) {
         this.summonerName = summoner.getName();
         this.internalName = summoner.getInternalName();
         this.summonerId = summoner.getSummonerId();
@@ -38,6 +42,9 @@ public class SummonerDto {
         this.profileIconId = summoner.getProfileIconId();
         this.summonerLevel = summoner.getSummonerLevel();
         this.soloTierInfo = SoloTierDto.builder().summoner(summoner).build();
+        this.totalWin = summoner.getTotalWin();
+        this.totalDefeat = summoner.getTotalDefeat();
+        this.totalPlays = totalWin + totalDefeat;
     }
 
 }

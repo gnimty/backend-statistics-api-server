@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import onlysolorank.apiserver.api.controller.dto.HasPlayedRes;
+import onlysolorank.apiserver.api.controller.dto.IngameInfoRes;
 import onlysolorank.apiserver.api.controller.dto.SummonerMatchRes;
 
 import onlysolorank.apiserver.api.exception.CustomException;
@@ -18,10 +19,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -64,6 +65,7 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
  * 2023/08/15        solmin       일부 중복되는 코드 Inline
  * 2023/08/16        solmin       MMR 기준 소환사 랭킹 정보 조회 메소드 추가 구현
  * 2023/08/28        solmin       챔피언 장인랭킹 구현
+ * 2023/08/30        solmin       소환사 인게임 정보 구현, restTemplate로 받아온 정보 convert 및 추가정보 붙여서 보내주기
  */
 @Service
 @RequiredArgsConstructor
@@ -83,6 +85,9 @@ public class SummonerService {
 
     @Value("${batch.port}")
     private String BATCH_PORT;
+
+    @Value("${riot.api-key}")
+    private String RIOT_API_KEY;
 
     public SummonerMatchRes getSummonerMatchInfoByInternalName(String internalName) {
 
@@ -138,7 +143,7 @@ public class SummonerService {
 
         List<Participant> participants = participantService.getParticipantListByMatchId(matchIds);
 
-        Map<String, String> summonerMap = summonerRepository.findSummonersByPuuidInCustom(participants.stream().map(Participant::getPuuid).toList()).stream()
+        Map<String, String> summonerMap = summonerRepository.findSummonersByPuuidIn(participants.stream().map(Participant::getPuuid).toList()).stream()
             .collect(Collectors.toMap(Summoner::getPuuid, s -> s.getName()));
 
 
@@ -163,9 +168,8 @@ public class SummonerService {
             }).toList();
     }
 
-    public List<ChampionPlayWithChampionDto> getAllChampionPlayInfoByPuuid(String internalName) {
-        Summoner summoner = summonerRepository.findOneByInternalName(internalName)
-            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "summoner_name에 해당하는 소환사 데이터가 존재하지 않습니다."));
+    public List<ChampionPlayWithChampionDto> getAllChampionPlayInfoByPuuid(String summonerName) {
+        Summoner summoner = getSummonerBySummonerName(summonerName);
 
         // 소환사의 모든 챔피언 플레이 정보 가져오기
         return participantService.getChampionStatus(summoner.getPuuid(), LIMIT).stream().map(s->ChampionPlayWithChampionDto.builder().championPlay(s).build()).toList();
@@ -214,7 +218,7 @@ public class SummonerService {
         List<String> puuids = summonerByTierGt.keySet().stream().toList();
 
         // 2. participants 정보에서 특정 championName과 puuid 정보가 담긴 정보를 필터링하여 가져오기
-        List<ChampionPlaysDetailDto> result = participantService.getSpecialistsByCondition(puuids, championName);
+        List<ChampionPlaysDto> result = participantService.getSpecialistsByCondition(puuids, championName);
 
         AtomicInteger startRank = new AtomicInteger(0);
         // 3. DTO 엮기
@@ -263,6 +267,65 @@ public class SummonerService {
         }
     }
 
+    public IngameInfoRes getIngameInfo(String internalName) {
+        // 1. summonerId를 가진 소환사가 존재하는지 확인
+        Summoner summoner = getSummonerBySummonerName(internalName);
+        // 2. 요청
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Riot-Token", RIOT_API_KEY);
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+        URI uri = UriComponentsBuilder
+            .fromUriString("https://kr.api.riotgames.com")
+            .path("/lol/spectator/v4/active-games/by-summoner/"+summoner.getSummonerId())
+            .encode()
+            .build()
+            .toUri();
+
+        try {
+            ResponseEntity<SpectatorV4GetCurrentGameInfo> responseEntity = restTemplate.exchange(
+                uri, HttpMethod.GET, httpEntity, SpectatorV4GetCurrentGameInfo.class
+            );
+
+            HttpStatus responseStatus = responseEntity.getStatusCode();
+
+            SpectatorV4GetCurrentGameInfo result = responseEntity.getBody();
+
+            // 3. SpectatorV4GetCurrentGameInfo to IngameInfoRes
+            Map<String, Summoner> summonerMap = summonerRepository.findSummonersBySummonerIdIn(
+                result.getParticipants().stream()
+                    .map(SpectatorV4GetCurrentGameInfo.CurrentGameParticipant::getSummonerId).toList()
+            ).stream().collect(Collectors.toMap(Summoner::getSummonerId, s -> s));
+
+            // summonerId 및 플레이 정보를 통해서 ChampionPlays 정보를 쿼리해야 함
+            List<IngameParticipantDto> participants = result.getParticipants().stream()
+                .map(p -> {
+                    SummonerDto summonerDto = new SummonerDto(summonerMap.getOrDefault(p.getSummonerId(), null));
+                    ChampionPlaysDto championPlaysDto = participantService.getChampionPlaysByPuuidAndChampionId(summonerDto.getPuuid(), p.getChampionId());
+
+                    return IngameParticipantDto.builder()
+                        .participant(p).summoner(summonerDto).championPlaysDto(championPlaysDto)
+                        .build();
+                }).toList();
+
+            return IngameInfoRes.builder()
+                .participants(participants)
+                .gameLength(result.getGameLength())
+                .queueId(result.getGameQueueConfigId().intValue())
+                .startTime(result.getGameStartTime())
+                .build();
+        } catch (HttpClientErrorException.NotFound notFoundException) {
+            throw new CustomException(ErrorCode.RESULT_NOT_FOUND, "소환사 정보가 존재하지 않거나 게임 중이 아닙니다.");
+        } catch (HttpClientErrorException.TooManyRequests tooManyRequestsException){
+            throw new CustomException(ErrorCode.TOO_MANY_REQUESTS);
+        }
+    }
+
+
+
     @Data
     @NoArgsConstructor
     private static class RefreshRes{
@@ -287,11 +350,6 @@ public class SummonerService {
         return summonerRepository.findOneByPuuid(puuid)
             .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다."));
     }
-
-    private List<Summoner> getSummonerByMMRGt(Tier stdTier) {
-        return new ArrayList<>();
-    }
-
 
     public List<SummonerDto> getSummonerDtoListByInternalName(String internalName) {
         // internal name으로 찾기

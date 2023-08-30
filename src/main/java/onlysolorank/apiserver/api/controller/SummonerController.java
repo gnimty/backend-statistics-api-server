@@ -2,10 +2,7 @@ package onlysolorank.apiserver.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.api.controller.dto.HasPlayedRes;
-import onlysolorank.apiserver.api.controller.dto.KeywordReq;
-import onlysolorank.apiserver.api.controller.dto.SummonerMatchRes;
-import onlysolorank.apiserver.api.controller.dto.SummonerNamePairReq;
+import onlysolorank.apiserver.api.controller.dto.*;
 import onlysolorank.apiserver.api.service.dto.*;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
@@ -37,6 +34,7 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
  * 2023/08/16        solmin       소환사 랭크 조회 컨트롤러 구현
  * 2023/08/16        solmin       같이 플레이한 소환사인지 여부 구현 중
  * 2023/08/29        solmin       소환사 전적갱신 배치서버와 연동
+ * 2023/08/30        solmin       소환사 인게임 정보 로드 연동
  */
 @RestController
 @RequiredArgsConstructor
@@ -91,9 +89,7 @@ public class SummonerController {
     @GetMapping("/champion/{summoner_name}")
     public CommonResponse<List<ChampionPlayWithChampionDto>> getAllChampionPlayInfoByPuuid(@PathVariable("summoner_name") String summonerName){
 
-        String internalName = keywordToInternalName(summonerName);
-
-        List<ChampionPlayWithChampionDto> data = summonerService.getAllChampionPlayInfoByPuuid(internalName);
+        List<ChampionPlayWithChampionDto> data = summonerService.getAllChampionPlayInfoByPuuid(summonerName);
 
         return CommonResponse.success(data);
     }
@@ -116,6 +112,13 @@ public class SummonerController {
         summonerService.refreshSummoner(puuid);
 
         return CommonResponse.success("소환사 정보를 성공적으로 갱신했습니다.", HttpStatus.OK);
+    }
+
+    @GetMapping("/ingame/{summoner_name}")
+    public CommonResponse<IngameInfoRes> getIngameInfo(@PathVariable("summoner_name") String summonerName){
+        IngameInfoRes data = summonerService.getIngameInfo(summonerName);
+
+        return CommonResponse.success(data);
     }
 
     // 보류

@@ -9,7 +9,7 @@ import static onlysolorank.apiserver.utils.CustomConverter.doubleValueToHalfUp;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
- * fileName       : ChampionPlaysBriefDto
+ * fileName       : ChampionPlaysDto
  * author         : solmin
  * date           : 2023/08/09
  * description    :
@@ -19,11 +19,12 @@ import static onlysolorank.apiserver.utils.CustomConverter.doubleValueToHalfUp;
  * 2023/08/09        solmin       최초 생성
  * 2023/08/10        solmin       totalDeath=0인 경우의 예외 처리를 위한 @JsonIgnore 필드 추가
  * 2023/08/28        solmin       필드 추가
+ * 2023/08/30        solmin       DTO rename
  */
 
 @Data
 @ToString
-public class ChampionPlaysDetailDto {
+public class ChampionPlaysDto {
     private Integer totalPlays;
     private Double avgCsPerMinute;
     private Double avgKda;
@@ -53,8 +54,8 @@ public class ChampionPlaysDetailDto {
     private Integer totalAssist;
 
     @Builder
-    public ChampionPlaysDetailDto(String puuid, Integer championId, String championName, Integer totalPlays, Double avgCsPerMinute, Double avgKill, Double avgDeath, Double avgAssist, Double winRate, Integer totalWin, Integer totalDefeat, Integer totalCs, Integer totalGameDuration,
-                                  Integer totalKill, Integer totalDeath, Integer totalAssist) {
+    public ChampionPlaysDto(String puuid, Integer championId, String championName, Integer totalPlays, Double avgCsPerMinute, Double avgKill, Double avgDeath, Double avgAssist, Double winRate, Integer totalWin, Integer totalDefeat, Integer totalCs, Integer totalGameDuration,
+                            Integer totalKill, Integer totalDeath, Integer totalAssist) {
         this.puuid = puuid;
         this.championId = championId;
         this.championName = championName;

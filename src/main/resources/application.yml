@@ -23,6 +23,11 @@ batch:
   host: ${BATCH_HOST}
   port: ${BATCH_PORT}
 
+# Riot API
+riot:
+  api-key: ${RIOT_API_KEY}
+
+
 # dev properties
 ---
 spring.config.activate.on-profile: dev

@@ -32,9 +32,9 @@ public interface SummonerRepository extends MongoRepository<Summoner, String> {
     Boolean existsByPuuid(String puuid);
     Boolean existsByInternalName(String internalName);
 
-    @Query("{'puuid': {$in: ?0}}")
-    List<Summoner> findSummonersByPuuidInCustom(List<String> puuids);
+    List<Summoner> findSummonersByPuuidIn(List<String> puuids);
 
+    List<Summoner> findSummonersBySummonerIdIn(List<String> puuids);
 
     List<Summoner> findSummonersByMmrGreaterThanEqual(Integer mmr);
 }

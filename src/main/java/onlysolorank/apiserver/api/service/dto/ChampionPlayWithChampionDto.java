@@ -21,12 +21,12 @@ import lombok.ToString;
 public class ChampionPlayWithChampionDto {
     private Integer championId;
     private String championName;
-    private ChampionPlaysDetailDto championPlay;
+    private ChampionPlaysDto championPlay;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer rank;
 
     @Builder
-    public ChampionPlayWithChampionDto(ChampionPlaysDetailDto championPlay, Integer rank){
+    public ChampionPlayWithChampionDto(ChampionPlaysDto championPlay, Integer rank){
         this.championPlay = championPlay;
         this.championId = championPlay.getChampionId();
         this.championName = championPlay.getChampionName();
