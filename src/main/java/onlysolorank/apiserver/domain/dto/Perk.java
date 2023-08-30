@@ -31,8 +31,8 @@ public class Perk {
         List<Long> perkIds = perks.getPerkIds();
 
         Integer offense = perkIds.get(6).intValue();
-        Integer flex = perkIds.get(6).intValue();
-        Integer defense = perkIds.get(6).intValue();
+        Integer flex = perkIds.get(7).intValue();
+        Integer defense = perkIds.get(8).intValue();
 
 
         List<Long> primaryPerkIds = perkIds.subList(0, 4);
