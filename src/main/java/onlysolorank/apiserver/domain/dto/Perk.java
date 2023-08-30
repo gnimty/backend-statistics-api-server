@@ -1,7 +1,9 @@
 package onlysolorank.apiserver.domain.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import onlysolorank.apiserver.api.service.dto.SpectatorV4GetCurrentGameInfo;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ import java.util.List;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/07/31        solmin       최초 생성
+ * 2023/08/30        solmin       Riot API로부터 요청받은 데이터 processing을 위한 생성자 오버라이딩
  */
 @Getter
 @ToString
@@ -22,6 +25,32 @@ public class Perk {
     public Perk(StatPerk statPerks, List<PerkDetail> styles) {
         this.statPerks = statPerks;
         this.styles = styles;
+    }
+
+    public static Perk getPerk(SpectatorV4GetCurrentGameInfo.IngamePerks perks){
+        List<Long> perkIds = perks.getPerkIds();
+
+        Integer offense = perkIds.get(6).intValue();
+        Integer flex = perkIds.get(6).intValue();
+        Integer defense = perkIds.get(6).intValue();
+
+
+        List<Long> primaryPerkIds = perkIds.subList(0, 4);
+        List<Long> subPerkIds = perkIds.subList(4, 6);
+
+        PerkDetail primaryStyle = new PerkDetail(
+            "primaryStyle",
+            perks.getPerkStyle().intValue(),
+            primaryPerkIds.stream().map(ps->new Selection(ps.intValue(), null, null, null)).toList());
+
+        PerkDetail subStyle = new PerkDetail(
+            "subStyle",
+            perks.getPerkStyle().intValue(),
+            subPerkIds.stream().map(ps->new Selection(ps.intValue(), null, null, null)).toList());
+        StatPerk statPerks = StatPerk.builder().defense(defense).flex(flex).offense(offense).build();
+        List<PerkDetail> styles = List.of(primaryStyle, subStyle);
+
+        return new Perk(statPerks, styles);
     }
 
     private final StatPerk statPerks;
@@ -34,6 +63,7 @@ public class Perk {
         private Integer offense;
         private Integer flex;
 
+        @Builder
         public StatPerk(Integer defense, Integer offense, Integer flex) {
             this.defense = defense;
             this.offense = offense;
@@ -43,7 +73,7 @@ public class Perk {
 
     @Getter
     @ToString
-    private class PerkDetail {
+    private static class PerkDetail {
         private String description;
         private Integer style;
         private List<Selection> selections;
@@ -57,7 +87,7 @@ public class Perk {
 
     @Getter
     @ToString
-    private class Selection {
+    private static class Selection {
         private Integer perk;
         private Integer var1;
         private Integer var2;

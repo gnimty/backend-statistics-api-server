@@ -1,6 +1,6 @@
 package onlysolorank.apiserver.repository;
 
-import onlysolorank.apiserver.api.service.dto.ChampionPlaysDetailDto;
+import onlysolorank.apiserver.api.service.dto.ChampionPlaysDto;
 import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
 import onlysolorank.apiserver.domain.Participant;
 import org.junit.jupiter.api.Test;
@@ -45,10 +45,10 @@ class ParticipantRepositoryTest {
 
     @Test
     public void getMost10Plays(){
-        List<ChampionPlaysDetailDto> topChampionStatsByPuuid = participantRepository.findTopChampionStatsByPuuid(testPuuid1, 10);
+        List<ChampionPlaysDto> topChampionStatsByPuuid = participantRepository.findTopChampionStatsByPuuid(testPuuid1, 10);
 
-        for (ChampionPlaysDetailDto championPlaysDetailDto : topChampionStatsByPuuid) {
-            System.out.println(championPlaysDetailDto);
+        for (ChampionPlaysDto championPlaysDto : topChampionStatsByPuuid) {
+            System.out.println(championPlaysDto);
         }
     }
 
@@ -64,5 +64,14 @@ class ParticipantRepositoryTest {
         }
 
 
+    }
+
+    @Test
+    public void testGetChampionPlaysDtoBySummonerIdAndChampionId(){
+        List<ChampionPlaysDto> championPlayInfoByChampionIdAndSummonerId =
+            participantRepository.findChampionPlayInfoByPuuidAndChampionId(
+                "p3sOFe72XJw93VP7ylLhObH1IGf7wXEedp_0MT8iHQtaRZcoNHt9hKJuR0vYMZIrK0Ct8SujMWk-gQ", 266L);
+
+        System.out.println(championPlayInfoByChampionIdAndSummonerId);
     }
 }
