@@ -303,7 +303,12 @@ public class SummonerService {
             // summonerId 및 플레이 정보를 통해서 ChampionPlays 정보를 쿼리해야 함
             List<IngameParticipantDto> participants = result.getParticipants().stream()
                 .map(p -> {
-                    SummonerDto summonerDto = new SummonerDto(summonerMap.getOrDefault(p.getSummonerId(), null));
+                    Summoner targetSummoner = summonerMap.getOrDefault(p.getSummonerId(), null);
+                    if(targetSummoner==null){
+                        return null;
+                    }
+                    SummonerDto summonerDto = new SummonerDto(targetSummoner);
+
                     ChampionPlaysDto championPlaysDto = participantService.getChampionPlaysByPuuidAndChampionId(summonerDto.getPuuid(), p.getChampionId());
 
                     return IngameParticipantDto.builder()
