@@ -3,6 +3,7 @@ package onlysolorank.apiserver.api.service.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.domain.dto.SoloTierDto;
 
@@ -21,6 +22,7 @@ import onlysolorank.apiserver.domain.dto.SoloTierDto;
  */
 @Data
 @AllArgsConstructor
+@Slf4j
 public class SummonerDto {
     private String summonerName;
     private String internalName;
@@ -44,7 +46,12 @@ public class SummonerDto {
         this.soloTierInfo = SoloTierDto.builder().summoner(summoner).build();
         this.totalWin = summoner.getTotalWin();
         this.totalDefeat = summoner.getTotalDefeat();
-        this.totalPlays = totalWin + totalDefeat;
+
+        if(totalWin==null || totalDefeat==null)
+            this.totalPlays = null;
+        else {
+            this.totalPlays = totalWin + totalDefeat;
+        }
     }
 
 }
