@@ -6,7 +6,7 @@ import onlysolorank.apiserver.domain.Summoner;
 
 import java.util.List;
 
-import static onlysolorank.apiserver.utils.CustomConverter.doubleValueToHalfUp;
+import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -38,6 +38,4 @@ public class SummonerRankDto {
         this.mostPlayedChampionIds = championIds;
         this.rank = rank;
     }
-
-
 }

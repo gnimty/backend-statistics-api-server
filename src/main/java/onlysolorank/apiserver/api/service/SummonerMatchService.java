@@ -3,7 +3,7 @@ package onlysolorank.apiserver.api.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.domain.SummonerMatch;
-import onlysolorank.apiserver.repository.SummonerMatchRepository;
+import onlysolorank.apiserver.repository.summoner_match.SummonerMatchRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,7 +27,7 @@ public class SummonerMatchService {
     private final SummonerMatchRepository summonerMatchRepository;
 
     public Optional<SummonerMatch> getSummonerMatchBySummonerPuuid(String puuid){
-        return summonerMatchRepository.findOneByPuuid(puuid);
+        return summonerMatchRepository.findSummonerMatchByPuuid(puuid);
     }
 
 }

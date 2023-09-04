@@ -3,6 +3,7 @@ package onlysolorank.apiserver.repository;
 import onlysolorank.apiserver.api.service.dto.ChampionPlaysDto;
 import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
 import onlysolorank.apiserver.domain.Participant;
+import onlysolorank.apiserver.repository.participant.ParticipantRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,7 +37,7 @@ class ParticipantRepositoryTest {
     private final String testPuuid2 = "EGwfiiFYMXwYxIRx1Fl1b2NhGFWAQiQfe2gb5SskB2nVTNQWqRkio9wpjlr0L1xKiJ2QGGraW1PpPg";
     @Test
     public void getParticipantsInMatch(){
-        List<Participant> results = participantRepository.findByMatchId(matchId);
+        List<Participant> results = participantRepository.findParticipantsByMatchId(matchId);
 
         for (Participant result : results) {
             System.out.println(result);

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.validation.ConstraintViolationException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -28,9 +30,24 @@ class SummonerServiceTest {
     @Autowired
     private SummonerService summonerService;
 
+    private final String wrongPatternMatchId = "walfwealfk.n";
+    private final String keyword = "h &^ ____I de on bu& S h";
+
     @Test
-    void keywordToInternalName() {
-        String keyword = "h &^ ____I de on bu& S h";
-        assertEquals(new KeywordReq("hideonbush").getKeyword(), "hideonbush");
+    void 키워드_변환결과_확인() {
+        assertEquals(new KeywordReq(keyword).getKeyword(), "hideonbush");
+
+        assertFalse("hideonbus".equals(new KeywordReq(keyword).getKeyword()));
     }
+
+
+    @Test
+    void 잘못된_패턴의_매치ID로_조회하면_오류발생(){
+
+        assertThrows(ConstraintViolationException.class, ()-> summonerService.get20MatchesByLastMatchId("HideOnbush", wrongPatternMatchId));
+    }
+
+
+
+
 }

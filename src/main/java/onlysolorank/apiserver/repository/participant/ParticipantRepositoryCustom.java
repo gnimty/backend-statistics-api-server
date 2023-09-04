@@ -1,37 +1,26 @@
-package onlysolorank.apiserver.repository;
+package onlysolorank.apiserver.repository.participant;
 
 import onlysolorank.apiserver.api.service.dto.ChampionPlaysDto;
 import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
-import onlysolorank.apiserver.domain.Participant;
 import org.springframework.data.mongodb.repository.Aggregation;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 /**
- * packageName    : onlysolorank.apiserver.repository
- * fileName       : ParticipantRepository
+ * packageName    : onlysolorank.apiserver.repository.participant
+ * fileName       : ParticipantRepositoryCustom
  * author         : solmin
- * date           : 2023/07/28
+ * date           : 2023/09/04
  * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2023/07/28        solmin       최초 생성
- * 2023/08/09        solmin       findTop10ChampionStatsByPuuid 추가
- * 2023/08/10        solmin       totalDeath=0인 경우의 예외 처리
- * 2023/08/16        solmin       findTopChampionStatsByPuuid 추가
- * 2023/08/30        solmin       findChampionPlayInfoByPuuidAndChampionId 추가
+ * 2023/09/04        solmin       최초 생성
  */
-public interface ParticipantRepository extends MongoRepository<Participant, String> {
-    List<Participant> findByMatchId(String matchId);
-
-    @Query("{'matchId': {$in: ?0}}")
-    List<Participant> findByMatchIdInCustom(List<String> matchIds);
-
-    // Most 10 Champion 전적 정보 집계, TODO 이후 챔피언 탭에서 재사용 예정
+public interface ParticipantRepositoryCustom {
+    // Most 10 Champion 전적 정보 집계
+    // TODO 이후 챔피언 탭에서 재사용 예정
     @Aggregation(pipeline = {"{ $match: { 'puuid': ?0 } }",
         "{ $group: { " +
             "_id: { championId: '$championId', championName: '$championName' }, " +
@@ -47,7 +36,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "totalDeath: { $sum: '$deaths' }, " +
             "avgAssist: { $avg: '$assists' }, " +
             "totalAssist: { $sum: '$assists' } " +
-        "}} ",
+            "}} ",
         "{ $addFields: { " +
             "avgCs: {$round: ['$avgCs', 2]}," +
             "avgDeath: {$round: ['$avgDeath', 2]}," +
@@ -55,7 +44,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "avgKill: {$round: ['$avgKill', 2]}," +
             "winRate: {$round: [{$divide:['$totalWin','$totalPlays']}, 2]}" +
 //            "avgKda: {$round: [{$divide:[{$add: ['$totalKill','$totalAssist']},'$totalDeath']}, 3]}" +
-        "}}",
+            "}}",
         "{ $sort: { totalPlays: -1 } }",
         "{ $limit: ?1 }",
         "{$project: { " +
@@ -75,7 +64,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "totalKill: 1," +
             "totalDeath: 1," +
             "totalAssist: 1" +
-        "}}"})
+            "}}"})
     List<ChampionPlaysDto> findTopChampionStatsByPuuid(@Param("puuid") String puuid, @Param("limit") Integer limit);
 
 
@@ -96,7 +85,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
         "{$group:{_id:$puuid, champions:{$push:{championId:$championId,plays:$plays}}}}",
         "{$project:{_id:0,puuid:$_id,champions:{$slice:[$champions, ?1]}}}",
         "{$project:{_id:0,puuid:1,championIds:'$champions.championId'}}"
-        })
+    })
     List<mostChampionsBySummonerDto> findTopChampionsForEachSummoner(List<String> summonerIds, int limit);
 
 
@@ -125,7 +114,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "avgAssist: {$round: ['$avgAssist', 2]}," +
             "avgKill: {$round: ['$avgKill', 2]}," +
             "winRate: {$round: [{$divide:['$totalWin','$totalPlays']}, 2]}" +
-        "}}",
+            "}}",
         "{$project: { " +
             "_id: 0, " +
             "puuid: '$_id.puuid', " +

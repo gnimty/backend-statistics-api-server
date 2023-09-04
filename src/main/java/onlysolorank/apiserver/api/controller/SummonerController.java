@@ -14,8 +14,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName;
-
 /**
  * packageName    : onlysolorank.apiserver.api.controller
  * fileName       : SummonerController
@@ -54,7 +52,7 @@ public class SummonerController {
     public CommonResponse<List<SummonerDto>> getSummonerByInternalName(@ModelAttribute @Valid KeywordReq keywordReq) {
         String internalName = keywordReq.getKeyword();
 
-        List<SummonerDto> data = summonerService.getSummonerDtoListByInternalName(internalName);
+        List<SummonerDto> data = summonerService.getTop5SummonerDtoListByInternalName(internalName);
         return CommonResponse.success(data);
     }
 
@@ -68,16 +66,14 @@ public class SummonerController {
     @GetMapping("/matches/{summoner_name}")
     public CommonResponse getSummonerMatchInfoBySummonerName(@PathVariable("summoner_name") String summonerName,
                                                              @RequestParam("ended") Optional<String> lastMatchId) {
-        String internalName = keywordToInternalName(summonerName);
-
         // TODO lastMatchId 검증 필요
         if (!lastMatchId.isPresent() || lastMatchId.get().isBlank()) {
-            SummonerMatchRes data = summonerService.getSummonerMatchInfoByInternalName(internalName);
+            SummonerMatchRes data = summonerService.getSummonerMatchInfoBySummonerName(summonerName);
+            return CommonResponse.success(data);
+        } else{
+            List<MatchDto> data = summonerService.get20MatchesByLastMatchId(summonerName, lastMatchId.get());
             return CommonResponse.success(data);
         }
-        List<MatchDto> data = summonerService.get20MatchesByLastMatchId(internalName, lastMatchId.get());
-
-        return CommonResponse.success(data);
     }
 
     /**
@@ -87,9 +83,9 @@ public class SummonerController {
      * @return the all champion play info by puuid
      */
     @GetMapping("/champion/{summoner_name}")
-    public CommonResponse<List<ChampionPlayWithChampionDto>> getAllChampionPlayInfoByPuuid(@PathVariable("summoner_name") String summonerName){
+    public CommonResponse<List<SummonerPlayDto>> getAllChampionPlayInfoBySummonerName(@PathVariable("summoner_name") String summonerName){
 
-        List<ChampionPlayWithChampionDto> data = summonerService.getAllChampionPlayInfoByPuuid(summonerName);
+        List<SummonerPlayDto> data = summonerService.getAllChampionPlayInfoBySummonerName(summonerName);
 
         return CommonResponse.success(data);
     }
@@ -97,12 +93,12 @@ public class SummonerController {
     /**
      * Gets summoner history.
      *
-     * @param puuid the puuid
-     * @return List<SoloTierWithTimeDto>
+     * @param summonerName the summoner name
+     * @return the summoner history
      */
-    @GetMapping("/tier/{puuid}")
-    public CommonResponse<List<SoloTierWithTimeDto>> getSummonerHistory(@PathVariable("puuid") String puuid){
-        List<SoloTierWithTimeDto> data = summonerService.getSummonerHistory(puuid);
+    @GetMapping("/tier/{summoner_name}")
+    public CommonResponse<List<SoloTierWithTimeDto>> getSummonerHistory(@PathVariable("summoner_name") String summonerName){
+        List<SoloTierWithTimeDto> data = summonerService.getSummonerHistory(summonerName);
 
         return CommonResponse.success(data);
     }

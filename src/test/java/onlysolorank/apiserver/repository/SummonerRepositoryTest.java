@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.repository;
 
 import onlysolorank.apiserver.domain.Summoner;
+import onlysolorank.apiserver.repository.summoner.SummonerRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

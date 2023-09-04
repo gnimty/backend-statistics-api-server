@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
-import static onlysolorank.apiserver.utils.CustomConverter.doubleValueToHalfUp;
+import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -20,6 +20,7 @@ import static onlysolorank.apiserver.utils.CustomConverter.doubleValueToHalfUp;
  * 2023/08/10        solmin       totalDeath=0인 경우의 예외 처리를 위한 @JsonIgnore 필드 추가
  * 2023/08/28        solmin       필드 추가
  * 2023/08/30        solmin       DTO rename
+ * 2023/09/04        solmin       DTO 철거 예정
  */
 
 @Data

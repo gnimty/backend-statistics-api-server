@@ -1,15 +1,13 @@
 package onlysolorank.apiserver.repository;
 
-import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.domain.Team;
+import onlysolorank.apiserver.repository.team.TeamRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * packageName    : onlysolorank.apiserver.repository
