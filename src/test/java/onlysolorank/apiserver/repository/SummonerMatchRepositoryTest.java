@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.repository;
 
+import onlysolorank.apiserver.repository.summoner_match.SummonerMatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

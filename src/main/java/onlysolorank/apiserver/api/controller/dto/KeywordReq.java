@@ -4,7 +4,7 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 
-import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName;
+import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller

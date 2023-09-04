@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.service.dto.ChampionPlaysDto;
 import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
 import onlysolorank.apiserver.domain.Participant;
-import onlysolorank.apiserver.repository.ParticipantRepository;
+import onlysolorank.apiserver.repository.participant.ParticipantRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -32,15 +32,14 @@ import java.util.Map;
 @Slf4j
 public class ParticipantService {
     private final ParticipantRepository participantRepository;
-    private static final int SPECIALIST_CNT_LIMIT = 100;
-    private static final int SPECIALIST_PLAYS_CNT_LIMIT = 50;
+
 
     public List<ChampionPlaysDto> getChampionStatus(String puuid, int limit){
         return participantRepository.findTopChampionStatsByPuuid(puuid, limit);
     }
 
     public List<Participant> getParticipantListByMatchId(List<String> matchIds){
-        return participantRepository.findByMatchIdInCustom(matchIds);
+        return participantRepository.findParticipantsByMatchIdIn(matchIds);
     }
 
     public Map<String, List<Integer>> getTopNChampionIdsByPuuids(List<String> puuids, int limit){
@@ -55,11 +54,6 @@ public class ParticipantService {
         return mostChampionMap;
     }
 
-    public List<ChampionPlaysDto> getSpecialistsByCondition(List<String> puuids, String championName) {
-
-        return participantRepository.findTopChampionStatsByChampionNameAndPuuids(puuids, championName, SPECIALIST_CNT_LIMIT).stream()
-            .filter(s->s.getTotalPlays()>=SPECIALIST_PLAYS_CNT_LIMIT).toList();
-    }
 
     public ChampionPlaysDto getChampionPlaysByPuuidAndChampionId(String puuid, Long championId){
         return participantRepository.findChampionPlayInfoByPuuidAndChampionId(puuid, championId).get(0);

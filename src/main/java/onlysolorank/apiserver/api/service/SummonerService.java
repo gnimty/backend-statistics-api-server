@@ -14,7 +14,7 @@ import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.service.dto.*;
 import onlysolorank.apiserver.domain.*;
 import onlysolorank.apiserver.domain.dto.Tier;
-import onlysolorank.apiserver.repository.*;
+import onlysolorank.apiserver.repository.summoner.SummonerRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +26,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.constraints.Pattern;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -37,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName;
+import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName;
 
 
 /**
@@ -73,12 +74,12 @@ import static onlysolorank.apiserver.utils.CustomConverter.keywordToInternalName
 @Validated
 public class SummonerService {
 
-    // 모든 챔피언 범위 내의 검색 결과 가져오기 위해서 큰 숫자로 세팅
-    public static final int LIMIT = 2000;
+
     private final SummonerRepository summonerRepository;
     private final SummonerMatchService summonerMatchService;
     private final MatchService matchService;
     private final ParticipantService participantService;
+    private final SummonerPlayService summonerPlayService;
 
     @Value("${batch.host}")
     private String BATCH_HOST;
@@ -89,7 +90,19 @@ public class SummonerService {
     @Value("${riot.api-key}")
     private String RIOT_API_KEY;
 
-    public SummonerMatchRes getSummonerMatchInfoByInternalName(String internalName) {
+    private static final int SPECIALIST_CNT_LIMIT = 100;
+    private static final int SPECIALIST_PLAYS_CNT_LIMIT = 50;
+
+
+    public List<SummonerDto> getTop5SummonerDtoListByInternalName(String internalName) {
+
+        return summonerRepository.findTop5ByInternalNameStartsWithOrderByInternalName(internalName)
+            .stream().map(SummonerDto::new)
+            .toList();
+
+    }
+
+    public SummonerMatchRes getSummonerMatchInfoBySummonerName(String internalName) {
 
         Summoner summoner = getSummonerBySummonerName(internalName);
 
@@ -117,7 +130,9 @@ public class SummonerService {
             .mostPlayed(top10ChampionPlaysDetailDtoList).build();
     }
 
-    public List<MatchDto> get20MatchesByLastMatchId(String summonerName, String lastMatchId) {
+    public List<MatchDto> get20MatchesByLastMatchId(String summonerName,
+                                                    @Pattern(regexp = "^KR_\\d{10}$", message = "올바른 matchId 패턴이 아닙니다.") String lastMatchId) {
+
         Summoner summoner = getSummonerBySummonerName(summonerName);
 
         // MatchId 및 MatchDto List 가져오기
@@ -168,19 +183,23 @@ public class SummonerService {
             }).toList();
     }
 
-    public List<ChampionPlayWithChampionDto> getAllChampionPlayInfoByPuuid(String summonerName) {
+    public List<SummonerPlayDto> getAllChampionPlayInfoBySummonerName(String summonerName) {
         Summoner summoner = getSummonerBySummonerName(summonerName);
 
         // 소환사의 모든 챔피언 플레이 정보 가져오기
-        return participantService.getChampionStatus(summoner.getPuuid(), LIMIT).stream().map(s->ChampionPlayWithChampionDto.builder().championPlay(s).build()).toList();
+        List<SummonerPlay> result = summonerPlayService.getSummonerPlaysByPuuid(summoner.getPuuid());
+
+        return result.stream().map(SummonerPlayDto::new).toList();
     }
 
     // TODO 추후 시간대 체크해야 함
-    public List<SoloTierWithTimeDto> getSummonerHistory(String puuid) {
-        Summoner summoner = getSummonerByPuuid(puuid);
+    public List<SoloTierWithTimeDto> getSummonerHistory(String summonerName) {
+        Summoner summoner = getSummonerBySummonerName(summonerName);
 
-        return summoner.getHistory().stream()
-            .map(h -> SoloTierWithTimeDto.builder().history(h).build()).toList();
+        List<SoloTierWithTimeDto> result = summoner.getHistory().stream()
+            .map(SoloTierWithTimeDto::new).toList();
+
+        return result;
     }
 
 
@@ -212,32 +231,34 @@ public class SummonerService {
 
     public List<ChampionPlayWithSummonerDto> getSpecialistsByChampionName(String championName, Tier stdTier) {
         // 1. 특정 티어 이상인 소환사 정보 전부 가져오기
-        Map<String, Summoner> summonerByTierGt = summonerRepository.findSummonersByMmrGreaterThanEqual(stdTier.getBasisMMR()).stream()
-            .collect(Collectors.toMap(Summoner::getPuuid, s->s));
+        Map<String, SummonerDto> summonerByTierGt = getSummonersByMmrGreaterThanEqual(stdTier).stream()
+            .map(SummonerDto::new)
+            .collect(Collectors.toMap(SummonerDto::getPuuid, s->s));
 
-        List<String> puuids = summonerByTierGt.keySet().stream().toList();
-
-        // 2. participants 정보에서 특정 championName과 puuid 정보가 담긴 정보를 필터링하여 가져오기
-        List<ChampionPlaysDto> result = participantService.getSpecialistsByCondition(puuids, championName);
+        // 2. summoner puuid set 구성
+        Set<String> puuids = summonerByTierGt.keySet().stream().collect(Collectors.toSet());
 
         AtomicInteger startRank = new AtomicInteger(0);
+
         // 3. DTO 엮기
-        List<ChampionPlayWithSummonerDto> specialists = result.stream().map(s -> ChampionPlayWithSummonerDto.builder()
-                .championPlay(s)
-                .summoner(new SummonerDto(summonerByTierGt.get(s.getPuuid())))
+        List<ChampionPlayWithSummonerDto> result = summonerPlayService.getSummonerPlaysByCondition(championName, SPECIALIST_PLAYS_CNT_LIMIT)
+            .stream().filter(summonerPlay -> puuids.contains(summonerPlay.getPuuid()))
+            .map(summonerPlay -> ChampionPlayWithSummonerDto.builder()
+                .summonerPlay(new SummonerPlayDto(summonerPlay))
+                .summoner(summonerByTierGt.get(summonerPlay.getPuuid()))
                 .rank(startRank.incrementAndGet())
-                .build())
-            .toList();
-        return specialists;
+                .build()).toList();
+
+        return result;
     }
+
+
 
     public void refreshSummoner(String puuid) {
         // 1. puuid 소환사 존재 여부 확인
-        Summoner summoner = summonerRepository.findOneByPuuid(puuid)
-            .orElseThrow(()-> new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다."));
+        Summoner summoner = getSummonerByPuuid(puuid);
 
         // 2. 해당 소환사의 최종 갱신일 필드를 보고 2분이 지났는지 판단
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         LocalDateTime now = LocalDateTime.now(); // 현재시간
@@ -253,7 +274,7 @@ public class SummonerService {
         // 3. RestTemplate으로 Request 보내기
         URI uri = UriComponentsBuilder
             .fromUriString(String.format("http://%s:%s", BATCH_HOST, BATCH_PORT))
-            .path("/batch/summoner/refresh/" + summoner.getInternalName())
+            .path("/batch/summoner/refresh/" + puuid)
             .encode()
             .build()
             .toUri();
@@ -267,9 +288,9 @@ public class SummonerService {
         }
     }
 
-    public IngameInfoRes getIngameInfo(String internalName) {
+    public IngameInfoRes getIngameInfo(String summonerName) {
         // 1. summonerId를 가진 소환사가 존재하는지 확인
-        Summoner summoner = getSummonerBySummonerName(internalName);
+        Summoner summoner = getSummonerBySummonerName(summonerName);
         // 2. 요청
         RestTemplate restTemplate = new RestTemplate();
 
@@ -295,7 +316,7 @@ public class SummonerService {
             SpectatorV4GetCurrentGameInfo result = responseEntity.getBody();
 
             // 3. SpectatorV4GetCurrentGameInfo to IngameInfoRes
-            Map<String, Summoner> summonerMap = summonerRepository.findSummonersBySummonerIdIn(
+            Map<String, Summoner> summonerMap = getSummonersByIds(
                 result.getParticipants().stream()
                     .map(SpectatorV4GetCurrentGameInfo.CurrentGameParticipant::getSummonerId).toList()
             ).stream().collect(Collectors.toMap(Summoner::getSummonerId, s -> s));
@@ -347,22 +368,23 @@ public class SummonerService {
     /* --------------------------- Repository 직접 접근 메소드 --------------------------- */
     private Summoner getSummonerBySummonerName(String summonerName) {
         String internalName = keywordToInternalName(summonerName);
-        return summonerRepository.findOneByInternalName(internalName)
+        return summonerRepository.findSummonerByInternalName(internalName)
             .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "summoner_name에 해당하는 소환사 데이터가 존재하지 않습니다."));
     }
 
     private Summoner getSummonerByPuuid(String puuid) {
-        return summonerRepository.findOneByPuuid(puuid)
+        return summonerRepository.findSummonerByPuuid(puuid)
             .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다."));
     }
 
-    public List<SummonerDto> getSummonerDtoListByInternalName(String internalName) {
-        // internal name으로 찾기
-
-        return summonerRepository.findTop5ByInternalNameStartsWithOrderByInternalName(internalName)
-            .stream().map(summoner -> SummonerDto.builder().summoner(summoner).build())
-            .toList();
+    private List<Summoner> getSummonersByMmrGreaterThanEqual(Tier stdTier) {
+        Integer mmr =  stdTier.getBasisMMR();
+        return summonerRepository.findSummonersByMmrGreaterThanEqual(mmr);
     }
 
-    /* --------------------------- Repository 직접 접근 메소드 --------------------------- */
+    private List<Summoner> getSummonersByIds(List<String> summonerIds){
+        return summonerRepository.findSummonersBySummonerIdIn(summonerIds);
+    }
+
+    /* --------------------------- Repository 직접 접근 메소드 끝 --------------------------- */
 }

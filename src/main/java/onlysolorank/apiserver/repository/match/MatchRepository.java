@@ -1,13 +1,14 @@
-package onlysolorank.apiserver.repository;
+package onlysolorank.apiserver.repository.match;
 
-import onlysolorank.apiserver.domain.SummonerMatch;
+import onlysolorank.apiserver.domain.Match;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
  * packageName    : onlysolorank.apiserver.repository
- * fileName       : SummonerMatchRepository
+ * fileName       : MatchRepository
  * author         : solmin
  * date           : 2023/07/28
  * description    :
@@ -15,11 +16,9 @@ import java.util.Optional;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/07/28        solmin       최초 생성
+ * 2023/09/04        solmin       Custom Repository 분리
  */
-public interface SummonerMatchRepository extends MongoRepository<SummonerMatch, String> {
-
-    Optional<SummonerMatch> findOneByPuuid(String puuid);
-
-    SummonerMatch findByPuuid(String puuid);
-
+public interface MatchRepository extends MongoRepository<Match, String>, MatchRepositoryCustom {
+    Optional<Match> findMatchByMatchId(String matchId);
+    List<Match> findMatchesByMatchIdIn(List<String> matchIds);
 }

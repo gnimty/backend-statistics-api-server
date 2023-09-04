@@ -3,7 +3,7 @@ package onlysolorank.apiserver.api.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.domain.Team;
-import onlysolorank.apiserver.repository.TeamRepository;
+import onlysolorank.apiserver.repository.team.TeamRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class TeamService {
     private final TeamRepository teamRepository;
 
     public List<Team> getTeamListByMatchIdList(List<String> matchIds){
-        return teamRepository.findByMatchIdInCustom(matchIds);
+        return teamRepository.findByMatchIdIn(matchIds);
     }
 
 }

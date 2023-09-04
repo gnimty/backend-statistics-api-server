@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 
 /**
  * packageName    : onlysolorank.apiserver.utils
- * fileName       : NameToInternalNameConverter
+ * fileName       : CustomFunctions
  * author         : solmin
  * date           : 2023/07/24
  * description    :
@@ -15,10 +15,11 @@ import java.math.RoundingMode;
  * 2023/07/24        solmin       최초 생성
  * 2023/07/31        solmin       Converter -> 단순 구조로 변경
  * 2023/08/09        solmin       Double 반올림 내부함수 추가
+ * 2023/09/04        solmin       클래스 이름 변경
  */
 
 
-public class CustomConverter {
+public class CustomFunctions {
     /**
      * 영어, 한글, 숫자를 제외한 모든 문자 및 공백 제거 후 소문자로 변환
      *

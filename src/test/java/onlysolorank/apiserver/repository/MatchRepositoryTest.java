@@ -1,14 +1,15 @@
 package onlysolorank.apiserver.repository;
 
+import onlysolorank.apiserver.api.exception.CustomException;
+import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.domain.Match;
-import onlysolorank.apiserver.domain.Summoner;
+import onlysolorank.apiserver.repository.match.MatchRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,19 +31,36 @@ class MatchRepositoryTest {
     @Autowired
     private MatchRepository matchRepository;
 
+    private final String matchId1 = "KR_6654612499";
+    private final String matchId2 = "KR_6654548635";
+    private final String wrongMatchId = "awefawefefwe";
     @Test
-    public void getMatchesByMatchIdList(){
-        // 리스트 여러개 생성
-        List<String> matchIds = List.of("KR_6625112620", "KR_6625061672");
+    public void 매치ID_두개로조회(){
+        List<String> matchIds = List.of(matchId1, matchId2);
 
-        // 쿼리 수행
-        List<Match> matches = matchRepository.findByMatchIdInCustom(matchIds);
+        List<Match> matches = matchRepository.findMatchesByMatchIdIn(matchIds);
 
-        for (Match match : matches) {
-            System.out.println("match = " + match);
-
-        }
         assertEquals(2, matches.size());
     }
+
+    @Test
+    public void 매치ID_하나로조회(){
+        List<String> matchIds = List.of(matchId1);
+
+        List<Match> matches = matchRepository.findMatchesByMatchIdIn(matchIds);
+
+        assertEquals(1, matches.size());
+
+        matchRepository.findMatchByMatchId(matchId2)
+            .orElseThrow(()-> new CustomException(ErrorCode.RESULT_NOT_FOUND));
+    }
+
+    @Test
+    public void 존재하지_않는_매치ID로_조회() {
+        assertThrows(CustomException.class, () ->
+            matchRepository.findMatchByMatchId(wrongMatchId)
+                .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND)));
+    }
+
 
 }

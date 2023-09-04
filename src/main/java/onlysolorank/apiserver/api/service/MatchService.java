@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.domain.Match;
 import onlysolorank.apiserver.domain.Team;
-import onlysolorank.apiserver.repository.MatchRepository;
+import onlysolorank.apiserver.repository.match.MatchRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class MatchService {
 
 
     public List<Match> getMatchListByMatchIdList(List<String> matchIds){
-        return matchRepository.findByMatchIdInCustom(matchIds);
+        return matchRepository.findMatchesByMatchIdIn(matchIds);
     }
 
     public Map<String, List<Team>> getTeamMapMappedByMatchId(List<String> matchIds){
