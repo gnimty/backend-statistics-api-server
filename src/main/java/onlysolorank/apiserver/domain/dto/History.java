@@ -3,7 +3,7 @@ package onlysolorank.apiserver.domain.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -24,6 +24,6 @@ public class History {
     private String queue;
     private Integer tier;
     private Integer leaguePoints;
-    private LocalDateTime updatedAt;
+    private ZonedDateTime updatedAt;
 
 }

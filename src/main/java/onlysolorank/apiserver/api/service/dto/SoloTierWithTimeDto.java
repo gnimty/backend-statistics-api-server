@@ -4,7 +4,7 @@ import lombok.Data;
 import onlysolorank.apiserver.domain.dto.History;
 import onlysolorank.apiserver.domain.dto.Tier;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -23,7 +23,7 @@ public class SoloTierWithTimeDto {
     private Tier tier;
     private Integer division;
     private Integer lp;
-    private LocalDateTime updatedAt;
+    private ZonedDateTime updatedAt;
 
     public SoloTierWithTimeDto(History history){
         this.tier = Tier.valueOf(history.getQueue());
