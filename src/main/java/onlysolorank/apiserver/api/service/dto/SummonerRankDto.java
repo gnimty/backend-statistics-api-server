@@ -23,19 +23,19 @@ import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
 @Data
 public class SummonerRankDto {
     private SummonerDto summoner;
-    private List<Integer> mostPlayedChampionIds;
+    private List<Long> mostPlayedChampionIds;
     private Integer totalWin;
     private Integer totalDefeat;
     private Double winRate;
     private Integer rank;
 
     @Builder
-    public SummonerRankDto(Summoner summoner,List<Integer> championIds, Integer rank){
+    public SummonerRankDto(Summoner summoner, Integer rank){
         this.summoner = SummonerDto.builder().summoner(summoner).build();
         this.totalWin = summoner.getTotalWin();
         this.totalDefeat = summoner.getTotalDefeat();
         this.winRate = doubleValueToHalfUp(totalWin.doubleValue()/totalDefeat.doubleValue(), 3);
-        this.mostPlayedChampionIds = championIds;
+        this.mostPlayedChampionIds = summoner.getMostChampionIds();
         this.rank = rank;
     }
 }

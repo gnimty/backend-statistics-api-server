@@ -26,7 +26,7 @@ public class SummonerPlay {
     @Id
     private String id;
 
-    private Integer championId;
+    private Long championId;
     private String championName;
     private String puuid;
     private Integer totalPlays;

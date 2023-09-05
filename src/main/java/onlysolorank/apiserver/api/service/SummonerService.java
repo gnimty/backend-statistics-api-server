@@ -121,8 +121,9 @@ public class SummonerService {
         ZonedDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES);
 
         // 소환사의 top 10 챔피언 플레이 정보 가져오기
-        List<ChampionPlayWithChampionDto> top10ChampionPlaysDetailDtoList =
-            participantService.getChampionStatus(summoner.getPuuid(), 10).stream().map(t -> ChampionPlayWithChampionDto.builder().championPlay(t).build()).toList();
+        List<SummonerPlayDto> top10ChampionPlaysDetailDtoList =
+            summonerPlayService.getSummonerPlaysLimit(summoner.getPuuid(), 10)
+                .stream().map(SummonerPlayDto::new).toList();
 
         return SummonerMatchRes.builder()
             .summoner(SummonerDto.builder().summoner(summoner).build())
@@ -211,17 +212,18 @@ public class SummonerService {
         Sort sort = Sort.by(Sort.Direction.DESC, "mmr");
         int pageSize = 100;
 
-        int limit = 3;
-
         // 1. MMR 기준 Summoner page 조회
         Page<Summoner> summoners = getSummonerPage(page, sort, pageSize);
-        Map<String, List<Integer>> mostChampionMap = participantService.getTopNChampionIdsByPuuids(summoners.stream().map(Summoner::getPuuid).toList(), limit);
 
         AtomicInteger startRank = new AtomicInteger(page * pageSize);
 
         // 2. 각 summoner별 랭크 정보 매기기 + most 3 champion ID 정보 가져오기
         List<SummonerRankDto> summonerRanks = summoners.stream()
-            .map(s -> SummonerRankDto.builder().summoner(s).championIds(mostChampionMap.get(s.getPuuid())).rank(startRank.incrementAndGet()).build()).toList();
+            .map(s -> SummonerRankDto.builder()
+                .summoner(s)
+                .rank(startRank.incrementAndGet())
+                .build())
+            .toList();
 
         return SummonerRankPageDto.builder().summonerPage(summoners).summonerRanks(summonerRanks).build();
     }
@@ -230,7 +232,6 @@ public class SummonerService {
         Page<Summoner> summoners = summonerRepository.findAll(PageRequest.of(page, size, sort));
         return summoners;
     }
-
 
     public List<ChampionPlayWithSummonerDto> getSpecialistsByChampionName(String championName, Tier stdTier) {
         // 1. 특정 티어 이상인 소환사 정보 전부 가져오기
@@ -327,29 +328,44 @@ public class SummonerService {
             ).stream().collect(Collectors.toMap(Summoner::getSummonerId, s -> s));
 
             // summonerId 및 플레이 정보를 통해서 ChampionPlays 정보를 쿼리해야 함
-            // (수정) summonerPlay를 통해서 SummonerPlays로 가져오기
+            List<PuuidChampionIdPair> puuidChampionIdPairs = result.getParticipants().stream()
+                .map(p -> {
+                    Summoner targetSummoner = summonerMap.getOrDefault(p.getSummonerId(), null);
+                    if (targetSummoner == null) {
+                        return null;
+                    }
+                    return new PuuidChampionIdPair(targetSummoner.getPuuid(), p.getChampionId());
+                })
+                .filter(Objects::nonNull)
+                .toList();
 
-//            List<IngameParticipantDto> participants = result.getParticipants().stream()
-//                .map(p -> {
-//                    Summoner targetSummoner = summonerMap.getOrDefault(p.getSummonerId(), null);
-//                    if (targetSummoner == null) {
-//                        return null;
-//                    }
-//                    SummonerDto summonerDto = new SummonerDto(targetSummoner);
-//
-//                    ChampionPlaysDto championPlaysDto = participantService.getChampionPlaysByPuuidAndChampionId(summonerDto.getPuuid(), p.getChampionId());
-//
-//                    return IngameParticipantDto.builder()
-//                        .participant(p).summoner(summonerDto).championPlaysDto(championPlaysDto)
-//                        .build();
-//                }).toList();
-            return null;
-//            return IngameInfoRes.builder()
-//                .participants(participants)
-//                .gameLength(result.getGameLength())
-//                .queueId(result.getGameQueueConfigId().intValue())
-//                .startTime(result.getGameStartTime())
-//                .build();
+            Map<String, SummonerPlay> collect = summonerPlayService.getSummonerPlaysByPairs(puuidChampionIdPairs).stream()
+                .collect(Collectors.toMap(s -> s.getPuuid(), s -> s));
+
+            List<IngameParticipantDto> participants = result.getParticipants().stream().map(p -> {
+                Summoner targetSummoner = summonerMap.get(p.getSummonerId());
+
+                SummonerPlay summonerPlay = collect.get(targetSummoner.getPuuid());
+
+                SummonerPlayDto summonerPlayDto = null;
+                if(summonerPlay!=null){
+                    summonerPlayDto = new SummonerPlayDto(summonerPlay);
+                }
+
+                return IngameParticipantDto.builder()
+                    .summonerPlayDto(summonerPlayDto)
+                    .participant(p)
+                    .summoner(new SummonerDto(targetSummoner))
+                    .build();
+            }).toList();
+
+            return IngameInfoRes.builder()
+                .participants(participants)
+                .gameLength(result.getGameLength())
+                .queueId(result.getGameQueueConfigId().intValue())
+                .startTime(result.getGameStartTime())
+                .build();
+
         } catch (HttpClientErrorException.NotFound notFoundException) {
             throw new CustomException(ErrorCode.RESULT_NOT_FOUND, "소환사 정보가 존재하지 않거나 게임 중이 아닙니다.");
         } catch (HttpClientErrorException.TooManyRequests tooManyRequestsException) {

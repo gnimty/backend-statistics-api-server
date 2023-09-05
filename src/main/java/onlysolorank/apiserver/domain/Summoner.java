@@ -2,7 +2,7 @@ package onlysolorank.apiserver.domain;
 
 import lombok.Getter;
 import lombok.ToString;
-import onlysolorank.apiserver.domain.dto.History;
+import onlysolorank.apiserver.domain.dto.Position;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -40,6 +40,9 @@ public class Summoner {
     private Integer summonerLevel;
     private Integer tier;
 
+    private List<Position> mostLanes;
+    private List<Long> mostChampionIds;
+
     @Field("id")
     private String summonerId;
 
@@ -47,11 +50,12 @@ public class Summoner {
     private Integer lp;
     private Integer mmr;
     private String name;
+
     @Field("wins")
     private Integer totalWin;
+
     @Field("losses")
     private Integer totalDefeat;
-
 
     @Field("internal_name")
     private String internalName;

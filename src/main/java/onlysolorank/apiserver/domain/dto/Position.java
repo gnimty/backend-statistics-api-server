@@ -37,14 +37,4 @@ public enum Position {
         return UNKNOWN;
     }
 
-//    public static Position fromValue(String value) {
-//
-//        log.info(value);
-//        for (Position position : Position.values()) {
-//            if (position.value.equals(value)) {
-//                return position;
-//            }
-//        }
-//        return defaultValue();
-//    }
 }

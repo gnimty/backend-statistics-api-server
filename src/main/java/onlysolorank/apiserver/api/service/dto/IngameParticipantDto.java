@@ -22,18 +22,19 @@ public class IngameParticipantDto {
     private SummonerDto summoner;
     private Long championId;
     private String championName;
-    private ChampionPlaysDto championPlaysInfo;
+    private SummonerPlayDto summonerPlayDto;
     private Long spellDId;
     private Long spellFId;
     private Perk perks;
 
     @Builder
-    public IngameParticipantDto(SpectatorV4GetCurrentGameInfo.CurrentGameParticipant participant, SummonerDto summoner, ChampionPlaysDto championPlaysDto){
+    public IngameParticipantDto(SpectatorV4GetCurrentGameInfo.CurrentGameParticipant participant, SummonerDto summoner, SummonerPlayDto summonerPlayDto){
         this.teamId = participant.getTeamId();
         this.summoner = summoner;
         this.championId = participant.getChampionId();
-        this.championName = championPlaysDto.getChampionName();
-        this.championPlaysInfo = championPlaysDto;
+        // TODO 추후 추가 예정
+        this.championName = null;
+        this.summonerPlayDto = summonerPlayDto;
         this.spellDId = participant.getSpell1Id();
         this.spellFId = participant.getSpell2Id();
         this.perks = Perk.getPerk(participant.getPerks());
