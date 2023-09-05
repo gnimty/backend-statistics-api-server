@@ -39,7 +39,6 @@ public class Summoner {
     private ZonedDateTime updatedAt;
     private Integer summonerLevel;
     private Integer tier;
-    private List<History> history;
 
     @Field("id")
     private String summonerId;

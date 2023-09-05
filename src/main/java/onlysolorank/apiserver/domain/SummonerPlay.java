@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
@@ -20,6 +21,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "summoner_plays")
 @Getter
 @ToString
+@EqualsAndHashCode //TODO 나중에 지울예정
 public class SummonerPlay {
     @Id
     private String id;

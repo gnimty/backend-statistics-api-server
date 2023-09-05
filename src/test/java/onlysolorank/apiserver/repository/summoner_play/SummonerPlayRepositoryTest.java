@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.repository.summoner_play;
 
 import onlysolorank.apiserver.domain.SummonerPlay;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,7 +42,7 @@ class SummonerPlayRepositoryTest {
     @Test
     public void 조건으로_챔피언_플레이정보_가져오기(){
         List<SummonerPlay> summonerPlays =
-            summonerPlayRepository.findTop100SummonerPlaysByChampionNameAndTotalPlaysGreaterThanEqualOrderByTotalPlaysDesc("Aatrox", 30);
+            summonerPlayRepository.findSpecialists("Aatrox", 30);
 
         for (SummonerPlay s : summonerPlays){
             System.out.printf("championName = %s,  championPlays = %d\n", s.getChampionName(), s.getTotalPlays());
@@ -49,6 +50,19 @@ class SummonerPlayRepositoryTest {
 
     }
 
+
+    @Test
+    public void 조건으로_챔피언_플레이정보_가져오기_몽고템플릿(){
+        List<SummonerPlay> summonerPlays1 =
+            summonerPlayRepository.findTop100SummonerPlaysByChampionNameAndTotalPlaysGreaterThanEqualOrderByTotalPlaysDesc("Aatrox", 30);
+
+        List<SummonerPlay> summonerPlays2 =
+            summonerPlayRepository.findSpecialists("Aatrox", 30);
+
+        for (int i=0;i<summonerPlays1.size();i++) {
+            Assertions.assertEquals(summonerPlays1.get(i), summonerPlays2.get(i));
+        }
+    }
 
 
 }
