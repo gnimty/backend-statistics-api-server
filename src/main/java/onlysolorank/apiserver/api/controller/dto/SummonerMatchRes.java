@@ -3,9 +3,10 @@ package onlysolorank.apiserver.api.controller.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.api.service.dto.ChampionPlayWithChampionDto;
 import onlysolorank.apiserver.api.service.dto.MatchDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
+import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
+
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -28,5 +29,5 @@ public class SummonerMatchRes {
     private SummonerDto summoner;
     private ZonedDateTime renewableAfter;
     private List<MatchDto> matches;
-    private List<ChampionPlayWithChampionDto> mostPlayed;
+    private List<SummonerPlayDto> mostPlayed;
 }

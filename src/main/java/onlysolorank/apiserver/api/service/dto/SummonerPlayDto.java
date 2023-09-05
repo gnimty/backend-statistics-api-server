@@ -30,7 +30,7 @@ public class SummonerPlayDto {
     private Integer totalWin;
     private Integer totalDefeat;
     private boolean isPerfect = false;
-    private Integer championId;
+    private Long championId;
     private String championName;
 
     public SummonerPlayDto(SummonerPlay summonerPlay) {

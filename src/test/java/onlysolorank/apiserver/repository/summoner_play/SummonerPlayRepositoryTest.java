@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.repository.summoner_play;
 
+import onlysolorank.apiserver.api.service.dto.PuuidChampionIdPair;
 import onlysolorank.apiserver.domain.SummonerPlay;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.summoner_play
@@ -64,5 +67,34 @@ class SummonerPlayRepositoryTest {
         }
     }
 
+
+    @Test
+    public void 여러조건으로_챔피언_플레이정보_가져오기(){
+        List<PuuidChampionIdPair> puuidChampionIdPairs = List.of(
+            new PuuidChampionIdPair("1XBUVjoa7tHwOP5XSmphaXOib5cwn03X1qzFgnYk1C5FpUOPQds4w56YUzMIKamPO-Lj2SUBGE9tEg", 120L),
+            new PuuidChampionIdPair("a6aFFmCsAD5tPh4AzbOs-ppx8AC-O44Qd2M5R_tIxsGSFhE7vxHukyNLVkchBXtERExrUml9mYFauQ", 23L),
+            new PuuidChampionIdPair("I8MwVF0TLOXfwT9LYhzDOPvrBn_9sDy8csBC_mead-A1OsNZP6nLM1NGPnEVF9BAiKZNUAzL9W35Cg", 51L),
+            new PuuidChampionIdPair("Q84HPpuEYgyTLqSO1qovoTlakacWTAM_iKldz8Y5y7Lq3fs6BtKp59MBKRplg_gDPLwYR0IOuSxyQQ", 23L),
+            new PuuidChampionIdPair("1XBUVjoa7tHwOP5XSmphaXOib5cwn03X1qzFgnYk1C5FpUOPQds4w56YUzMIKamPO-Lj2SUBGE9tEg", 132L),
+            new PuuidChampionIdPair("x4g2HkbMoWqidXd35K4e_3yFeGqyl4aeMM2bpsi3G3rjvMZqPV8c6geyWT_u8Mzr3IhcDOxm1DVN8", 13L),
+            new PuuidChampionIdPair("c2LSlbSQzj3UufcM62sI3uzy-CCGRaTGDTh0XYubnipZvuG47T_5tPLzrJGmJVaZrHvbulK35JtiDg", 23L));
+        List<SummonerPlay> byPuuidChampionIdPairs = summonerPlayRepository.findByPuuidChampionIdPairs(puuidChampionIdPairs);
+
+        for (SummonerPlay byPuuidChampionIdPair : byPuuidChampionIdPairs) {
+            System.out.println("byPuuidChampionIdPair = " + byPuuidChampionIdPair);
+        }
+
+    }
+
+    @Test
+    public void 최대10개가져오기_테스트(){
+        List<SummonerPlay> summonerPlaysByPuuidAndLimit = summonerPlayRepository.findSummonerPlaysByPuuidAndLimit(puuid1, 10);
+
+        for (SummonerPlay summonerPlay : summonerPlaysByPuuidAndLimit) {
+            System.out.println("summonerPlay = " + summonerPlay);
+        }
+
+        assertThat(summonerPlaysByPuuidAndLimit.size()).isLessThanOrEqualTo(10);
+    }
 
 }
