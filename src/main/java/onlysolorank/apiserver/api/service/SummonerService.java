@@ -80,6 +80,7 @@ public class SummonerService {
     private final MatchService matchService;
     private final ParticipantService participantService;
     private final SummonerPlayService summonerPlayService;
+    private final SummonerHistoryService summonerHistoryService;
 
     @Value("${batch.host}")
     private String BATCH_HOST;
@@ -196,7 +197,9 @@ public class SummonerService {
     public List<SoloTierWithTimeDto> getSummonerHistory(String summonerName) {
         Summoner summoner = getSummonerBySummonerName(summonerName);
 
-        List<SoloTierWithTimeDto> result = summoner.getHistory().stream()
+        SummonerHistory history = summonerHistoryService.getSummonerHistoryByPuuid(summoner.getPuuid());
+
+        List<SoloTierWithTimeDto> result = history.getHistory().stream()
             .map(SoloTierWithTimeDto::new).toList();
 
         return result;
@@ -288,9 +291,10 @@ public class SummonerService {
     }
 
     public IngameInfoRes getIngameInfo(String summonerName) {
-        // 1. summonerId를 가진 소환사가 존재하는지 확인
+
         Summoner summoner = getSummonerBySummonerName(summonerName);
-        // 2. 요청
+
+        /*---------------------------- RestTemplate 요청 ----------------------------*/
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -306,11 +310,13 @@ public class SummonerService {
             .toUri();
 
         try {
+
+            // Request 시작
             ResponseEntity<SpectatorV4GetCurrentGameInfo> responseEntity = restTemplate.exchange(
                 uri, HttpMethod.GET, httpEntity, SpectatorV4GetCurrentGameInfo.class
             );
 
-            HttpStatus responseStatus = responseEntity.getStatusCode();
+//            HttpStatus responseStatus = responseEntity.getStatusCode();
 
             SpectatorV4GetCurrentGameInfo result = responseEntity.getBody();
 
@@ -321,32 +327,36 @@ public class SummonerService {
             ).stream().collect(Collectors.toMap(Summoner::getSummonerId, s -> s));
 
             // summonerId 및 플레이 정보를 통해서 ChampionPlays 정보를 쿼리해야 함
-            List<IngameParticipantDto> participants = result.getParticipants().stream()
-                .map(p -> {
-                    Summoner targetSummoner = summonerMap.getOrDefault(p.getSummonerId(), null);
-                    if (targetSummoner == null) {
-                        return null;
-                    }
-                    SummonerDto summonerDto = new SummonerDto(targetSummoner);
+            // (수정) summonerPlay를 통해서 SummonerPlays로 가져오기
 
-                    ChampionPlaysDto championPlaysDto = participantService.getChampionPlaysByPuuidAndChampionId(summonerDto.getPuuid(), p.getChampionId());
-
-                    return IngameParticipantDto.builder()
-                        .participant(p).summoner(summonerDto).championPlaysDto(championPlaysDto)
-                        .build();
-                }).toList();
-
-            return IngameInfoRes.builder()
-                .participants(participants)
-                .gameLength(result.getGameLength())
-                .queueId(result.getGameQueueConfigId().intValue())
-                .startTime(result.getGameStartTime())
-                .build();
+//            List<IngameParticipantDto> participants = result.getParticipants().stream()
+//                .map(p -> {
+//                    Summoner targetSummoner = summonerMap.getOrDefault(p.getSummonerId(), null);
+//                    if (targetSummoner == null) {
+//                        return null;
+//                    }
+//                    SummonerDto summonerDto = new SummonerDto(targetSummoner);
+//
+//                    ChampionPlaysDto championPlaysDto = participantService.getChampionPlaysByPuuidAndChampionId(summonerDto.getPuuid(), p.getChampionId());
+//
+//                    return IngameParticipantDto.builder()
+//                        .participant(p).summoner(summonerDto).championPlaysDto(championPlaysDto)
+//                        .build();
+//                }).toList();
+            return null;
+//            return IngameInfoRes.builder()
+//                .participants(participants)
+//                .gameLength(result.getGameLength())
+//                .queueId(result.getGameQueueConfigId().intValue())
+//                .startTime(result.getGameStartTime())
+//                .build();
         } catch (HttpClientErrorException.NotFound notFoundException) {
             throw new CustomException(ErrorCode.RESULT_NOT_FOUND, "소환사 정보가 존재하지 않거나 게임 중이 아닙니다.");
         } catch (HttpClientErrorException.TooManyRequests tooManyRequestsException) {
             throw new CustomException(ErrorCode.TOO_MANY_REQUESTS);
         }
+
+        /*---------------------------- RestTemplate 요청 ----------------------------*/
     }
 
     @Data
