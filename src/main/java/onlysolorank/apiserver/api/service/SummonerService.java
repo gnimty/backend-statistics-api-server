@@ -121,7 +121,7 @@ public class SummonerService {
 
         // 소환사의 top 10 챔피언 플레이 정보 가져오기
         List<ChampionPlayWithChampionDto> top10ChampionPlaysDetailDtoList =
-            participantService.getChampionStatus(summoner.getPuuid(), 10).stream().map(t->ChampionPlayWithChampionDto.builder().championPlay(t).build()).toList();
+            participantService.getChampionStatus(summoner.getPuuid(), 10).stream().map(t -> ChampionPlayWithChampionDto.builder().championPlay(t).build()).toList();
 
         return SummonerMatchRes.builder()
             .summoner(SummonerDto.builder().summoner(summoner).build())
@@ -178,7 +178,7 @@ public class SummonerService {
                     })
                     .toList();
                 List<TeamDto> teamDtoList = teamMap.get(match.getMatchId())
-                    .stream().map(t-> new TeamDto(t, totalGold.get())).toList();
+                    .stream().map(t -> new TeamDto(t, totalGold.get())).toList();
                 return MatchDto.builder().match(match).participants(participantDtoList).teams(teamDtoList).build();
             }).toList();
     }
@@ -233,7 +233,7 @@ public class SummonerService {
         // 1. 특정 티어 이상인 소환사 정보 전부 가져오기
         Map<String, SummonerDto> summonerByTierGt = getSummonersByMmrGreaterThanEqual(stdTier).stream()
             .map(SummonerDto::new)
-            .collect(Collectors.toMap(SummonerDto::getPuuid, s->s));
+            .collect(Collectors.toMap(SummonerDto::getPuuid, s -> s));
 
         // 2. summoner puuid set 구성
         Set<String> puuids = summonerByTierGt.keySet().stream().collect(Collectors.toSet());
@@ -253,7 +253,6 @@ public class SummonerService {
     }
 
 
-
     public void refreshSummoner(String puuid) {
         // 1. puuid 소환사 존재 여부 확인
         Summoner summoner = getSummonerByPuuid(puuid);
@@ -262,13 +261,13 @@ public class SummonerService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         LocalDateTime now = LocalDateTime.now(); // 현재시간
-        log.info("현재 : {}",now.format(formatter));
+        log.info("현재 : {}", now.format(formatter));
         LocalDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES).toLocalDateTime(); // 갱신가능 시간
-        log.info("갱신가능시각 : {}",renewableAfter.format(formatter));
+        log.info("갱신가능시각 : {}", renewableAfter.format(formatter));
 
         // 만약 현재 시간이 최종 갱신 시점 + 120초보다 이전이라면
         if (now.isBefore(renewableAfter)) {
-            throw new CustomException(ErrorCode.TOO_MANY_REQUESTS, "소환사에 대한 요청이 너무 많습니다. "+Duration.between(now, renewableAfter).getSeconds()+"초 후에 다시 시도해주세요.");
+            throw new CustomException(ErrorCode.TOO_MANY_REQUESTS, "소환사에 대한 요청이 너무 많습니다. " + Duration.between(now, renewableAfter).getSeconds() + "초 후에 다시 시도해주세요.");
         }
 
         // 3. RestTemplate으로 Request 보내기
@@ -283,7 +282,7 @@ public class SummonerService {
         ResponseEntity<RefreshRes> responseEntity = restTemplate.postForEntity(uri, null, RefreshRes.class);
 
         // 4. 결과 코드로 바로 return
-        if (responseEntity.getStatusCode()!= HttpStatus.OK){
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
             throw new CustomException(ErrorCode.SUMMONER_REFRESH_FAILED);
         }
     }
@@ -301,7 +300,7 @@ public class SummonerService {
 
         URI uri = UriComponentsBuilder
             .fromUriString("https://kr.api.riotgames.com")
-            .path("/lol/spectator/v4/active-games/by-summoner/"+summoner.getSummonerId())
+            .path("/lol/spectator/v4/active-games/by-summoner/" + summoner.getSummonerId())
             .encode()
             .build()
             .toUri();
@@ -325,7 +324,7 @@ public class SummonerService {
             List<IngameParticipantDto> participants = result.getParticipants().stream()
                 .map(p -> {
                     Summoner targetSummoner = summonerMap.getOrDefault(p.getSummonerId(), null);
-                    if(targetSummoner==null){
+                    if (targetSummoner == null) {
                         return null;
                     }
                     SummonerDto summonerDto = new SummonerDto(targetSummoner);
@@ -345,18 +344,17 @@ public class SummonerService {
                 .build();
         } catch (HttpClientErrorException.NotFound notFoundException) {
             throw new CustomException(ErrorCode.RESULT_NOT_FOUND, "소환사 정보가 존재하지 않거나 게임 중이 아닙니다.");
-        } catch (HttpClientErrorException.TooManyRequests tooManyRequestsException){
+        } catch (HttpClientErrorException.TooManyRequests tooManyRequestsException) {
             throw new CustomException(ErrorCode.TOO_MANY_REQUESTS);
         }
     }
 
-
-
     @Data
     @NoArgsConstructor
-    private static class RefreshRes{
+    private static class RefreshRes {
         private String message;
     }
+
 
     // 보류
     public HasPlayedRes hasPlayedTogether(String myName, String friendName) {
@@ -366,6 +364,13 @@ public class SummonerService {
     }
 
     /* --------------------------- Repository 직접 접근 메소드 --------------------------- */
+
+    /**
+     * 소환사이름을 받아서 intername으로 변환 후 DB 조회하여 소환사정보 리턴
+     *
+     * @param summonerName 소환사이름
+     * @return Summoner
+     */
     private Summoner getSummonerBySummonerName(String summonerName) {
         String internalName = keywordToInternalName(summonerName);
         return summonerRepository.findSummonerByInternalName(internalName)
@@ -378,11 +383,11 @@ public class SummonerService {
     }
 
     private List<Summoner> getSummonersByMmrGreaterThanEqual(Tier stdTier) {
-        Integer mmr =  stdTier.getBasisMMR();
+        Integer mmr = stdTier.getBasisMMR();
         return summonerRepository.findSummonersByMmrGreaterThanEqual(mmr);
     }
 
-    private List<Summoner> getSummonersByIds(List<String> summonerIds){
+    private List<Summoner> getSummonersByIds(List<String> summonerIds) {
         return summonerRepository.findSummonersBySummonerIdIn(summonerIds);
     }
 

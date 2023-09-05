@@ -31,7 +31,7 @@ public class SummonerPlayService {
     }
 
     public List<SummonerPlay> getSummonerPlaysByCondition(String championName, Integer limit){
-        return summonerPlayRepository.findTop100SummonerPlaysByChampionNameAndTotalPlaysGreaterThanEqualOrderByTotalPlaysDesc(championName, limit);
+        return summonerPlayRepository.findSpecialists(championName, limit);
     }
 
 }
