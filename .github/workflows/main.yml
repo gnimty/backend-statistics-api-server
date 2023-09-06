@@ -57,7 +57,6 @@ jobs:
             echo ${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}:${{ secrets.TAG }}
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             sudo docker stop ${{ secrets.IMAGE_NAME }}
-            sudo docker rm ${{ secrets.IMAGE_NAME }}
             sudo docker pull ${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}:${{ secrets.TAG }}
-            docker run --rm -d --env-file .env -p 8080:8080 -i --name statistics-api-server ${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}:${{ secrets.TAG }}
+            sudo docker run --rm -d --env-file .env -p 8080:8080 -i --name statistics-api-server ${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}:${{ secrets.TAG }}
 
