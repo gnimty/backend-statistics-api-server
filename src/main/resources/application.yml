@@ -13,10 +13,15 @@ server:
   servlet:
     context-path: /statistics
 
-# MongoRepository logger setting
+
 logging:
+  # MongoRepository logger setting
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+  # logger timezone setting
+  pattern:
+    dateformat: "\"yyyy-mm-dd't'hh:mm:ss.sssxxx\", Asia/Seoul"
 
 # Batch Resource
 batch:
