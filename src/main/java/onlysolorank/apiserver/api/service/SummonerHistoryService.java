@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.domain.SummonerHistory;
-import onlysolorank.apiserver.repository.summoner_history.SummonerHistoryRepository;
+import onlysolorank.apiserver.repository.history.SummonerHistoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 

@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -18,6 +19,7 @@ import java.util.List;
  * -----------------------------------------------------------
  * 2023/07/31        solmin       최초 생성
  * 2023/08/30        solmin       Riot API로부터 요청받은 데이터 processing을 위한 생성자 오버라이딩
+ * 2023/08/06        solmin       PerkDetail 구조 수정: Selections to Integer (Perk ID)
  */
 @Getter
 @ToString
@@ -76,12 +78,12 @@ public class Perk {
     private static class PerkDetail {
         private String description;
         private Integer style;
-        private List<Selection> selections;
+        private List<Integer> selections;
 
         public PerkDetail(String description, Integer style, List<Selection> selections) {
             this.description = description;
             this.style = style;
-            this.selections = selections;
+            this.selections = selections.stream().map(s->s.getPerk()).toList();
         }
     }
 
@@ -89,8 +91,12 @@ public class Perk {
     @ToString
     private static class Selection {
         private Integer perk;
+
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private Integer var1;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private Integer var2;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private Integer var3;
 
         public Selection(Integer perk, Integer var1, Integer var2, Integer var3) {
