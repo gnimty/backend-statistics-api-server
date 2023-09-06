@@ -1,4 +1,4 @@
-package onlysolorank.apiserver.repository.summoner_history;
+package onlysolorank.apiserver.repository.history;
 
 import onlysolorank.apiserver.domain.SummonerHistory;
 import org.springframework.data.mongodb.repository.MongoRepository;
