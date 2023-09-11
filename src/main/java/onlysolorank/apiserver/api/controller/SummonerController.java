@@ -33,6 +33,7 @@ import java.util.Optional;
  * 2023/08/16        solmin       같이 플레이한 소환사인지 여부 구현 중
  * 2023/08/29        solmin       소환사 전적갱신 배치서버와 연동
  * 2023/08/30        solmin       소환사 인게임 정보 로드 연동
+ * 2023/09/11        solmin       최근 20게임 플레이한 같은 팀 소환사 리스트 가져오기 추가
  */
 @RestController
 @RequiredArgsConstructor
@@ -117,14 +118,12 @@ public class SummonerController {
         return CommonResponse.success(data);
     }
 
-    // 보류
-    @GetMapping("/together/pair")
-    public CommonResponse<HasPlayedRes> hasPlayedTogether(@ModelAttribute @Valid SummonerNamePairReq summonerNamePairReq) {
-        String myName = summonerNamePairReq.getMyName();
-        String friendName = summonerNamePairReq.getFriendName();
 
-        HasPlayedRes data = summonerService.hasPlayedTogether(myName, friendName);
-        return CommonResponse.success(data);
+    @GetMapping("/together/{summoner_name}")
+    public CommonResponse<RecentMemberRes> getRecentMembers(@PathVariable("summoner_name") String summonerName) {
+        List<RecentMemberDto> data = summonerService.getRecentMemberInfo(summonerName);
+
+        return CommonResponse.success(new RecentMemberRes(data.size(), data));
     }
 
 

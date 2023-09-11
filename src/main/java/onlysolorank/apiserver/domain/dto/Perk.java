@@ -20,6 +20,7 @@ import java.util.List;
  * 2023/07/31        solmin       최초 생성
  * 2023/08/30        solmin       Riot API로부터 요청받은 데이터 processing을 위한 생성자 오버라이딩
  * 2023/08/06        solmin       PerkDetail 구조 수정: Selections to Integer (Perk ID)
+ * 2023/09/11        solmin       08/06 변경사항 삭제
  */
 @Getter
 @ToString
@@ -78,12 +79,12 @@ public class Perk {
     private static class PerkDetail {
         private String description;
         private Integer style;
-        private List<Integer> selections;
+        private List<Selection> selections;
 
         public PerkDetail(String description, Integer style, List<Selection> selections) {
             this.description = description;
             this.style = style;
-            this.selections = selections.stream().map(s->s.getPerk()).toList();
+            this.selections = selections;
         }
     }
 

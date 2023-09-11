@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import onlysolorank.apiserver.api.controller.dto.HasPlayedRes;
 import onlysolorank.apiserver.api.controller.dto.IngameInfoRes;
 import onlysolorank.apiserver.api.controller.dto.SummonerMatchRes;
 
@@ -67,6 +66,7 @@ import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName
  * 2023/08/16        solmin       MMR 기준 소환사 랭킹 정보 조회 메소드 추가 구현
  * 2023/08/28        solmin       챔피언 장인랭킹 구현
  * 2023/08/30        solmin       소환사 인게임 정보 구현, restTemplate로 받아온 정보 convert 및 추가정보 붙여서 보내주기
+ * 2023/09/11        solmin       최근 20게임 플레이한 같은 팀 소환사 리스트 가져오기 추가
  */
 @Service
 @RequiredArgsConstructor
@@ -381,12 +381,11 @@ public class SummonerService {
         private String message;
     }
 
+    public List<RecentMemberDto> getRecentMemberInfo(String summonerName) {
+        Summoner summoner = getSummonerBySummonerName(summonerName);
 
-    // 보류
-    public HasPlayedRes hasPlayedTogether(String myName, String friendName) {
-        // (gameId 내림차순) 내 최근 20개의 matchID로 나와 같은 팀에서
-
-        return null;
+        List<RecentMemberDto> result = participantService.getDistinctTeamMembersExceptMe(summoner.getPuuid());
+        return result;
     }
 
     /* --------------------------- Repository 직접 접근 메소드 --------------------------- */

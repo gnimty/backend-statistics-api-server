@@ -2,6 +2,7 @@ package onlysolorank.apiserver.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Optional;
 
 /**
  * packageName    : onlysolorank.apiserver.utils
@@ -16,6 +17,7 @@ import java.math.RoundingMode;
  * 2023/07/31        solmin       Converter -> 단순 구조로 변경
  * 2023/08/09        solmin       Double 반올림 내부함수 추가
  * 2023/09/04        solmin       클래스 이름 변경
+ * 2023/09/11        solmin       divideAndReturnDouble 추가
  */
 
 
@@ -47,4 +49,12 @@ public class CustomFunctions {
     public static Double doubleValueToHalfUp(Double value, int scale){
         return new BigDecimal(value).setScale(scale, RoundingMode.HALF_UP).doubleValue();
     }
+
+    public static Optional<Double> divideAndReturnDouble(Integer a, Integer b, int scale){
+        if(b==0){
+            return null;
+        }
+        return Optional.of(doubleValueToHalfUp(a.doubleValue() / b.doubleValue(), scale));
+    }
+
 }
