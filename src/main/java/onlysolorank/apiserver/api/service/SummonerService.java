@@ -81,6 +81,7 @@ public class SummonerService {
     private final ParticipantService participantService;
     private final SummonerPlayService summonerPlayService;
     private final SummonerHistoryService summonerHistoryService;
+    private final CrawlService crawlService;
 
     @Value("${batch.host}")
     private String BATCH_HOST;
@@ -351,9 +352,10 @@ public class SummonerService {
                 if(summonerPlay!=null){
                     summonerPlayDto = new SummonerPlayDto(summonerPlay);
                 }
-
+                Champion champion = crawlService.getChamiponByChampionId(p.getChampionId());
                 return IngameParticipantDto.builder()
                     .summonerPlayDto(summonerPlayDto)
+                    .champion(champion)
                     .participant(p)
                     .summoner(new SummonerDto(targetSummoner))
                     .build();

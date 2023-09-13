@@ -9,10 +9,6 @@ spring:
       timeZone: Asia/Seoul
       uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}?timezone=Asia/Seoul
 
-server:
-  servlet:
-    context-path: /statistics
-
 
 logging:
   # MongoRepository logger setting

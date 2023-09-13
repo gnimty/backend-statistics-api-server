@@ -36,7 +36,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-@RequestMapping("/rank")
+@RequestMapping("/statistics/rank")
 public class RankController {
     private final SummonerService summonerService;
     private final static Integer STD_MMR = 2400;
