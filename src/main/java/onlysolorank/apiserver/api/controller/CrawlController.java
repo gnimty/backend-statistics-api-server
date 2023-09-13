@@ -43,7 +43,7 @@ public class CrawlController {
         return CommonResponse.success(new VersionRes(latestVersion));
     }
 
-    @GetMapping("/champion/sale")
+    @GetMapping("/sale/champion")
     public CommonResponse<List<ChampionSaleRes>> getChampionSalesInfo(){
         List<ChampionSaleRes> allChampionSalesInfo = crawlService.getAllChampionSalesInfo()
             .stream()
@@ -53,7 +53,7 @@ public class CrawlController {
         return CommonResponse.success(allChampionSalesInfo);
     }
 
-    @GetMapping("/skin/sale")
+    @GetMapping("/sale/skin")
     public CommonResponse<List<SkinSaleRes>> getSkinSalesInfo(){
         List<SkinSaleRes> allSkinSalesInfo = crawlService.getAllSkinSalesInfo()
             .stream()
