@@ -2,7 +2,11 @@ package onlysolorank.apiserver.api.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onlysolorank.apiserver.api.exception.CustomException;
+import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.service.dto.ChampionStatsDto;
+import onlysolorank.apiserver.domain.Champion;
+import onlysolorank.apiserver.repository.champion.ChampionRepository;
 import onlysolorank.apiserver.repository.statistics.ChampionStatisticsRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +22,7 @@ import java.util.List;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/09/06        solmin       최초 생성
+ * 2023/09/13        solmin       전체 챔피언 및 특정 챔피언 조회
  */
 
 @Service

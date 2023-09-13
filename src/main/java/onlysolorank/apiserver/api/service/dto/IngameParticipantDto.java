@@ -2,6 +2,7 @@ package onlysolorank.apiserver.api.service.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.dto.Perk;
 
 /**
@@ -14,6 +15,7 @@ import onlysolorank.apiserver.domain.dto.Perk;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/08/30        solmin       최초 생성
+ * 2023/09/13        solmin       챔피언 이름 주입
  */
 
 @Data
@@ -28,12 +30,12 @@ public class IngameParticipantDto {
     private Perk perks;
 
     @Builder
-    public IngameParticipantDto(SpectatorV4GetCurrentGameInfo.CurrentGameParticipant participant, SummonerDto summoner, SummonerPlayDto summonerPlayDto){
+    public IngameParticipantDto(SpectatorV4GetCurrentGameInfo.CurrentGameParticipant participant, SummonerDto summoner, SummonerPlayDto summonerPlayDto,
+                                Champion champion){
         this.teamId = participant.getTeamId();
         this.summoner = summoner;
-        this.championId = participant.getChampionId();
-        // TODO 추후 추가 예정
-        this.championName = null;
+        this.championId = champion.getChampionId();
+        this.championName = champion.getEnName();
         this.summonerPlayDto = summonerPlayDto;
         this.spellDId = participant.getSpell1Id();
         this.spellFId = participant.getSpell2Id();

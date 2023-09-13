@@ -39,7 +39,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-@RequestMapping("/summoners")
+@RequestMapping("/statistics/summoners")
 public class SummonerController {
     private final SummonerService summonerService;
 
