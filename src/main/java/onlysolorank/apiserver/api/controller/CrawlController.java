@@ -64,13 +64,16 @@ public class CrawlController {
     }
 
     @GetMapping("/champion")
-    public List<Champion> getAllChampion(){
-        return  crawlService.getAllChampions();
+    public CommonResponse<List<Champion>> getAllChampion(){
+        List<Champion> result = crawlService.getAllChampions();
+        return CommonResponse.success(result);
     }
 
     @GetMapping("/champion/{champion_id}")
-    public Champion getAllChampion(@PathVariable("champion_id") Long championId){
-        return crawlService.getChamiponByChampionId(championId);
+    public CommonResponse<Champion> getAllChampion(@PathVariable("champion_id") Long championId){
+        Champion result = crawlService.getChamiponByChampionId(championId);
+
+        return CommonResponse.success(result);
     }
 
 }
