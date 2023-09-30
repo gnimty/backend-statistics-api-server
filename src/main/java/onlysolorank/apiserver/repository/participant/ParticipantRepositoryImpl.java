@@ -2,6 +2,7 @@ package onlysolorank.apiserver.repository.participant;
 
 import lombok.RequiredArgsConstructor;
 import onlysolorank.apiserver.domain.Participant;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -27,6 +28,7 @@ import static onlysolorank.apiserver.repository.participant.ParticipantRepositor
 @Repository
 @RequiredArgsConstructor
 public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom{
+    @Qualifier("mongoTemplate")
     private final MongoTemplate mongoTemplate;
     @Override
     public List<Participant> findByDistinctParticipantTeamsExceptMe(List<DistinctParticipantTeam> teams, String puuid) {

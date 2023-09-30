@@ -19,7 +19,6 @@ import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName
  */
 
 
-@Getter
 public class KeywordReq {
 
     @NotBlank(message = "keyword는 internalName 기준으로 1글자 이상 입력해야 합니다.")
@@ -29,4 +28,7 @@ public class KeywordReq {
         this.keyword = keywordToInternalName(keyword);
     }
 
+    public String getInternalName(){
+        return this.keyword;
+    }
 }

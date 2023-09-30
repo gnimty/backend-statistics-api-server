@@ -8,8 +8,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * packageName    : onlysolorank.apiserver.repository.statistics
  * fileName       : ChampionStatisticsRepositoryTest
@@ -28,6 +26,8 @@ class ChampionStatisticsRepositoryTest {
     @Autowired
     private ChampionStatisticsRepository championStatisticsRepository;
 
+    @Autowired
+    private ChampionStatisticsRepositoryCustom championStatisticsRepositoryCustom;
 
     @Test
     void 단일통계정보_조회(){
@@ -38,4 +38,5 @@ class ChampionStatisticsRepositoryTest {
             System.out.println("oneByChampionId = " + oneByChampionId.get());
         }
     }
+
 }

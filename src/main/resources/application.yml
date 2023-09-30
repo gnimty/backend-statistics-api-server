@@ -1,13 +1,15 @@
 spring:
-  data:
-    mongodb:
-      host: ${MONGO_HOST}
-      port: ${MONGO_PORT}
-      database: ${MONGO_RIOTDATA_DB}
-      username: ${MONGO_USERNAME}
-      password: ${MONGO_PASSWORD}
-      timeZone: Asia/Seoul
-      uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}?timezone=Asia/Seoul
+  main:
+    allow-bean-definition-overriding: true
+
+mongodb:
+  host: ${MONGO_HOST}
+  port: ${MONGO_PORT}
+  database: ${MONGO_RIOTDATA_DB}
+  username: ${MONGO_USERNAME}
+  password: ${MONGO_PASSWORD}
+  timeZone: Asia/Seoul
+  uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}?timezone=Asia/Seoulz
 
 
 logging:
@@ -32,13 +34,23 @@ riot:
 # dev properties
 ---
 spring.config.activate.on-profile: dev
-spring:
-  data:
-    mongodb:
-      host: ${MONGO_HOST}
-      port: ${MONGO_PORT}
-      database: ${MONGO_RIOTDATA_DB}
-      username: ${MONGO_USERNAME}
-      password: ${MONGO_PASSWORD}
-      admin_db: ${MONGO_ADMIN_DB}
-      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}?authSource=${MONGO_ADMIN_DB}
+
+mongodb:
+  primary:
+    host: ${MONGO_HOST}
+    port: ${MONGO_PORT}
+    database: ${MONGO_RIOTDATA_DB}
+    username: ${MONGO_USERNAME}
+    password: ${MONGO_PASSWORD}
+    timeZone: Asia/Seoul
+    authenticationDatabase: ${MONGO_ADMIN_DB}
+    uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}?timezone=Asia/Seoul
+  secondary:
+    host: ${MONGO_HOST}
+    port: ${MONGO_PORT}
+    database: ${MONGO_STATISTICS_DB}
+    username: ${MONGO_USERNAME}
+    password: ${MONGO_PASSWORD}
+    timeZone: Asia/Seoul
+    authenticationDatabase: ${MONGO_ADMIN_DB}
+    uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_STATISTICS_DB}?timezone=Asia/Seoul
