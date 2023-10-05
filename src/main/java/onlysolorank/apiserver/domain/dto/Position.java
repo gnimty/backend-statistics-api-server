@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
  * 2023/07/31        solmin       최초 생성
  */
 
-@Slf4j
 public enum Position {
     TOP("탑"),
     JUNGLE("정글"),

@@ -19,6 +19,4 @@ public enum TierFilter {
     MASTER,
     DIAMOND,
     EMERALD
-
-
 }

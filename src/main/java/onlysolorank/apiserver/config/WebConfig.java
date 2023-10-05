@@ -28,6 +28,5 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new StringToPeriodConverter());
         registry.addConverter(new StringToPositionFilterConverter());
         registry.addConverter(new StringToPositionConverter());
-
     }
 }

@@ -3,7 +3,7 @@ package onlysolorank.apiserver.api.service.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.domain.statistics.BaseChampionStat;
+import onlysolorank.apiserver.domain.statistics.stat.BaseChampionStat;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto

@@ -1,6 +1,6 @@
 package onlysolorank.apiserver.repository.statistics;
 
-import onlysolorank.apiserver.domain.statistics.BaseChampionStat;
+import onlysolorank.apiserver.domain.statistics.stat.BaseChampionStat;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**

@@ -60,17 +60,20 @@ import static java.util.Collections.singletonList;
         SummonerPlayRepository.class,
         SummonerHistoryRepository.class
     },
-    mongoTemplateRef = "mongoTemplate")
+    mongoTemplateRef = "primaryMongoTemplate")
 @EnableConfigurationProperties
 public class PrimaryConfig {
-    @Bean(name = "primaryProperties")
+    @Bean("primaryProperties")
+    @Qualifier("primaryProperties")
     @ConfigurationProperties(prefix = "mongodb.primary")
     @Primary
-    public MongoProperties primaryProperties() {
+    public MongoProperties mongoProperties() {
         return new MongoProperties();
     }
 
-    @Bean(name = "primaryMongoClient")
+    @Bean("primaryMongoClient")
+    @Primary
+    @Qualifier("primaryMongoClient")
     public MongoClient mongoClient(@Qualifier("primaryProperties") MongoProperties mongoProperties) {
 
         MongoCredential credential = MongoCredential
@@ -83,18 +86,22 @@ public class PrimaryConfig {
             .build());
     }
 
+    @Bean("primaryMongoDBFactory")
+    @Qualifier("primaryMongoDBFactory")
     @Primary
-    @Bean(name = "primaryMongoDBFactory")
     public MongoDatabaseFactory mongoDatabaseFactory(
         @Qualifier("primaryMongoClient") MongoClient mongoClient,
         @Qualifier("primaryProperties") MongoProperties mongoProperties) {
         return new SimpleMongoClientDatabaseFactory(mongoClient, mongoProperties.getDatabase());
     }
 
+    @Bean("primaryMongoTemplate")
+    @Qualifier("primaryMongoTemplate")
     @Primary
-    @Bean(name = "mongoTemplate")
-    @Qualifier
-    public MongoTemplate mongoTemplate(MongoDatabaseFactory mongoDatabaseFactory, MongoConverter mongoConverter) {
+    public MongoTemplate mongoTemplate(
+        @Qualifier("primaryMongoDBFactory") MongoDatabaseFactory mongoDatabaseFactory,
+        MongoConverter mongoConverter) {
         return new MongoTemplate(mongoDatabaseFactory, mongoConverter);
     }
+
 }

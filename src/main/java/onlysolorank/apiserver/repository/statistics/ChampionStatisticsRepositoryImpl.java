@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.api.controller.dto.TierFilter;
-import onlysolorank.apiserver.domain.statistics.BaseChampionStat;
-import onlysolorank.apiserver.domain.statistics.DailyChampionStat;
-import onlysolorank.apiserver.domain.statistics.MonthlyChampionStat;
-import onlysolorank.apiserver.domain.statistics.WeeklyChampionStat;
+import onlysolorank.apiserver.domain.statistics.stat.BaseChampionStat;
+import onlysolorank.apiserver.domain.statistics.stat.DailyChampionStat;
+import onlysolorank.apiserver.domain.statistics.stat.MonthlyChampionStat;
+import onlysolorank.apiserver.domain.statistics.stat.WeeklyChampionStat;
 import onlysolorank.apiserver.domain.statistics.tier.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,7 +38,7 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
 
     @Autowired
     @Qualifier("secondaryMongoTemplate")
-    private final MongoTemplate secondaryMongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public List<? extends BaseChampionStat> findStats(Period period, PositionFilter position, TierFilter tier) {
@@ -55,13 +55,13 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
 
         switch(period){
             case DAY:
-                result = secondaryMongoTemplate.find(query, DailyChampionStat.class);
+                result = mongoTemplate.find(query, DailyChampionStat.class);
                 break;
             case WEEK:
-                result = secondaryMongoTemplate.find(query, WeeklyChampionStat.class);
+                result = mongoTemplate.find(query, WeeklyChampionStat.class);
                 break;
             case MONTH:
-                result = secondaryMongoTemplate.find(query, MonthlyChampionStat.class);
+                result = mongoTemplate.find(query, MonthlyChampionStat.class);
                 break;
         }
 
@@ -80,19 +80,19 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
 
         switch(position){
             case TOP:
-                result =  secondaryMongoTemplate.find(query, TopTier.class);
+                result =  mongoTemplate.find(query, TopTier.class);
                 break;
             case JUNGLE:
-                result =  secondaryMongoTemplate.find(query, JungleTier.class);
+                result =  mongoTemplate.find(query, JungleTier.class);
                 break;
             case MIDDLE:
-                result =  secondaryMongoTemplate.find(query, MiddleTier.class);
+                result =  mongoTemplate.find(query, MiddleTier.class);
                 break;
             case BOTTOM:
-                result =  secondaryMongoTemplate.find(query, BottomTier.class);
+                result =  mongoTemplate.find(query, BottomTier.class);
                 break;
             case UTILITY:
-                result =  secondaryMongoTemplate.find(query, UtilityTier.class);
+                result =  mongoTemplate.find(query, UtilityTier.class);
                 break;
         }
 

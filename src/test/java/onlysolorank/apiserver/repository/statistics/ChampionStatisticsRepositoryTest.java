@@ -1,6 +1,6 @@
 package onlysolorank.apiserver.repository.statistics;
 
-import onlysolorank.apiserver.domain.ChampionStatistics;
+import onlysolorank.apiserver.domain.statistics.stat.ChampionStatistics;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,18 +25,18 @@ import java.util.Optional;
 class ChampionStatisticsRepositoryTest {
     @Autowired
     private ChampionStatisticsRepository championStatisticsRepository;
-
-    @Autowired
-    private ChampionStatisticsRepositoryCustom championStatisticsRepositoryCustom;
+//
+//    @Autowired
+//    private ChampionStatisticsRepositoryCustom championStatisticsRepositoryCustom;
 
     @Test
     void 단일통계정보_조회(){
 
         Optional<ChampionStatistics> oneByChampionId = championStatisticsRepository.findOneByChampionId(112L);
-
-        if(oneByChampionId.isPresent()){
-            System.out.println("oneByChampionId = " + oneByChampionId.get());
-        }
+//
+//        if(oneByChampionId.isPresent()){
+//            System.out.println("oneByChampionId = " + oneByChampionId.get());
+//        }
     }
 
 }

@@ -1,8 +1,8 @@
-package onlysolorank.apiserver.domain.statistics;
+package onlysolorank.apiserver.domain.statistics.stat;
 
 import lombok.Getter;
+import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.api.controller.dto.TierFilter;
-import onlysolorank.apiserver.domain.dto.Position;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -27,7 +27,8 @@ public class BaseChampionStat {
 
     private Long championId;
 
-    private Position teamPosition;
+    @Field("teamPosition")
+    private PositionFilter position;
 
     private TierFilter tier;
     @Field("win_cnt")

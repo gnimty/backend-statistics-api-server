@@ -3,7 +3,7 @@ package onlysolorank.apiserver.repository.statistics;
 import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.api.controller.dto.TierFilter;
-import onlysolorank.apiserver.domain.statistics.BaseChampionStat;
+import onlysolorank.apiserver.domain.statistics.stat.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.tier.BaseChampionTier;
 
 import java.util.List;

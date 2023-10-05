@@ -1,9 +1,6 @@
 package onlysolorank.apiserver.config;
 
-import onlysolorank.apiserver.config.converter.StringToPositionConverter;
-import onlysolorank.apiserver.config.converter.StringToTierConverter;
-import onlysolorank.apiserver.config.converter.StringToTierFilterConverter;
-import onlysolorank.apiserver.config.converter.StringToTierStatConverter;
+import onlysolorank.apiserver.config.converter.*;
 import onlysolorank.apiserver.utils.DateToZonedDateTimeConverter;
 import onlysolorank.apiserver.utils.ZonedDateTimeToDateConverter;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +35,7 @@ public class MongoConfig {
         converters.add(new StringToTierFilterConverter());
         converters.add(new StringToPositionConverter());
         converters.add(new StringToTierStatConverter());
+        converters.add(new TierFilterToStringConverter());
         return new MongoCustomConversions(converters);
     }
 

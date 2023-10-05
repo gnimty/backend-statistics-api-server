@@ -20,5 +20,6 @@ import java.util.Optional;
 public interface ChampionRepository extends MongoRepository<Champion,String> {
 
     Optional<Champion> findOneByChampionId(String championId);
+    Optional<Champion> findOneByEnName(String championName);
     List<Champion> findAll();
 }

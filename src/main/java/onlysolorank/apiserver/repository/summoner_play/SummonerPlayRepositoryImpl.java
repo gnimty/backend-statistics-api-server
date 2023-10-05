@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class SummonerPlayRepositoryImpl implements SummonerPlayRepositoryCustom{
-    @Qualifier("mongoTemplate")
+    @Qualifier("primaryMongoTemplate")
     private final MongoTemplate mongoTemplate;
 
     @Override

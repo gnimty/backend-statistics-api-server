@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.repository.statistics;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.statistics
@@ -13,6 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * -----------------------------------------------------------
  * 2023/09/27        solmin       최초 생성
  */
+
+@ActiveProfiles("test")
+@SpringBootTest
 class ChampionStatisticsRepositoryV2Test {
 
 }

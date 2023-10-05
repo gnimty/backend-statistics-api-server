@@ -28,7 +28,7 @@ import static onlysolorank.apiserver.repository.participant.ParticipantRepositor
 @Repository
 @RequiredArgsConstructor
 public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom{
-    @Qualifier("mongoTemplate")
+    @Qualifier("primaryMongoTemplate")
     private final MongoTemplate mongoTemplate;
     @Override
     public List<Participant> findByDistinctParticipantTeamsExceptMe(List<DistinctParticipantTeam> teams, String puuid) {

@@ -5,6 +5,8 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import onlysolorank.apiserver.repository.analysis.ChampionAnalysisRepository;
+import onlysolorank.apiserver.repository.counter.ChampionCounterRepository;
 import onlysolorank.apiserver.repository.statistics.ChampionStatisticsRepositoryV2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
@@ -33,16 +35,18 @@ import static java.util.Collections.singletonList;
  */
 
 @Configuration
-@EnableMongoRepositories(basePackageClasses = {ChampionStatisticsRepositoryV2.class}, mongoTemplateRef = "secondaryMongoTemplate")
+@EnableMongoRepositories(basePackageClasses = {ChampionStatisticsRepositoryV2.class, ChampionAnalysisRepository.class, ChampionCounterRepository.class}, mongoTemplateRef = "secondaryMongoTemplate")
 @EnableConfigurationProperties
 public class SecondaryConfig {
     @Bean(name = "secondaryProperties")
     @ConfigurationProperties(prefix = "mongodb.secondary")
-    public MongoProperties secondaryProperties() {
+    @Qualifier("secondaryProperties")
+    public MongoProperties secondaryMongoProperties() {
         return new MongoProperties();
     }
 
     @Bean(name = "secondaryMongoClient")
+    @Qualifier("secondaryMongoClient")
     public MongoClient mongoClient(@Qualifier("secondaryProperties") MongoProperties mongoProperties) {
 
         MongoCredential credential = MongoCredential
@@ -55,18 +59,20 @@ public class SecondaryConfig {
             .build());
     }
 
-    @Bean(name = "secondaryMongoDBFactory")
+    @Bean(name="secondaryMongoDBFactory")
+    @Qualifier("secondaryMongoDBFactory")
     public MongoDatabaseFactory mongoDatabaseFactory(
         @Qualifier("secondaryMongoClient") MongoClient mongoClient,
         @Qualifier("secondaryProperties") MongoProperties mongoProperties) {
         return new SimpleMongoClientDatabaseFactory(mongoClient, mongoProperties.getDatabase());
     }
 
-    @Bean(name = "secondaryMongoTemplate")
+    @Bean(name="secondaryMongoTemplate")
     @Qualifier("secondaryMongoTemplate")
-    public MongoTemplate mongoTemplate(@Qualifier("secondaryMongoDBFactory") MongoDatabaseFactory mongoDatabaseFactory, MongoConverter mongoConverter) {
+    public MongoTemplate mongoTemplate(
+        @Qualifier("secondaryMongoDBFactory") MongoDatabaseFactory mongoDatabaseFactory,
+        MongoConverter mongoConverter) {
         return new MongoTemplate(mongoDatabaseFactory, mongoConverter);
     }
-
 
 }
