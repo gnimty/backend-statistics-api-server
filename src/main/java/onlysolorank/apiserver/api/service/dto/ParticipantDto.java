@@ -2,9 +2,9 @@ package onlysolorank.apiserver.api.service.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.domain.dto.Perk;
-import onlysolorank.apiserver.domain.dto.Position;
 import onlysolorank.apiserver.domain.dto.ItemBundleDto;
 import onlysolorank.apiserver.domain.dto.SoloTierDto;
 import onlysolorank.apiserver.domain.dto.Tier;
@@ -32,7 +32,7 @@ public class ParticipantDto {
 //    private Boolean isMe;
     private Boolean win;
     private Integer teamId;
-    private Position position;
+    private PositionFilter position;
     private Integer kill;
     private Integer death;
     private Integer assist;
@@ -109,9 +109,9 @@ public class ParticipantDto {
         this.skillBuilds = participant.getSkillBuild();
 
         try {
-            this.position = Position.valueOf(participant.getLane());
+            this.position = PositionFilter.valueOf(participant.getLane());
         }catch(IllegalArgumentException e){
-            this.position = Position.UNKNOWN;
+            this.position = PositionFilter.UNKNOWN;
         }
 
         if(summonerName!=null) this.summonerName =summonerName;

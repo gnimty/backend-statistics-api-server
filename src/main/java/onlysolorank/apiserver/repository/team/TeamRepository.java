@@ -2,6 +2,7 @@ package onlysolorank.apiserver.repository.team;
 
 import onlysolorank.apiserver.domain.Team;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ import java.util.List;
  * 2023/07/28        solmin       최초 생성
  * 2023/09/04        solmin       Custom Repository 분리
  */
+
+@Repository
 public interface TeamRepository extends MongoRepository<Team, String>, TeamRepositoryCustom {
 
     List<Team> findByMatchId(String matchId);

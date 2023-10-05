@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import onlysolorank.apiserver.api.service.dto.PuuidChampionIdPair;
 import onlysolorank.apiserver.domain.SummonerPlay;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class SummonerPlayRepositoryImpl implements SummonerPlayRepositoryCustom{
+    @Qualifier("primaryMongoTemplate")
     private final MongoTemplate mongoTemplate;
 
     @Override

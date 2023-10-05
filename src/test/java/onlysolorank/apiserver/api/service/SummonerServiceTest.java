@@ -35,9 +35,9 @@ class SummonerServiceTest {
 
     @Test
     void 키워드_변환결과_확인() {
-        assertEquals(new KeywordReq(keyword).getKeyword(), "hideonbush");
+        assertEquals(new KeywordReq(keyword).getInternalName(), "hideonbush");
 
-        assertFalse("hideonbus".equals(new KeywordReq(keyword).getKeyword()));
+        assertFalse("hideonbus".equals(new KeywordReq(keyword).getInternalName()));
     }
 
 

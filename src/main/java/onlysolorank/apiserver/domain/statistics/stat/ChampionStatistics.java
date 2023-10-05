@@ -1,4 +1,4 @@
-package onlysolorank.apiserver.domain;
+package onlysolorank.apiserver.domain.statistics.stat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

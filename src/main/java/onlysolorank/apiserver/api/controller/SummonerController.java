@@ -51,7 +51,7 @@ public class SummonerController {
      */
     @GetMapping("/autocomplete")
     public CommonResponse<List<SummonerDto>> getSummonerByInternalName(@ModelAttribute @Valid KeywordReq keywordReq) {
-        String internalName = keywordReq.getKeyword();
+        String internalName = keywordReq.getInternalName();
 
         List<SummonerDto> data = summonerService.getTop5SummonerDtoListByInternalName(internalName);
         return CommonResponse.success(data);
