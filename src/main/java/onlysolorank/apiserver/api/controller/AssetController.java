@@ -9,6 +9,7 @@ import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.AssetService;
 import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.Rotation;
+import onlysolorank.apiserver.domain.Version;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +41,7 @@ public class AssetController {
 
     @GetMapping("/version")
     public CommonResponse<VersionRes> getLatestVersion(){
-        String latestVersion = assetService.getLatestVersion();
+        Version latestVersion = assetService.getLatestVersion();
 
         return CommonResponse.success(new VersionRes(latestVersion));
     }
