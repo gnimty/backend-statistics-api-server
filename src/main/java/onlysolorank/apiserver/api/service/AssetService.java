@@ -36,6 +36,7 @@ public class AssetService {
     private final VersionRepository versionRepository;
     private final ChampionRepository championRepository;
 
+
     public Version getLatestVersion(){
         Optional<Version> version = versionRepository.findOneByOrder(0);
 
