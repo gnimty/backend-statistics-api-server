@@ -6,8 +6,9 @@ import onlysolorank.apiserver.api.controller.dto.ChampionSaleRes;
 import onlysolorank.apiserver.api.controller.dto.SkinSaleRes;
 import onlysolorank.apiserver.api.controller.dto.VersionRes;
 import onlysolorank.apiserver.api.response.CommonResponse;
-import onlysolorank.apiserver.api.service.CrawlService;
+import onlysolorank.apiserver.api.service.AssetService;
 import onlysolorank.apiserver.domain.Champion;
+import onlysolorank.apiserver.domain.Rotation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,7 @@ import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller
- * fileName       : CrawlController
+ * fileName       : AssetController
  * author         : solmin
  * date           : 2023/09/13
  * description    :
@@ -26,26 +27,27 @@ import java.util.List;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/09/13        solmin       최초 생성
+ * 2023/10/09        solmin       Prefix Asset으로 변경
  */
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-@RequestMapping("/crawl")
-public class CrawlController {
-    private final CrawlService crawlService;
+@RequestMapping("/asset")
+public class AssetController {
+    private final AssetService assetService;
 
     @GetMapping("/version")
     public CommonResponse<VersionRes> getLatestVersion(){
-        String latestVersion = crawlService.getLatestVersion();
+        String latestVersion = assetService.getLatestVersion();
 
         return CommonResponse.success(new VersionRes(latestVersion));
     }
 
     @GetMapping("/sale/champion")
     public CommonResponse<List<ChampionSaleRes>> getChampionSalesInfo(){
-        List<ChampionSaleRes> allChampionSalesInfo = crawlService.getAllChampionSalesInfo()
+        List<ChampionSaleRes> allChampionSalesInfo = assetService.getAllChampionSalesInfo()
             .stream()
             .map(ChampionSaleRes::new)
             .toList();
@@ -55,7 +57,7 @@ public class CrawlController {
 
     @GetMapping("/sale/skin")
     public CommonResponse<List<SkinSaleRes>> getSkinSalesInfo(){
-        List<SkinSaleRes> allSkinSalesInfo = crawlService.getAllSkinSalesInfo()
+        List<SkinSaleRes> allSkinSalesInfo = assetService.getAllSkinSalesInfo()
             .stream()
             .map(SkinSaleRes::new)
             .toList();
@@ -65,13 +67,20 @@ public class CrawlController {
 
     @GetMapping("/champion")
     public CommonResponse<List<Champion>> getAllChampion(){
-        List<Champion> result = crawlService.getAllChampions();
+        List<Champion> result = assetService.getAllChampions();
         return CommonResponse.success(result);
     }
 
     @GetMapping("/champion/{champion_id}")
     public CommonResponse<Champion> getAllChampion(@PathVariable("champion_id") Long championId){
-        Champion result = crawlService.getChamiponByChampionId(championId);
+        Champion result = assetService.getChamiponByChampionId(championId);
+
+        return CommonResponse.success(result);
+    }
+
+    @GetMapping("/rotation")
+    public CommonResponse<List<Rotation>> getRotationChampions(){
+        List<Rotation> result = assetService.getRotationChampions();
 
         return CommonResponse.success(result);
     }
