@@ -24,4 +24,6 @@ public class Version {
     private String id;
     private String version;
     private Integer order;
+    private String releaseNoteUrl;
+    private String releaseNoteImgUrl;
 }

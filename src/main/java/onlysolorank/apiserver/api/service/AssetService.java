@@ -36,11 +36,11 @@ public class AssetService {
     private final VersionRepository versionRepository;
     private final ChampionRepository championRepository;
 
-    public String getLatestVersion(){
+    public Version getLatestVersion(){
         Optional<Version> version = versionRepository.findOneByOrder(0);
 
         if(version.isPresent()){
-            return version.get().getVersion();
+            return version.get();
         }
         return null;
     }

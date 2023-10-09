@@ -2,6 +2,7 @@ package onlysolorank.apiserver.api.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import onlysolorank.apiserver.domain.Version;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -17,16 +18,12 @@ import lombok.Data;
 @Data
 public class VersionRes {
     private String version;
-    private String patchUrl;
+    private String releaseNoteUrl;
+    private String releaseNoteImgUrl;
 
-    @JsonIgnore
-    private static final String baseUrl = "https://www.leagueoflegends.com/ko-kr/news/game-updates/patch-%s-%s-notes/";
-
-    public VersionRes(String version){
-        this.version = version;
-
-        String[] split = version.split("\\.");
-
-        this.patchUrl = String.format(baseUrl, split[0], split[1]);
+    public VersionRes(Version version){
+        this.version = version.getVersion();
+        this.releaseNoteUrl = version.getReleaseNoteUrl();
+        this.releaseNoteImgUrl = version.getReleaseNoteImgUrl();
     }
 }
