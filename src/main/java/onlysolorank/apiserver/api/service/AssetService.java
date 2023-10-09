@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
-import onlysolorank.apiserver.domain.Champion;
-import onlysolorank.apiserver.domain.ChampionSale;
-import onlysolorank.apiserver.domain.SkinSale;
-import onlysolorank.apiserver.domain.Version;
+import onlysolorank.apiserver.domain.*;
 import onlysolorank.apiserver.repository.champion.ChampionRepository;
 import onlysolorank.apiserver.repository.crawl.ChampionSaleRepository;
 import onlysolorank.apiserver.repository.crawl.SkinSaleRepository;
@@ -19,7 +16,7 @@ import java.util.Optional;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service
- * fileName       : CrawlService
+ * fileName       : AssetService
  * author         : solmin
  * date           : 2023/09/13
  * description    :
@@ -27,12 +24,13 @@ import java.util.Optional;
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2023/09/13        solmin       최초 생성
+ * 2023/10/09        solmin       AssetService로 이름 변경
  */
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CrawlService {
+public class AssetService {
     private final ChampionSaleRepository championSaleRepository;
     private final SkinSaleRepository skinSaleRepository;
     private final VersionRepository versionRepository;
@@ -65,5 +63,10 @@ public class CrawlService {
             .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "챔피언 정보가 존재하지 않습니다."));
 
         return champion;
+    }
+
+    public List<Rotation> getRotationChampions(){
+        List<Rotation> rotationChampions = championRepository.findRotationChampions();
+        return rotationChampions;
     }
 }

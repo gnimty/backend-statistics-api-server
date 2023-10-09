@@ -17,7 +17,7 @@ import java.util.Optional;
  * -----------------------------------------------------------
  * 2023/09/13        solmin       최초 생성
  */
-public interface ChampionRepository extends MongoRepository<Champion,String> {
+public interface ChampionRepository extends MongoRepository<Champion,String>, ChampionRepositoryCustom {
 
     Optional<Champion> findOneByChampionId(String championId);
     Optional<Champion> findOneByEnName(String championName);
