@@ -18,6 +18,7 @@ import java.util.Optional;
  * 2023/08/09        solmin       Double 반올림 내부함수 추가
  * 2023/09/04        solmin       클래스 이름 변경
  * 2023/09/11        solmin       divideAndReturnDouble 추가
+ * 2023/10/11        solmin       internalName 조건으로 특수문자 й 추가
  */
 
 
@@ -34,7 +35,7 @@ public class CustomFunctions {
         }
 
         return keyword
-            .replaceAll("[^a-zA-Z가-힣0-9]", "")
+            .replaceAll("[^a-zA-Z가-힣0-9й]", "")
             .replaceAll("\\s", "")
             .toLowerCase();
     }
