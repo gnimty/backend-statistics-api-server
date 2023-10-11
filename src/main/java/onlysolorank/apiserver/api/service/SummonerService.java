@@ -93,10 +93,10 @@ public class SummonerService {
     private String RIOT_API_KEY;
 
     private static final int SPECIALIST_CNT_LIMIT = 100;
-    private static final int SPECIALIST_PLAYS_CNT_LIMIT = 50;
+    private static final int SPECIALIST_PLAYS_CNT_LIMIT = 50; // 장인 랭킹 기준 플레이 수
 
 
-    public List<SummonerDto> getTop5SummonerDtoListByInternalName(String internalName) {
+    public List<SummonerDto> getTop5SummonersByInternalName(String internalName) {
 
         return summonerRepository.findTop5ByInternalNameStartsWithOrderByInternalName(internalName)
             .stream().map(SummonerDto::new)
