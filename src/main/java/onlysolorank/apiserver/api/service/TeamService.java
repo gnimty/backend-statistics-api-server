@@ -29,5 +29,9 @@ public class TeamService {
         return teamRepository.findByMatchIdIn(matchIds);
     }
 
+    public List<Team> getTeamListByMatchId(String matchId){
+        return teamRepository.findByMatchId(matchId);
+    }
+
 }
 

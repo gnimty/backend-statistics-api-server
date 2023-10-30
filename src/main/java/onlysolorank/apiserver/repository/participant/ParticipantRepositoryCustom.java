@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.repository.participant;
 
+import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.domain.Participant;
 
 import java.util.List;
@@ -21,5 +22,4 @@ import static onlysolorank.apiserver.repository.participant.ParticipantRepositor
 public interface ParticipantRepositoryCustom {
 
     List<Participant> findByDistinctParticipantTeamsExceptMe(List<DistinctParticipantTeam> teams, String puuid);
-
 }

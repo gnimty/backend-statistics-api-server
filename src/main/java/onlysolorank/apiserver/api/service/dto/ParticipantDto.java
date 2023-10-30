@@ -114,6 +114,6 @@ public class ParticipantDto {
             this.position = PositionFilter.UNKNOWN;
         }
 
-        if(summonerName!=null) this.summonerName =summonerName;
+        this.summonerName =summonerName;
     }
 }

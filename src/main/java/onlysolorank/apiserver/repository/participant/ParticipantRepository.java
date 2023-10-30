@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 import onlysolorank.apiserver.api.service.dto.ChampionPlaysDto;
+import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
 import onlysolorank.apiserver.domain.Participant;
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 public interface ParticipantRepository extends MongoRepository<Participant, String>, ParticipantRepositoryCustom{
     List<Participant> findParticipantsByMatchId(String matchId);
-    List<Participant> findParticipantsByMatchIdIn(List<String> matchIds);
+    List<Participant> findParticipantsByMatchIdInAndPuuid(List<String> matchIds, String puuid);
 
     @Aggregation(pipeline = {"{ $match: { 'puuid': ?0 } }",
         "{ $group: { " +
@@ -196,6 +197,10 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
     List<ChampionPlaysDto> findChampionPlayInfoByPuuidAndChampionId(String puuid, Long championId);
 
     List<DistinctParticipantTeam> findTop20ByPuuidOrderByMatchId(String puuid);
+
+    List<ParticipantBriefDto> findBriefDtoByMatchId(String matchId);
+
+    List<ParticipantBriefDto> findBriefDtoByMatchIdIn(List<String> matchId);
 
     @Data
     @AllArgsConstructor

@@ -1,9 +1,9 @@
 package onlysolorank.apiserver.api.service;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.service.dto.ChampionPlaysDto;
+import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
 import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
 import onlysolorank.apiserver.domain.Participant;
@@ -43,8 +43,17 @@ public class ParticipantService {
         return participantRepository.findTopChampionStatsByPuuid(puuid, limit);
     }
 
-    public List<Participant> getParticipantListByMatchId(List<String> matchIds){
-        return participantRepository.findParticipantsByMatchIdIn(matchIds);
+    public List<Participant> getParticipantListByMatchId(String matchId){
+        return participantRepository.findParticipantsByMatchId(matchId);
+    }
+
+
+    public List<Participant> getParticipantListByMatchIdIn(List<String> matchIds, String puuid){
+        return participantRepository.findParticipantsByMatchIdInAndPuuid(matchIds, puuid);
+    }
+
+    public List<ParticipantBriefDto> getParticipantDtoListByMatchIds(List<String> matchIds){
+        return participantRepository.findBriefDtoByMatchIdIn(matchIds);
     }
 
     public Map<String, List<Integer>> getTopNChampionIdsByPuuids(List<String> puuids, int limit){

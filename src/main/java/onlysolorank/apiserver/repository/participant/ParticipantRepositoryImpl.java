@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.repository.participant;
 
 import lombok.RequiredArgsConstructor;
+import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.domain.Participant;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;

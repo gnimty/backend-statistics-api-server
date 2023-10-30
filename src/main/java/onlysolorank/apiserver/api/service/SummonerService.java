@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.api.service;
 
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName;
@@ -82,6 +82,8 @@ public class SummonerService {
     private final SummonerPlayService summonerPlayService;
     private final SummonerHistoryService summonerHistoryService;
     private final AssetService assetService;
+    private final TeamService teamService;
+
 
     @Value("${batch.host}")
     private String BATCH_HOST;
@@ -105,17 +107,18 @@ public class SummonerService {
     }
 
     public SummonerMatchRes getSummonerMatchInfoBySummonerName(String internalName) {
-
+        // 1. 본인 소환사 정보 가져오기
         Summoner summoner = getSummonerBySummonerName(internalName);
 
-        // MatchId 및 MatchDto List 가져오기
-        List<MatchDto> matchDtoList = new ArrayList<>();
+        // 2.MatchId 및 MatchDto List 가져오기
+        List<MatchBriefDto> matches = new ArrayList<>();
         Optional<SummonerMatch> summonerMatch = summonerMatchService.getSummonerMatchBySummonerPuuid(summoner.getPuuid());
 
         if (summonerMatch.isPresent()) {
             List<String> matchIds = summonerMatch.get().getSummonerMatchIds().stream()
                 .limit(20).toList();
-            matchDtoList = getMatchDtoList(matchIds);
+
+            matches = getMatchBriefDtoList(matchIds, summoner.getPuuid());
         }
 
         // renewableAfter 가져오기 : updated 시점으로부터 2분 이후의 시간을 리턴
@@ -126,20 +129,22 @@ public class SummonerService {
             summonerPlayService.getSummonerPlaysLimit(summoner.getPuuid(), 10)
                 .stream().map(SummonerPlayDto::new).toList();
 
+
         return SummonerMatchRes.builder()
             .summoner(SummonerDto.builder().summoner(summoner).build())
             .renewableAfter(renewableAfter)
-            .matches(matchDtoList)
+            .matches(matches)
             .mostPlayed(top10ChampionPlaysDetailDtoList).build();
     }
 
-    public List<MatchDto> get20MatchesByLastMatchId(String summonerName,
-                                                    @Pattern(regexp = "^KR_\\d{10}$", message = "올바른 matchId 패턴이 아닙니다.") String lastMatchId) {
+    public List<MatchBriefDto> get20MatchesByOptionalLastMatchId(
+        String summonerName,
+        @Pattern(regexp = "^KR_\\d{10}$", message = "올바른 matchId 패턴이 아닙니다.") String lastMatchId) {
 
         Summoner summoner = getSummonerBySummonerName(summonerName);
 
         // MatchId 및 MatchDto List 가져오기
-        List<MatchDto> matchDtoList = new ArrayList<>();
+        List<MatchBriefDto> matchDtoList = new ArrayList<>();
         Optional<SummonerMatch> summonerMatch = summonerMatchService.getSummonerMatchBySummonerPuuid(summoner.getPuuid());
 
         if (summonerMatch.isPresent()) {
@@ -148,43 +153,86 @@ public class SummonerService {
                 .filter(matchId -> matchId.compareTo(lastMatchId) < 0)
                 .limit(20).toList();
 
-            matchDtoList = getMatchDtoList(matchIds);
+            matchDtoList = getMatchBriefDtoList(matchIds, summoner.getPuuid());
         }
 
         return matchDtoList;
     }
 
-    public List<MatchDto> getMatchDtoList(List<String> matchIds) {
+    public List<MatchBriefDto> getMatchBriefDtoList(List<String> matchIds, String puuid) {
+        // 1. matchIds로 매치 리스트 가져오기 (List<Match>)
         List<Match> matches = matchService.getMatchListByMatchIdList(matchIds);
-        // Participant와 이에 대응되는 Summoner List 가져오기
-        // 8월 9일 수정 : 각각의 participant는 이미 tier정보가 주어지기 때문에 summoner list에서 가져오지 않음
 
-        List<Participant> participants = participantService.getParticipantListByMatchId(matchIds);
+        // 2. matchIds에 속하고 특정 puuid에 해당하는 소환사의 ParticipantBriefDto Map 가져오기 (Map<String, ParticipantBriefDto>)
+        List<Participant> myParticipantInfoList = participantService.getParticipantListByMatchIdIn(matchIds, puuid);
+        Map<String, Participant> myParticipantMap = myParticipantInfoList.stream().collect(Collectors.toMap(p->p.getMatchId(), p->p));
+
+        // 3. matchIds에 해당하는 모든 participant 간단 정보 가져오기
+        List<ParticipantBriefDto> allParticipantBriefs = participantService.getParticipantDtoListByMatchIds(matchIds)
+            .stream().toList();
+
+        // 4. matchIds에 해당하는 teamMap 가져오기 (Map<String, Team>)
+//        Map<String, List<Team>> teamMap = teamService.getTeamListByMatchIdList(matchIds).stream()
+//            .collect(Collectors.groupingBy(Team::getMatchId));
+
+        // 5. participants에 해당하는 summonerName 가져오기\
+        Map<String, String> summonerMap = summonerRepository.findSummonersByPuuidIn(
+                allParticipantBriefs.stream().map(ParticipantBriefDto::getPuuid).toList()).stream()
+            .collect(Collectors.toMap(Summoner::getPuuid, s -> s.getName()));
+
+        allParticipantBriefs.forEach(p-> p.setSummonerName(summonerMap.get(p.getPuuid())));
+
+        Map<String, List<ParticipantBriefDto>> allParticipantsMap = allParticipantBriefs
+            .stream().collect(Collectors.groupingBy(ParticipantBriefDto::getMatchId));
+
+        return matches.stream()
+            .map(match -> {
+                String matchId = match.getMatchId();
+                Participant target = myParticipantMap.get(matchId);
+
+                MatchBriefDto results = MatchBriefDto.builder()
+                    .participant(target)
+//                    .teams(teamMap.get(matchId))
+                    .match(match)
+                    .allParticipants(allParticipantsMap.get(matchId))
+                    .summonerName(target!=null? summonerMap.get(target.getPuuid()) : null)
+                    .build();
+
+                return results;
+            }).toList();
+    }
+
+    public MatchDetailDto getMatchDetailDto(String matchId){
+        Match match = matchService.getMatchById(matchId)
+            .orElseThrow(()-> new CustomException(ErrorCode.RESULT_NOT_FOUND));
+
+        List<Participant> participants = participantService.getParticipantListByMatchId(matchId);
 
         Map<String, String> summonerMap = summonerRepository.findSummonersByPuuidIn(participants.stream().map(Participant::getPuuid).toList()).stream()
             .collect(Collectors.toMap(Summoner::getPuuid, s -> s.getName()));
 
+        List<Team> teams = teamService.getTeamListByMatchId(matchId);
 
-        Map<String, List<Participant>> participantMap = participants
-            .stream().collect(Collectors.groupingBy(Participant::getMatchId));
+        List<ParticipantDto> participantDtoList = participants.stream()
+            .map(p -> ParticipantDto.builder().participant(p).summonerName(summonerMap.get(p.getPuuid())).build())
+            .toList();
 
-        Map<String, List<Team>> teamMap = matchService.getTeamMapMappedByMatchId(matchIds);
+        List<TeamDto> teamDtoList = teams.stream()
+            .map(t -> {
+                Integer teamId = t.getTeamId();
 
-        return matches.stream()
-            .map(match -> {
                 AtomicReference<Integer> totalGold = new AtomicReference<>(0);
-                List<ParticipantDto> participantDtoList = participantMap.get(match.getMatchId()).stream()
-                    .map(p -> {
-                        totalGold.updateAndGet(v -> v + p.getGoldEarned());
 
-                        return ParticipantDto.builder().participant(p).summonerName(summonerMap.get(p.getPuuid())).build();
-                    })
-                    .toList();
-                List<TeamDto> teamDtoList = teamMap.get(match.getMatchId())
-                    .stream().map(t -> new TeamDto(t, totalGold.get())).toList();
-                return MatchDto.builder().match(match).participants(participantDtoList).teams(teamDtoList).build();
+                participants.stream().filter(p->p.getTeamId().equals(teamId)).forEach(p->{
+                    totalGold.updateAndGet(v -> v + p.getGoldEarned());
+                });
+
+                return new TeamDto(t, totalGold.get());
             }).toList();
+
+        return MatchDetailDto.builder().match(match).participants(participantDtoList).teams(teamDtoList).build();
     }
+
 
     public List<SummonerPlayDto> getAllChampionPlayInfoBySummonerName(String summonerName) {
         Summoner summoner = getSummonerBySummonerName(summonerName);
@@ -344,14 +392,16 @@ public class SummonerService {
                 .collect(Collectors.toMap(s -> s.getPuuid(), s -> s));
 
             List<IngameParticipantDto> participants = result.getParticipants().stream().map(p -> {
+                SummonerPlayDto summonerPlayDto = null;
                 Summoner targetSummoner = summonerMap.get(p.getSummonerId());
 
-                SummonerPlay summonerPlay = collect.get(targetSummoner.getPuuid());
-
-                SummonerPlayDto summonerPlayDto = null;
-                if(summonerPlay!=null){
-                    summonerPlayDto = new SummonerPlayDto(summonerPlay);
+                if(targetSummoner!=null){
+                    SummonerPlay summonerPlay = collect.get(targetSummoner.getPuuid());
+                    if(summonerPlay!=null){
+                        summonerPlayDto = new SummonerPlayDto(summonerPlay);
+                    }
                 }
+
                 Champion champion = assetService.getChamiponByChampionId(p.getChampionId());
                 return IngameParticipantDto.builder()
                     .summonerPlayDto(summonerPlayDto)

@@ -44,7 +44,7 @@ class SummonerServiceTest {
     @Test
     void 잘못된_패턴의_매치ID로_조회하면_오류발생(){
 
-        assertThrows(ConstraintViolationException.class, ()-> summonerService.get20MatchesByLastMatchId("HideOnbush", wrongPatternMatchId));
+        assertThrows(ConstraintViolationException.class, ()-> summonerService.get20MatchesByOptionalLastMatchId("HideOnbush", wrongPatternMatchId));
     }
 
 

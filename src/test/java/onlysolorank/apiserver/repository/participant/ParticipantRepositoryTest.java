@@ -1,9 +1,9 @@
 package onlysolorank.apiserver.repository.participant;
 
 import onlysolorank.apiserver.api.service.dto.ChampionPlaysDto;
+import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
 import onlysolorank.apiserver.domain.Participant;
-import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -82,7 +82,8 @@ class ParticipantRepositoryTest {
     @Test
     public void testGetTop3ChampionsByPuuids(){
 
-        List<mostChampionsBySummonerDto> topChampionsForEachSummoner = participantRepository.findTopChampionsForEachSummoner(List.of(testPuuid1, testPuuid2), 3);
+        List<mostChampionsBySummonerDto> topChampionsForEachSummoner =
+            participantRepository.findTopChampionsForEachSummoner(List.of(testPuuid1, testPuuid2), 3);
 
         for (mostChampionsBySummonerDto mostChampionsBySummonerDto : topChampionsForEachSummoner) {
             for(Integer championId : mostChampionsBySummonerDto.getChampionIds()){
@@ -100,6 +101,17 @@ class ParticipantRepositoryTest {
                 "p3sOFe72XJw93VP7ylLhObH1IGf7wXEedp_0MT8iHQtaRZcoNHt9hKJuR0vYMZIrK0Ct8SujMWk-gQ", 266L);
 
         System.out.println(championPlayInfoByChampionIdAndSummonerId);
+    }
+
+    @Test
+    void DTO로_조회_테스트(){
+        List<ParticipantBriefDto> results = participantRepository.findBriefDtoByMatchId(matchId);
+
+        for (ParticipantBriefDto result : results) {
+
+            System.out.println("result = " + result);
+
+        }
     }
 
 }
