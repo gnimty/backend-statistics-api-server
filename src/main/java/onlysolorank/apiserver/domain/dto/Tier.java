@@ -1,8 +1,5 @@
 package onlysolorank.apiserver.domain.dto;
 
-import lombok.AllArgsConstructor;
-
-
 /**
  * packageName    : onlysolorank.apiserver.api.dto
  * fileName       : Tier
@@ -17,7 +14,7 @@ import lombok.AllArgsConstructor;
  * 2023/08/28        solmin       티어별 기준 mmr 추가
  */
 
-public enum Tier{
+public enum Tier {
     challenger("챌린저", 2800),
     grandmaster("그랜드마스터", 2800),
     master("마스터", 2800),
@@ -29,11 +26,11 @@ public enum Tier{
     bronze("브론즈", 400),
     iron("아이언", 0);
 
-    private String value;
-    private Integer basisMMR;
+    private final String value;
+    private final Integer basisMMR;
 
-    Tier(String value, Integer mmr){
-        this.value= value;
+    Tier(String value, Integer mmr) {
+        this.value = value;
         this.basisMMR = mmr;
     }
 

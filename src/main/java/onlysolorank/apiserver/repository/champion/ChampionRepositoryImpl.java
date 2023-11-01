@@ -1,11 +1,10 @@
 package onlysolorank.apiserver.repository.champion;
 
+import java.util.List;
 import onlysolorank.apiserver.domain.Rotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.champion
@@ -18,7 +17,8 @@ import java.util.List;
  * -----------------------------------------------------------
  * 10/9/23        solmin       최초 생성
  */
-public class ChampionRepositoryImpl implements ChampionRepositoryCustom{
+public class ChampionRepositoryImpl implements ChampionRepositoryCustom {
+
     @Autowired
     @Qualifier("primaryMongoTemplate")
     private MongoTemplate mongoTemplate;
@@ -26,7 +26,7 @@ public class ChampionRepositoryImpl implements ChampionRepositoryCustom{
     @Override
     public List<Rotation> findRotationChampions() {
 
-        List<Rotation> result =  mongoTemplate.findAll(Rotation.class);
+        List<Rotation> result = mongoTemplate.findAll(Rotation.class);
 
         return result;
     }

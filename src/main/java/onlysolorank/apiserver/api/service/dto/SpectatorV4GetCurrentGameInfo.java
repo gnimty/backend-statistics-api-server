@@ -1,11 +1,10 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -24,6 +23,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 public class SpectatorV4GetCurrentGameInfo {
+
     private Long gameId;
     private Long mapId;
     private String gameMode;
@@ -36,7 +36,8 @@ public class SpectatorV4GetCurrentGameInfo {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CurrentGameParticipant{
+    public static class CurrentGameParticipant {
+
         private Long championId;
         private IngamePerks perks;
         private Long profileIconId;
@@ -51,7 +52,8 @@ public class SpectatorV4GetCurrentGameInfo {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class IngamePerks{
+    public static class IngamePerks {
+
         private List<Long> perkIds;
         private Long perkStyle;
         private Long perkSubStyle;

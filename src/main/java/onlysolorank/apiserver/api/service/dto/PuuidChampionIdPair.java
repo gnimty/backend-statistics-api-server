@@ -2,7 +2,6 @@ package onlysolorank.apiserver.api.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -19,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class PuuidChampionIdPair {
+
     private String puuid;
     private Long championId;
 }

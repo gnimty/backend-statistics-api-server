@@ -1,9 +1,9 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
+
 import lombok.Builder;
 import lombok.Data;
-
-import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -19,6 +19,7 @@ import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble
 
 @Data
 public class RecentMemberDto {
+
     private String puuid;
     private Integer totalPlay;
     private Integer totalWin;
@@ -26,12 +27,12 @@ public class RecentMemberDto {
     private Double winRate;
 
     @Builder
-    public RecentMemberDto(String puuid, Integer totalWin, Integer totalDefeat){
+    public RecentMemberDto(String puuid, Integer totalWin, Integer totalDefeat) {
         this.puuid = puuid;
         this.totalWin = totalWin;
         this.totalDefeat = totalDefeat;
         this.totalPlay = totalWin + totalDefeat;
-        this.winRate = divideAndReturnDouble( totalWin, totalPlay, 3)
+        this.winRate = divideAndReturnDouble(totalWin, totalPlay, 3)
             .orElseGet(null);
     }
 }

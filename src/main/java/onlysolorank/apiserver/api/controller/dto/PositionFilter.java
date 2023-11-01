@@ -29,12 +29,12 @@ public enum PositionFilter {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
-
     public static PositionFilter defaultValue() {
         return UNKNOWN;
+    }
+
+    public String getValue() {
+        return value;
     }
 
 }

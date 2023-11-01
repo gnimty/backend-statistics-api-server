@@ -1,14 +1,13 @@
 package onlysolorank.apiserver.api.controller.dto;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.MatchBriefDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
-
-import java.time.ZonedDateTime;
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller
@@ -26,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class SummonerMatchRes {
+
     private SummonerDto summoner;
     private ZonedDateTime renewableAfter;
     private List<MatchBriefDto> matches;

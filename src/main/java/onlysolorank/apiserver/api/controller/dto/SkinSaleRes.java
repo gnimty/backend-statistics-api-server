@@ -17,6 +17,7 @@ import onlysolorank.apiserver.domain.SkinSale;
 
 @Data
 public class SkinSaleRes {
+
     private String skinName;
     private Integer originRp;
     private Integer discountedRp;

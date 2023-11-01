@@ -1,5 +1,9 @@
 package onlysolorank.apiserver.api.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.service.dto.ChampionPlaysDto;
@@ -10,11 +14,6 @@ import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.repository.participant.ParticipantRepository;
 import onlysolorank.apiserver.repository.participant.ParticipantRepository.DistinctParticipantTeam;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service
@@ -36,32 +35,34 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class ParticipantService {
+
     private final ParticipantRepository participantRepository;
 
 
-    public List<ChampionPlaysDto> getChampionStatus(String puuid, int limit){
+    public List<ChampionPlaysDto> getChampionStatus(String puuid, int limit) {
         return participantRepository.findTopChampionStatsByPuuid(puuid, limit);
     }
 
-    public List<Participant> getParticipantListByMatchId(String matchId){
+    public List<Participant> getParticipantListByMatchId(String matchId) {
         return participantRepository.findParticipantsByMatchId(matchId);
     }
 
 
-    public List<Participant> getParticipantListByMatchIdIn(List<String> matchIds, String puuid){
+    public List<Participant> getParticipantListByMatchIdIn(List<String> matchIds, String puuid) {
         return participantRepository.findParticipantsByMatchIdInAndPuuid(matchIds, puuid);
     }
 
-    public List<ParticipantBriefDto> getParticipantDtoListByMatchIds(List<String> matchIds){
+    public List<ParticipantBriefDto> getParticipantDtoListByMatchIds(List<String> matchIds) {
         return participantRepository.findBriefDtoByMatchIdIn(matchIds);
     }
 
-    public Map<String, List<Integer>> getTopNChampionIdsByPuuids(List<String> puuids, int limit){
-        List<mostChampionsBySummonerDto> topChampionsForEachSummoner = participantRepository.findTopChampionsForEachSummoner(puuids, limit);
+    public Map<String, List<Integer>> getTopNChampionIdsByPuuids(List<String> puuids, int limit) {
+        List<mostChampionsBySummonerDto> topChampionsForEachSummoner = participantRepository.findTopChampionsForEachSummoner(
+            puuids, limit);
 
         Map<String, List<Integer>> mostChampionMap = new HashMap<>();
 
-        topChampionsForEachSummoner.forEach(t->{
+        topChampionsForEachSummoner.forEach(t -> {
             mostChampionMap.put(t.getPuuid(), t.getChampionIds());
         });
 
@@ -69,15 +70,18 @@ public class ParticipantService {
     }
 
 
-    public ChampionPlaysDto getChampionPlaysByPuuidAndChampionId(String puuid, Long championId){
-        return participantRepository.findChampionPlayInfoByPuuidAndChampionId(puuid, championId).get(0);
+    public ChampionPlaysDto getChampionPlaysByPuuidAndChampionId(String puuid, Long championId) {
+        return participantRepository.findChampionPlayInfoByPuuidAndChampionId(puuid, championId)
+            .get(0);
     }
 
 
-    public List<RecentMemberDto> getDistinctTeamMembersExceptMe(String puuid){
-        List<DistinctParticipantTeam> top20ByPuuidOrderByMatchId = participantRepository.findTop20ByPuuidOrderByMatchId(puuid);
+    public List<RecentMemberDto> getDistinctTeamMembersExceptMe(String puuid) {
+        List<DistinctParticipantTeam> top20ByPuuidOrderByMatchId = participantRepository.findTop20ByPuuidOrderByMatchId(
+            puuid);
 
-        Map<String, Map<Boolean, Long>> collect = participantRepository.findByDistinctParticipantTeamsExceptMe(top20ByPuuidOrderByMatchId, puuid)
+        Map<String, Map<Boolean, Long>> collect = participantRepository.findByDistinctParticipantTeamsExceptMe(
+                top20ByPuuidOrderByMatchId, puuid)
             .stream()
             .collect(Collectors.groupingBy(
                 Participant::getPuuid,
@@ -97,7 +101,6 @@ public class ParticipantService {
                     .totalDefeat(value.getOrDefault(false, 0L).intValue())
                     .build();
             }).toList();
-
 
         return result;
     }

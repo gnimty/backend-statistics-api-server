@@ -19,6 +19,7 @@ import onlysolorank.apiserver.domain.SummonerPlay;
 @Data
 @ToString
 public class SummonerPlayDto {
+
     private Integer totalPlays;
     private Double avgCs;
     private Double avgCsPerMinute;
@@ -46,7 +47,7 @@ public class SummonerPlayDto {
         this.championId = summonerPlay.getChampionId();
         this.championName = summonerPlay.getChampionName();
         this.avgCs = summonerPlay.getAvgCs();
-        if(summonerPlay.getTotalDeath() == 0){
+        if (summonerPlay.getTotalDeath() == 0) {
             this.isPerfect = true;
             this.avgKda = null;
         }

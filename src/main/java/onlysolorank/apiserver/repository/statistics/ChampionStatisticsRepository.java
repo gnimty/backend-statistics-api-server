@@ -1,10 +1,9 @@
 package onlysolorank.apiserver.repository.statistics;
 
-import onlysolorank.apiserver.domain.statistics.stat.ChampionStatistics;
-import org.springframework.data.mongodb.repository.MongoRepository;
-
 import java.util.List;
 import java.util.Optional;
+import onlysolorank.apiserver.domain.statistics.stat.ChampionStatistics;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.statistics

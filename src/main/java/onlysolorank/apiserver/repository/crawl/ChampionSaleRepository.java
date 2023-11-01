@@ -1,9 +1,8 @@
 package onlysolorank.apiserver.repository.crawl;
 
+import java.util.List;
 import onlysolorank.apiserver.domain.ChampionSale;
 import org.springframework.data.mongodb.repository.MongoRepository;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.crawl
@@ -16,6 +15,7 @@ import java.util.List;
  * -----------------------------------------------------------
  * 2023/09/13        solmin       최초 생성
  */
-public interface ChampionSaleRepository extends MongoRepository<ChampionSale,String> {
+public interface ChampionSaleRepository extends MongoRepository<ChampionSale, String> {
+
     List<ChampionSale> findAll();
 }

@@ -17,12 +17,12 @@ import onlysolorank.apiserver.domain.Summoner;
  * 2023/07/24        solmin       최초 생성
  * 2023/07/31        solmin       Getter 이름 일부 변경
  * 2023/08/16        solmin       getLeaguePoints to getLp (Summoner 도큐먼트 필드명 변경)
-
  */
 
 @Data
 @AllArgsConstructor
 public class SoloTierDto {
+
     private Tier tier;
     private Integer division;
     private Integer lp;

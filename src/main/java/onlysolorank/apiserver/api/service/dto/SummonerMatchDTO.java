@@ -1,13 +1,13 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import java.util.List;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Match;
-
-import java.util.List;
 
 
 @Data
 public class SummonerMatchDTO {
+
     private String puuid;
     private List<Match> matches;
 

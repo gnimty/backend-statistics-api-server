@@ -1,5 +1,8 @@
 package onlysolorank.apiserver.repository.summoner_play;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import onlysolorank.apiserver.api.service.dto.PuuidChampionIdPair;
@@ -7,13 +10,15 @@ import onlysolorank.apiserver.domain.SummonerPlay;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.aggregation.LimitOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.summoner_play
@@ -29,7 +34,8 @@ import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
-public class SummonerPlayRepositoryImpl implements SummonerPlayRepositoryCustom{
+public class SummonerPlayRepositoryImpl implements SummonerPlayRepositoryCustom {
+
     @Qualifier("primaryMongoTemplate")
     private final MongoTemplate mongoTemplate;
 
@@ -64,7 +70,8 @@ public class SummonerPlayRepositoryImpl implements SummonerPlayRepositoryCustom{
     }
 
     @Override
-    public Map<String, List<Long>> findMostPlayedChampionsByPuuidsAndLimit(List<String> puuids, int limit) {
+    public Map<String, List<Long>> findMostPlayedChampionsByPuuidsAndLimit(List<String> puuids,
+        int limit) {
 
         MatchOperation matchOperation = Aggregation.match(Criteria.where("puuid").in(puuids));
 
@@ -86,18 +93,21 @@ public class SummonerPlayRepositoryImpl implements SummonerPlayRepositoryCustom{
             limitOperation
         );
 
-        AggregationResults<ChampionIdResult> results = mongoTemplate.aggregate(aggregation, "summoner_plays", ChampionIdResult.class);
+        AggregationResults<ChampionIdResult> results = mongoTemplate.aggregate(aggregation,
+            "summoner_plays", ChampionIdResult.class);
 
         // 결과를 Map으로 변환
         Map<String, List<Long>> resultMap = results.getMappedResults()
             .stream()
-            .collect(Collectors.toMap(ChampionIdResult::getPuuid, ChampionIdResult::getChampionIds));
+            .collect(
+                Collectors.toMap(ChampionIdResult::getPuuid, ChampionIdResult::getChampionIds));
 
         return resultMap;
     }
 
     @Data
     public static class ChampionIdResult {
+
         private String puuid;
         private List<Long> championIds;
     }

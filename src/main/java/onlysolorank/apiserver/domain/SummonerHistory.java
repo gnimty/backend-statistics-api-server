@@ -1,12 +1,11 @@
 package onlysolorank.apiserver.domain;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
 import onlysolorank.apiserver.domain.dto.History;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -24,6 +23,7 @@ import java.util.List;
 @Getter
 @ToString
 public class SummonerHistory {
+
     @Id
     private String id;
     private String puuid;

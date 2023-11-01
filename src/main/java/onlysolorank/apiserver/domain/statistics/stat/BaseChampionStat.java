@@ -22,6 +22,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document
 @Getter
 public class BaseChampionStat {
+
     @Id
     private String id;
 

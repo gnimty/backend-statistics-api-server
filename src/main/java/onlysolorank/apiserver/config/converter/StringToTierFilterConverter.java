@@ -20,11 +20,12 @@ import org.springframework.stereotype.Component;
 @Component
 @ReadingConverter
 public class StringToTierFilterConverter implements Converter<String, TierFilter> {
+
     @Override
     public TierFilter convert(String source) {
         try {
             return TierFilter.valueOf(source);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return TierFilter.EMERALD;
         }
     }

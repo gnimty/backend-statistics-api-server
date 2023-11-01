@@ -1,10 +1,9 @@
 package onlysolorank.apiserver.repository.team;
 
+import java.util.List;
 import onlysolorank.apiserver.domain.Team;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.repository

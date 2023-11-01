@@ -1,12 +1,11 @@
 package onlysolorank.apiserver.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import onlysolorank.apiserver.api.service.dto.SpectatorV4GetCurrentGameInfo;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -25,18 +24,21 @@ import java.util.List;
 @Getter
 @ToString
 public class Perk {
+
+    private final StatPerk statPerks;
+    private final List<PerkDetail> styles;
+
     public Perk(StatPerk statPerks, List<PerkDetail> styles) {
         this.statPerks = statPerks;
         this.styles = styles;
     }
 
-    public static Perk getPerk(SpectatorV4GetCurrentGameInfo.IngamePerks perks){
+    public static Perk getPerk(SpectatorV4GetCurrentGameInfo.IngamePerks perks) {
         List<Long> perkIds = perks.getPerkIds();
 
         Integer offense = perkIds.get(6).intValue();
         Integer flex = perkIds.get(7).intValue();
         Integer defense = perkIds.get(8).intValue();
-
 
         List<Long> primaryPerkIds = perkIds.subList(0, 4);
         List<Long> subPerkIds = perkIds.subList(4, 6);
@@ -44,27 +46,27 @@ public class Perk {
         PerkDetail primaryStyle = new PerkDetail(
             "primaryStyle",
             perks.getPerkStyle().intValue(),
-            primaryPerkIds.stream().map(ps->new Selection(ps.intValue(), null, null, null)).toList());
+            primaryPerkIds.stream().map(ps -> new Selection(ps.intValue(), null, null, null))
+                .toList());
 
         PerkDetail subStyle = new PerkDetail(
             "subStyle",
             perks.getPerkStyle().intValue(),
-            subPerkIds.stream().map(ps->new Selection(ps.intValue(), null, null, null)).toList());
-        StatPerk statPerks = StatPerk.builder().defense(defense).flex(flex).offense(offense).build();
+            subPerkIds.stream().map(ps -> new Selection(ps.intValue(), null, null, null)).toList());
+        StatPerk statPerks = StatPerk.builder().defense(defense).flex(flex).offense(offense)
+            .build();
         List<PerkDetail> styles = List.of(primaryStyle, subStyle);
 
         return new Perk(statPerks, styles);
     }
 
-    private final StatPerk statPerks;
-    private List<PerkDetail> styles;
-
     @Getter
     @ToString
-    private static final class StatPerk{
-        private Integer defense;
-        private Integer offense;
-        private Integer flex;
+    private static final class StatPerk {
+
+        private final Integer defense;
+        private final Integer offense;
+        private final Integer flex;
 
         @Builder
         public StatPerk(Integer defense, Integer offense, Integer flex) {
@@ -77,9 +79,10 @@ public class Perk {
     @Getter
     @ToString
     private static class PerkDetail {
-        private String description;
-        private Integer style;
-        private List<Selection> selections;
+
+        private final String description;
+        private final Integer style;
+        private final List<Selection> selections;
 
         public PerkDetail(String description, Integer style, List<Selection> selections) {
             this.description = description;
@@ -91,14 +94,15 @@ public class Perk {
     @Getter
     @ToString
     private static class Selection {
-        private Integer perk;
+
+        private final Integer perk;
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        private Integer var1;
+        private final Integer var1;
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        private Integer var2;
+        private final Integer var2;
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        private Integer var3;
+        private final Integer var3;
 
         public Selection(Integer perk, Integer var1, Integer var2, Integer var3) {
             this.perk = perk;

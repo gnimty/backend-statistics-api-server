@@ -1,9 +1,8 @@
 package onlysolorank.apiserver.domain.dto;
 
+import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.time.ZonedDateTime;
 
 /**
  * packageName    : onlysolorank.apiserver.domain

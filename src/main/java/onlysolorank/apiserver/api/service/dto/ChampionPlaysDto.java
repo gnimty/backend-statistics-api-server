@@ -1,11 +1,11 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
-
-import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -26,6 +26,7 @@ import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
 @Data
 @ToString
 public class ChampionPlaysDto {
+
     private Integer totalPlays;
     private Double avgCsPerMinute;
     private Double avgKda;
@@ -55,8 +56,11 @@ public class ChampionPlaysDto {
     private Integer totalAssist;
 
     @Builder
-    public ChampionPlaysDto(String puuid, Integer championId, String championName, Integer totalPlays, Double avgCsPerMinute, Double avgKill, Double avgDeath, Double avgAssist, Double winRate, Integer totalWin, Integer totalDefeat, Integer totalCs, Integer totalGameDuration,
-                            Integer totalKill, Integer totalDeath, Integer totalAssist) {
+    public ChampionPlaysDto(String puuid, Integer championId, String championName,
+        Integer totalPlays, Double avgCsPerMinute, Double avgKill, Double avgDeath,
+        Double avgAssist, Double winRate, Integer totalWin, Integer totalDefeat, Integer totalCs,
+        Integer totalGameDuration,
+        Integer totalKill, Integer totalDeath, Integer totalAssist) {
         this.puuid = puuid;
         this.championId = championId;
         this.championName = championName;
@@ -66,9 +70,11 @@ public class ChampionPlaysDto {
         this.totalDeath = totalDeath;
         this.totalAssist = totalAssist;
         // totalDeath == 0인 경우 Perfect 처리
-        if(totalDeath!=0){
-            this.avgKda = doubleValueToHalfUp((totalKill.doubleValue()+totalAssist.doubleValue())/totalDeath.doubleValue(),3);
-        }else{
+        if (totalDeath != 0) {
+            this.avgKda = doubleValueToHalfUp(
+                (totalKill.doubleValue() + totalAssist.doubleValue()) / totalDeath.doubleValue(),
+                3);
+        } else {
             this.isPerfect = true;
         }
         this.avgKill = avgKill;
@@ -79,7 +85,8 @@ public class ChampionPlaysDto {
         this.totalDefeat = totalDefeat;
         this.totalCs = totalCs;
         this.totalGameDuration = totalGameDuration;
-        this.avgCsPerMinute = doubleValueToHalfUp(totalCs.doubleValue() / (totalGameDuration.doubleValue()/60) , 2);
+        this.avgCsPerMinute = doubleValueToHalfUp(
+            totalCs.doubleValue() / (totalGameDuration.doubleValue() / 60), 2);
     }
 
 }

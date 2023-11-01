@@ -1,9 +1,8 @@
 package onlysolorank.apiserver.domain;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 /**
  * packageName    : onlysolorank.apiserver.domain

@@ -26,10 +26,11 @@ import org.springframework.validation.annotation.Validated;
 @Slf4j
 @Validated
 public class SummonerHistoryService {
+
     private final SummonerHistoryRepository summonerHistoryRepository;
 
-    public SummonerHistory getSummonerHistoryByPuuid(String puuid){
+    public SummonerHistory getSummonerHistoryByPuuid(String puuid) {
         return summonerHistoryRepository.findByPuuid(puuid)
-            .orElseThrow(()-> new CustomException(ErrorCode.RESULT_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND));
     }
 }

@@ -1,10 +1,8 @@
 package onlysolorank.apiserver.api.controller.dto;
 
-import lombok.Getter;
+import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName;
 
 import javax.validation.constraints.NotBlank;
-
-import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller
@@ -22,13 +20,13 @@ import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName
 public class KeywordReq {
 
     @NotBlank(message = "keyword는 internalName 기준으로 1글자 이상 입력해야 합니다.")
-    private String keyword;
+    private final String keyword;
 
-    public KeywordReq(String keyword){
+    public KeywordReq(String keyword) {
         this.keyword = keywordToInternalName(keyword);
     }
 
-    public String getInternalName(){
+    public String getInternalName() {
         return this.keyword;
     }
 }

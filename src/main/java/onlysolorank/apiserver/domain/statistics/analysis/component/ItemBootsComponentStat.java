@@ -3,8 +3,6 @@ package onlysolorank.apiserver.domain.statistics.analysis.component;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * packageName    : onlysolorank.apiserver.domain.dto.component
  * fileName       : ItemBootsComponentStat
@@ -20,5 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class ItemBootsComponentStat extends BaseComponentStat {
+
     private Long itemBoots;
 }

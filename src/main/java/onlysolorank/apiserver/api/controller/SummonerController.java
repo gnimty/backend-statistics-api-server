@@ -1,19 +1,32 @@
 package onlysolorank.apiserver.api.controller;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.api.controller.dto.*;
-import onlysolorank.apiserver.api.service.MatchService;
-import onlysolorank.apiserver.api.service.dto.*;
-import onlysolorank.apiserver.api.response.CommonResponse;
-import onlysolorank.apiserver.api.service.SummonerService;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import onlysolorank.apiserver.api.controller.dto.AutoCompleteRes;
+import onlysolorank.apiserver.api.controller.dto.IngameInfoRes;
+import onlysolorank.apiserver.api.controller.dto.KeywordReq;
+import onlysolorank.apiserver.api.controller.dto.RecentMemberRes;
+import onlysolorank.apiserver.api.controller.dto.SummonerMatchRes;
+import onlysolorank.apiserver.api.response.CommonResponse;
+import onlysolorank.apiserver.api.service.SummonerService;
+import onlysolorank.apiserver.api.service.dto.MatchBriefDto;
+import onlysolorank.apiserver.api.service.dto.MatchDetailDto;
+import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
+import onlysolorank.apiserver.api.service.dto.SoloTierWithTimeDto;
+import onlysolorank.apiserver.api.service.dto.SummonerDto;
+import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller
@@ -42,6 +55,7 @@ import java.util.Optional;
 @Validated
 @RequestMapping("/statistics/summoners")
 public class SummonerController {
+
     private final SummonerService summonerService;
 
     /**
@@ -51,7 +65,8 @@ public class SummonerController {
      * @return CommonResponse<AutoCompleteRes>
      */
     @GetMapping("/autocomplete")
-    public CommonResponse<AutoCompleteRes> getAutoCompleteResults(@ModelAttribute @Valid KeywordReq keywordReq) {
+    public CommonResponse<AutoCompleteRes> getAutoCompleteResults(
+        @ModelAttribute @Valid KeywordReq keywordReq) {
         String internalName = keywordReq.getInternalName();
 
         List<SummonerDto> results = summonerService.getTop5SummonersByInternalName(internalName);
@@ -64,23 +79,26 @@ public class SummonerController {
     }
 
     @GetMapping("/matches/{summoner_name}")
-    public CommonResponse getSummonerMatchInfoBySummonerName(@PathVariable("summoner_name") String summonerName,
-                                                             @RequestParam("ended") Optional<String> lastMatchId) {
+    public CommonResponse getSummonerMatchInfoBySummonerName(
+        @PathVariable("summoner_name") String summonerName,
+        @RequestParam("ended") Optional<String> lastMatchId) {
         // TODO lastMatchId 검증 필요
         if (!lastMatchId.isPresent() || lastMatchId.get().isBlank()) {
-            SummonerMatchRes data = summonerService.getSummonerMatchInfoBySummonerName(summonerName);
+            SummonerMatchRes data = summonerService.getSummonerMatchInfoBySummonerName(
+                summonerName);
             return CommonResponse.success(data);
-        } else{
-            List<MatchBriefDto> data = summonerService.get20MatchesByOptionalLastMatchId(summonerName, lastMatchId.get());
+        } else {
+            List<MatchBriefDto> data = summonerService.get20MatchesByOptionalLastMatchId(
+                summonerName, lastMatchId.get());
             return CommonResponse.success(data);
         }
     }
 
     @GetMapping("/matches/id/{match_id}")
-    public CommonResponse<MatchDetailDto> getMatchDetailByMatchId(@PathVariable("match_id") String matchId){
+    public CommonResponse<MatchDetailDto> getMatchDetailByMatchId(
+        @PathVariable("match_id") String matchId) {
         return CommonResponse.success(summonerService.getMatchDetailDto(matchId));
     }
-
 
 
     /**
@@ -90,9 +108,11 @@ public class SummonerController {
      * @return the all champion play info by puuid
      */
     @GetMapping("/champion/{summoner_name}")
-    public CommonResponse<List<SummonerPlayDto>> getAllChampionPlayInfoBySummonerName(@PathVariable("summoner_name") String summonerName){
+    public CommonResponse<List<SummonerPlayDto>> getAllChampionPlayInfoBySummonerName(
+        @PathVariable("summoner_name") String summonerName) {
 
-        List<SummonerPlayDto> data = summonerService.getAllChampionPlayInfoBySummonerName(summonerName);
+        List<SummonerPlayDto> data = summonerService.getAllChampionPlayInfoBySummonerName(
+            summonerName);
 
         return CommonResponse.success(data);
     }
@@ -104,21 +124,23 @@ public class SummonerController {
      * @return the summoner history
      */
     @GetMapping("/tier/{summoner_name}")
-    public CommonResponse<List<SoloTierWithTimeDto>> getSummonerHistory(@PathVariable("summoner_name") String summonerName){
+    public CommonResponse<List<SoloTierWithTimeDto>> getSummonerHistory(
+        @PathVariable("summoner_name") String summonerName) {
         List<SoloTierWithTimeDto> data = summonerService.getSummonerHistory(summonerName);
 
         return CommonResponse.success(data);
     }
 
     @PostMapping("/{puuid}")
-    public CommonResponse refreshSummoner(@PathVariable("puuid") String puuid){
+    public CommonResponse refreshSummoner(@PathVariable("puuid") String puuid) {
         summonerService.refreshSummoner(puuid);
 
         return CommonResponse.success("소환사 정보를 성공적으로 갱신했습니다.", HttpStatus.OK);
     }
 
     @GetMapping("/ingame/{summoner_name}")
-    public CommonResponse<IngameInfoRes> getIngameInfo(@PathVariable("summoner_name") String summonerName){
+    public CommonResponse<IngameInfoRes> getIngameInfo(
+        @PathVariable("summoner_name") String summonerName) {
         IngameInfoRes data = summonerService.getIngameInfo(summonerName);
 
         return CommonResponse.success(data);
@@ -126,7 +148,8 @@ public class SummonerController {
 
 
     @GetMapping("/together/{summoner_name}")
-    public CommonResponse<RecentMemberRes> getRecentMembers(@PathVariable("summoner_name") String summonerName) {
+    public CommonResponse<RecentMemberRes> getRecentMembers(
+        @PathVariable("summoner_name") String summonerName) {
         List<RecentMemberDto> data = summonerService.getRecentMemberInfo(summonerName);
 
         return CommonResponse.success(new RecentMemberRes(data.size(), data));

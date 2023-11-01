@@ -20,4 +20,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Getter
 public class DailyChampionStat extends BaseChampionStat {
+
 }

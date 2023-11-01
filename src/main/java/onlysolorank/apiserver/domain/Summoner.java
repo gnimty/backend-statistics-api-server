@@ -1,13 +1,13 @@
 package onlysolorank.apiserver.domain;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
 import onlysolorank.apiserver.domain.dto.Position;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import java.time.ZonedDateTime;
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -24,13 +24,14 @@ import java.util.List;
  * 2023/08/09        solmin       @Field 어노테이션으로 받아오도록 수정
  * 2023/08/15        solmin       HistoryList (소환사 티어 변동 정보) 가져오기, 약 2시간 텀
  * 2023/08/16        solmin       기존 league_entries 컬렉션 summoners 통합에 따라서 소환사 승패정보 추가
- *                                leaguePoints to lp로 필드명 변경
+ * leaguePoints to lp로 필드명 변경
  * 2023/08/29        solmin       Mongodb utc datetime 이슈로 인해 LocalDateTime -> ZonedDateTime으로 변경
  */
 @Document(collection = "summoners")
 @Getter
 @ToString
 public class Summoner {
+
     @Id
     private String id;
     private String puuid;

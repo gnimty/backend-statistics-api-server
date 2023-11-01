@@ -22,12 +22,12 @@ public enum QueueType {
     ARAM("칼바람 나락", "칼바람 나락");
     // TODO 추후 추가
 //    CUSTOM("사용자 설정 게임", );
-    private String value;
-    private String map;
+    private final String value;
+    private final String map;
 
-    QueueType(String value, String map){
-        this.value= value;
-        this.map= map;
+    QueueType(String value, String map) {
+        this.value = value;
+        this.map = map;
     }
 
 

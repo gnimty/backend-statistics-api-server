@@ -1,12 +1,10 @@
 package onlysolorank.apiserver.domain;
 
+import java.util.List;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -23,6 +21,7 @@ import java.util.List;
 @Document(collection = "summoner_matches")
 @Getter
 public class SummonerMatch {
+
     @Id
     private String id;
 

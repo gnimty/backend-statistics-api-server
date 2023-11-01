@@ -1,9 +1,6 @@
 package onlysolorank.apiserver.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -20,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "rotations")
 @Getter
-public class Rotation extends Champion{
+public class Rotation extends Champion {
 
     public Rotation(String id, Long championId, String krName, String enName) {
         super(id, championId, krName, enName);

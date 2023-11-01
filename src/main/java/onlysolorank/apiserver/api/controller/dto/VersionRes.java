@@ -1,6 +1,5 @@
 package onlysolorank.apiserver.api.controller.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Version;
 
@@ -17,11 +16,12 @@ import onlysolorank.apiserver.domain.Version;
  */
 @Data
 public class VersionRes {
+
     private String version;
     private String releaseNoteUrl;
     private String releaseNoteImgUrl;
 
-    public VersionRes(Version version){
+    public VersionRes(Version version) {
         this.version = version.getVersion();
         this.releaseNoteUrl = version.getReleaseNoteUrl();
         this.releaseNoteImgUrl = version.getReleaseNoteImgUrl();

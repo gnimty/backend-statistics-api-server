@@ -1,20 +1,12 @@
 package onlysolorank.apiserver.api.service;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.api.service.dto.MatchBriefDto;
-import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.domain.Match;
-import onlysolorank.apiserver.domain.Participant;
-import onlysolorank.apiserver.domain.Summoner;
-import onlysolorank.apiserver.domain.Team;
 import onlysolorank.apiserver.repository.match.MatchRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service
@@ -32,14 +24,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class MatchService {
+
     private final MatchRepository matchRepository;
 
 
-    public List<Match> getMatchListByMatchIdList(List<String> matchIds){
+    public List<Match> getMatchListByMatchIdList(List<String> matchIds) {
         return matchRepository.findMatchesByMatchIdIn(matchIds);
     }
 
-    public Optional<Match> getMatchById(String matchId){
+    public Optional<Match> getMatchById(String matchId) {
         return matchRepository.findMatchByMatchId(matchId);
     }
 

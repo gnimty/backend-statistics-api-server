@@ -1,16 +1,21 @@
 package onlysolorank.apiserver.domain.statistics.analysis;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.api.controller.dto.TierFilter;
-import onlysolorank.apiserver.domain.statistics.analysis.component.*;
+import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBootsComponentStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.ItemRarityComponentStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.ItemStartComponentStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.PerkComponentStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.SkillComponentStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.SpellComponentStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.StatPerkComponentStat;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -29,6 +34,7 @@ import java.util.List;
 @Getter
 @ToString
 public class ChampionAnalysis {
+
     @Id
     private String id;
 

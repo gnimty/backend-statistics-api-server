@@ -23,6 +23,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @ToString
 @EqualsAndHashCode //TODO 나중에 지울예정
 public class SummonerPlay {
+
     @Id
     private String id;
 

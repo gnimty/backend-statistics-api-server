@@ -18,11 +18,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StringToPeriodConverter implements Converter<String, Period> {
+
     @Override
     public Period convert(String source) {
-        try{
+        try {
             return Period.valueOf(source);
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return Period.DAY;
         }
     }

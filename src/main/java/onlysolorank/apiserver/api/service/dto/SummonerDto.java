@@ -24,6 +24,7 @@ import onlysolorank.apiserver.domain.dto.SoloTierDto;
 @AllArgsConstructor
 @Slf4j
 public class SummonerDto {
+
     private String summonerName;
     private String internalName;
     private String summonerId;
@@ -47,9 +48,9 @@ public class SummonerDto {
         this.totalWin = summoner.getTotalWin();
         this.totalDefeat = summoner.getTotalDefeat();
 
-        if(totalWin==null || totalDefeat==null)
+        if (totalWin == null || totalDefeat == null) {
             this.totalPlays = null;
-        else {
+        } else {
             this.totalPlays = totalWin + totalDefeat;
         }
     }

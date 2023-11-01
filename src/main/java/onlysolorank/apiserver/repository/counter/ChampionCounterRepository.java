@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * -----------------------------------------------------------
  * 2023/10/02        solmin       최초 생성
  */
-public interface ChampionCounterRepository extends MongoRepository<BaseCounter, String>, ChampionCounterRepositoryCustom{
+public interface ChampionCounterRepository extends MongoRepository<BaseCounter, String>,
+    ChampionCounterRepositoryCustom {
 
 }

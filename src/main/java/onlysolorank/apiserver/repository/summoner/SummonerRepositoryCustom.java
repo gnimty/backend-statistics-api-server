@@ -1,9 +1,8 @@
 package onlysolorank.apiserver.repository.summoner;
 
+import java.util.List;
 import onlysolorank.apiserver.domain.Summoner;
 import org.springframework.data.mongodb.repository.Query;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.summoner
@@ -20,6 +19,7 @@ import java.util.List;
 
 
 public interface SummonerRepositoryCustom {
+
     @Query(
         value = "{mmr:{'$gte': ?0}}",
         fields = "{history:0, revisionDate: 0, updatedAt: 0, }")

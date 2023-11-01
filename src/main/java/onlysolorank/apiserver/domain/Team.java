@@ -1,13 +1,12 @@
 package onlysolorank.apiserver.domain;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -27,6 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class Team {
+
     @Id
     private String id;
     private String matchId;
@@ -45,8 +45,9 @@ public class Team {
     @ToString
     @Getter
     public static class Ban {
-        private Integer championId;
-        private Integer pickTurn;
+
+        private final Integer championId;
+        private final Integer pickTurn;
 
         public Ban(Integer championId, Integer pickTurn) {
             this.championId = championId;

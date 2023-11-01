@@ -1,10 +1,8 @@
 package onlysolorank.apiserver.domain.statistics.analysis.component;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.domain.dto.component
@@ -21,5 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class StatPerkComponentStat extends BaseComponentStat {
+
     private List<List<Long>> statPerks;
 }

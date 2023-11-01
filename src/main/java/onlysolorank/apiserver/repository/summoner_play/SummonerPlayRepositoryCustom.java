@@ -1,10 +1,9 @@
 package onlysolorank.apiserver.repository.summoner_play;
 
-import onlysolorank.apiserver.api.service.dto.PuuidChampionIdPair;
-import onlysolorank.apiserver.domain.SummonerPlay;
-
 import java.util.List;
 import java.util.Map;
+import onlysolorank.apiserver.api.service.dto.PuuidChampionIdPair;
+import onlysolorank.apiserver.domain.SummonerPlay;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.summoner_play

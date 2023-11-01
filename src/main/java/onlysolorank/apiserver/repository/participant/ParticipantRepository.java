@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.repository.participant;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
@@ -10,8 +11,6 @@ import onlysolorank.apiserver.domain.Participant;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.repository
@@ -30,8 +29,11 @@ import java.util.List;
  * 2023/09/04        solmin       Custom Repository 분리
  * 2023/09/11        solmin       추상메소드 이관
  */
-public interface ParticipantRepository extends MongoRepository<Participant, String>, ParticipantRepositoryCustom{
+public interface ParticipantRepository extends MongoRepository<Participant, String>,
+    ParticipantRepositoryCustom {
+
     List<Participant> findParticipantsByMatchId(String matchId);
+
     List<Participant> findParticipantsByMatchIdInAndPuuid(List<String> matchIds, String puuid);
 
     @Aggregation(pipeline = {"{ $match: { 'puuid': ?0 } }",
@@ -78,7 +80,8 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "totalDeath: 1," +
             "totalAssist: 1" +
             "}}"})
-    List<ChampionPlaysDto> findTopChampionStatsByPuuid(@Param("puuid") String puuid, @Param("limit") Integer limit);
+    List<ChampionPlaysDto> findTopChampionStatsByPuuid(@Param("puuid") String puuid,
+        @Param("limit") Integer limit);
 
 
     /**
@@ -99,7 +102,8 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
         "{$project:{_id:0,puuid:$_id,champions:{$slice:[$champions, ?1]}}}",
         "{$project:{_id:0,puuid:1,championIds:'$champions.championId'}}"
     })
-    List<mostChampionsBySummonerDto> findTopChampionsForEachSummoner(List<String> summonerIds, int limit);
+    List<mostChampionsBySummonerDto> findTopChampionsForEachSummoner(List<String> summonerIds,
+        int limit);
 
 
     @Aggregation(pipeline = {
@@ -148,7 +152,8 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "totalAssist: 1" +
             "}}"
     })
-    List<ChampionPlaysDto> findTopChampionStatsByChampionNameAndPuuids(List<String> puuids, String championName, Integer stdPlays);
+    List<ChampionPlaysDto> findTopChampionStatsByChampionNameAndPuuids(List<String> puuids,
+        String championName, Integer stdPlays);
 
     @Aggregation(pipeline = {
         "{$match:{puuid:  ?0,championId:  ?1} }",
@@ -205,7 +210,8 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
     @Data
     @AllArgsConstructor
     @ToString
-    class DistinctParticipantTeam{
+    class DistinctParticipantTeam {
+
         private String matchId;
         private Integer teamId;
         private Boolean win;

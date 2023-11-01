@@ -20,10 +20,11 @@ import org.springframework.stereotype.Component;
 @Component
 @ReadingConverter
 public class StringToTierStatConverter implements Converter<String, ChampionTier> {
+
     @Override
     public ChampionTier convert(String source) {
         try {
-            switch (source){
+            switch (source) {
                 case "OP":
                     return ChampionTier.OP;
                 case "1 tier":
@@ -38,7 +39,7 @@ public class StringToTierStatConverter implements Converter<String, ChampionTier
                     return ChampionTier.TIER_5;
             }
             throw new IllegalArgumentException();
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ChampionTier.UNKNOWN;
         }
     }

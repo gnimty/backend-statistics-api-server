@@ -1,7 +1,5 @@
 package onlysolorank.apiserver.domain.dto;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * packageName    : onlysolorank.apiserver.domain
  * fileName       : Position
@@ -28,12 +26,12 @@ public enum Position {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
-
     public static Position defaultValue() {
         return UNKNOWN;
+    }
+
+    public String getValue() {
+        return value;
     }
 
 }

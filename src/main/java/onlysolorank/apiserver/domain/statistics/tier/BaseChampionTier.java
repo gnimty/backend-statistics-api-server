@@ -20,11 +20,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document
 @Getter
 public class BaseChampionTier {
-    @Id
-    private String id;
 
     protected Long championId;
-
+    @Id
+    private String id;
     @Field("adjust_win_rate")
     private Double adjustWinRate;
 

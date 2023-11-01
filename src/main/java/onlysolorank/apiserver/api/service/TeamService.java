@@ -1,12 +1,11 @@
 package onlysolorank.apiserver.api.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.domain.Team;
 import onlysolorank.apiserver.repository.team.TeamRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service
@@ -23,13 +22,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class TeamService {
+
     private final TeamRepository teamRepository;
 
-    public List<Team> getTeamListByMatchIdList(List<String> matchIds){
+    public List<Team> getTeamListByMatchIdList(List<String> matchIds) {
         return teamRepository.findByMatchIdIn(matchIds);
     }
 
-    public List<Team> getTeamListByMatchId(String matchId){
+    public List<Team> getTeamListByMatchId(String matchId) {
         return teamRepository.findByMatchId(matchId);
     }
 

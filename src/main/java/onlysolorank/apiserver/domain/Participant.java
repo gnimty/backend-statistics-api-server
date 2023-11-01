@@ -1,14 +1,13 @@
 package onlysolorank.apiserver.domain;
 
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import onlysolorank.apiserver.domain.dto.Perk;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -27,6 +26,7 @@ import java.util.Map;
 @ToString
 @AllArgsConstructor
 public class Participant {
+
     @Id
     private String id;
     private String matchId;

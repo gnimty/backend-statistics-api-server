@@ -1,10 +1,9 @@
 package onlysolorank.apiserver.api.controller.dto;
 
-import lombok.Getter;
+import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName;
 
 import javax.validation.constraints.NotBlank;
-
-import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName;
+import lombok.Getter;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -20,13 +19,14 @@ import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName
 
 @Getter
 public class SummonerNamePairReq {
+
     @NotBlank(message = "myName은 internalName 기준으로 1글자 이상 입력해야 합니다.")
-    private String myName;
+    private final String myName;
 
     @NotBlank(message = "friendName은 internalName 기준으로 1글자 이상 입력해야 합니다.")
-    private String friendName;
+    private final String friendName;
 
-    public SummonerNamePairReq(String myName, String friendName){
+    public SummonerNamePairReq(String myName, String friendName) {
         this.myName = keywordToInternalName(myName);
         this.friendName = keywordToInternalName(friendName);
     }

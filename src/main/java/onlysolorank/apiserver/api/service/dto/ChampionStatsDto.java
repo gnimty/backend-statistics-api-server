@@ -20,6 +20,7 @@ import onlysolorank.apiserver.domain.statistics.stat.ChampionStatistics;
 @Data
 @AllArgsConstructor
 public class ChampionStatsDto {
+
     private Long championId;
     private String championName;
     private Integer totalPlays;

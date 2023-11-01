@@ -12,4 +12,5 @@ package onlysolorank.apiserver.domain.statistics.analysis.synergy;
  * 2023/10/02        solmin       최초 생성
  */
 public class BaseSynergy {
+
 }

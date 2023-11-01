@@ -17,7 +17,8 @@ import onlysolorank.apiserver.domain.statistics.tier.BaseChampionTier;
 
 @Data
 public class ChampionTierDto {
-//    private Double adjustWinRate;
+
+    //    private Double adjustWinRate;
     private Long championId;
     private Double winRate;
     private Double pickRate;

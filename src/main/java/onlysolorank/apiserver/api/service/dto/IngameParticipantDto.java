@@ -20,6 +20,7 @@ import onlysolorank.apiserver.domain.dto.Perk;
 
 @Data
 public class IngameParticipantDto {
+
     private Long teamId;
     private SummonerDto summoner;
     private Long championId;
@@ -30,8 +31,9 @@ public class IngameParticipantDto {
     private Perk perks;
 
     @Builder
-    public IngameParticipantDto(SpectatorV4GetCurrentGameInfo.CurrentGameParticipant participant, SummonerDto summoner, SummonerPlayDto summonerPlayDto,
-                                Champion champion){
+    public IngameParticipantDto(SpectatorV4GetCurrentGameInfo.CurrentGameParticipant participant,
+        SummonerDto summoner, SummonerPlayDto summonerPlayDto,
+        Champion champion) {
         this.teamId = participant.getTeamId();
         this.summoner = summoner;
         this.championId = champion.getChampionId();

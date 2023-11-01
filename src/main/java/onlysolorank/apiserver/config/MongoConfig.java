@@ -1,15 +1,18 @@
 package onlysolorank.apiserver.config;
 
-import onlysolorank.apiserver.config.converter.*;
+import java.util.ArrayList;
+import java.util.List;
+import onlysolorank.apiserver.config.converter.StringToPositionConverter;
+import onlysolorank.apiserver.config.converter.StringToTierConverter;
+import onlysolorank.apiserver.config.converter.StringToTierFilterConverter;
+import onlysolorank.apiserver.config.converter.StringToTierStatConverter;
+import onlysolorank.apiserver.config.converter.TierFilterToStringConverter;
 import onlysolorank.apiserver.utils.DateToZonedDateTimeConverter;
 import onlysolorank.apiserver.utils.ZonedDateTimeToDateConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.config
@@ -26,6 +29,7 @@ import java.util.List;
 
 @Configuration
 public class MongoConfig {
+
     @Bean
     public MongoCustomConversions customConversions() {
         List<Converter<?, ?>> converters = new ArrayList<>();

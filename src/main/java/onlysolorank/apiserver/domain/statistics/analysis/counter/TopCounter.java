@@ -20,7 +20,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document("counter_TOP_TOP")
 @AllArgsConstructor
 @Getter
-public class TopCounter extends BaseCounter{
+public class TopCounter extends BaseCounter {
+
     @Field("TOP")
     protected Long championId;
 

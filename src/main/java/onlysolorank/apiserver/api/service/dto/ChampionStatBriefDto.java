@@ -20,17 +20,16 @@ import onlysolorank.apiserver.domain.statistics.stat.BaseChampionStat;
 @Data
 @AllArgsConstructor
 public class ChampionStatBriefDto {
+
     private Long championId;
-//    private Position position;
     private Long plays;
     private Long wins;
     private Long defeats;
     private Long bans;
 
     @Builder
-    public ChampionStatBriefDto(BaseChampionStat stats){
+    public ChampionStatBriefDto(BaseChampionStat stats) {
         this.championId = stats.getChampionId();
-//        this.position = stats.getTeamPosition();
         this.plays = stats.getPlays();
         this.wins = stats.getWins();
         this.defeats = plays - wins;

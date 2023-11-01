@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @AllArgsConstructor
 public class Version {
+
     @Id
     private String id;
     private String version;

@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.config;
 
+import static java.util.Collections.singletonList;
+
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -20,8 +22,6 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import static java.util.Collections.singletonList;
-
 /**
  * packageName    : onlysolorank.apiserver.config
  * fileName       : SecondaryConfig
@@ -35,9 +35,12 @@ import static java.util.Collections.singletonList;
  */
 
 @Configuration
-@EnableMongoRepositories(basePackageClasses = {ChampionStatisticsRepositoryV2.class, ChampionAnalysisRepository.class, ChampionCounterRepository.class}, mongoTemplateRef = "secondaryMongoTemplate")
+@EnableMongoRepositories(basePackageClasses = {ChampionStatisticsRepositoryV2.class,
+    ChampionAnalysisRepository.class,
+    ChampionCounterRepository.class}, mongoTemplateRef = "secondaryMongoTemplate")
 @EnableConfigurationProperties
 public class SecondaryConfig {
+
     @Bean(name = "secondaryProperties")
     @ConfigurationProperties(prefix = "mongodb.secondary")
     @Qualifier("secondaryProperties")
@@ -47,19 +50,22 @@ public class SecondaryConfig {
 
     @Bean(name = "secondaryMongoClient")
     @Qualifier("secondaryMongoClient")
-    public MongoClient mongoClient(@Qualifier("secondaryProperties") MongoProperties mongoProperties) {
+    public MongoClient mongoClient(
+        @Qualifier("secondaryProperties") MongoProperties mongoProperties) {
 
         MongoCredential credential = MongoCredential
-            .createCredential(mongoProperties.getUsername(), mongoProperties.getAuthenticationDatabase(), mongoProperties.getPassword());
+            .createCredential(mongoProperties.getUsername(),
+                mongoProperties.getAuthenticationDatabase(), mongoProperties.getPassword());
 
         return MongoClients.create(MongoClientSettings.builder()
             .applyToClusterSettings(builder -> builder
-                .hosts(singletonList(new ServerAddress(mongoProperties.getHost(), mongoProperties.getPort()))))
+                .hosts(singletonList(
+                    new ServerAddress(mongoProperties.getHost(), mongoProperties.getPort()))))
             .credential(credential)
             .build());
     }
 
-    @Bean(name="secondaryMongoDBFactory")
+    @Bean(name = "secondaryMongoDBFactory")
     @Qualifier("secondaryMongoDBFactory")
     public MongoDatabaseFactory mongoDatabaseFactory(
         @Qualifier("secondaryMongoClient") MongoClient mongoClient,
@@ -67,7 +73,7 @@ public class SecondaryConfig {
         return new SimpleMongoClientDatabaseFactory(mongoClient, mongoProperties.getDatabase());
     }
 
-    @Bean(name="secondaryMongoTemplate")
+    @Bean(name = "secondaryMongoTemplate")
     @Qualifier("secondaryMongoTemplate")
     public MongoTemplate mongoTemplate(
         @Qualifier("secondaryMongoDBFactory") MongoDatabaseFactory mongoDatabaseFactory,

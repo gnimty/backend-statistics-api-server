@@ -25,6 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @ToString
 public class ChampionStatistics {
+
     @Id
     private String id;
     private Long championId;

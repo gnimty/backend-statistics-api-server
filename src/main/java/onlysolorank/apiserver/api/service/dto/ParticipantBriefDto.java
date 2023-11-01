@@ -4,12 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
-import onlysolorank.apiserver.domain.dto.ItemBundleDto;
-import onlysolorank.apiserver.domain.dto.Perk;
-import onlysolorank.apiserver.domain.dto.SoloTierDto;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -28,6 +22,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 public class ParticipantBriefDto {
+
     private String matchId;
     private String puuid;
     private Integer participantId;

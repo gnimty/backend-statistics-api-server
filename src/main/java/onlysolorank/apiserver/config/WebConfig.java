@@ -22,8 +22,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
     @Override
-    public void addFormatters(FormatterRegistry registry){
+    public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToTierFilterConverter());
         registry.addConverter(new StringToPeriodConverter());
         registry.addConverter(new StringToPositionFilterConverter());

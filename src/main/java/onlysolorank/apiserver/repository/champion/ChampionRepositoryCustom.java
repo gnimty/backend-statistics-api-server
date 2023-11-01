@@ -1,8 +1,7 @@
 package onlysolorank.apiserver.repository.champion;
 
-import onlysolorank.apiserver.domain.Rotation;
-
 import java.util.List;
+import onlysolorank.apiserver.domain.Rotation;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.champion
@@ -16,5 +15,6 @@ import java.util.List;
  * 10/9/23        solmin       최초 생성
  */
 public interface ChampionRepositoryCustom {
+
     List<Rotation> findRotationChampions();
 }

@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.config;
 
+import static java.util.Collections.singletonList;
+
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -29,8 +31,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-
-import static java.util.Collections.singletonList;
 
 /**
  * packageName    : onlysolorank.apiserver.config
@@ -63,6 +63,7 @@ import static java.util.Collections.singletonList;
     mongoTemplateRef = "primaryMongoTemplate")
 @EnableConfigurationProperties
 public class PrimaryConfig {
+
     @Bean("primaryProperties")
     @Qualifier("primaryProperties")
     @ConfigurationProperties(prefix = "mongodb.primary")
@@ -74,14 +75,17 @@ public class PrimaryConfig {
     @Bean("primaryMongoClient")
     @Primary
     @Qualifier("primaryMongoClient")
-    public MongoClient mongoClient(@Qualifier("primaryProperties") MongoProperties mongoProperties) {
+    public MongoClient mongoClient(
+        @Qualifier("primaryProperties") MongoProperties mongoProperties) {
 
         MongoCredential credential = MongoCredential
-            .createCredential(mongoProperties.getUsername(), mongoProperties.getAuthenticationDatabase(), mongoProperties.getPassword());
+            .createCredential(mongoProperties.getUsername(),
+                mongoProperties.getAuthenticationDatabase(), mongoProperties.getPassword());
 
         return MongoClients.create(MongoClientSettings.builder()
             .applyToClusterSettings(builder -> builder
-                .hosts(singletonList(new ServerAddress(mongoProperties.getHost(), mongoProperties.getPort()))))
+                .hosts(singletonList(
+                    new ServerAddress(mongoProperties.getHost(), mongoProperties.getPort()))))
             .credential(credential)
             .build());
     }

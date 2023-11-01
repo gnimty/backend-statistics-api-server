@@ -1,6 +1,5 @@
 package onlysolorank.apiserver.api.exception;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

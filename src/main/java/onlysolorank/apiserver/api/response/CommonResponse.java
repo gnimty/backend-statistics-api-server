@@ -1,12 +1,15 @@
 package onlysolorank.apiserver.api.response;
 
+import static onlysolorank.apiserver.api.handler.GlobalExceptionHandler.CustomFieldError;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
-
-import static onlysolorank.apiserver.api.handler.GlobalExceptionHandler.*;
 
 /**
  * packageName    : onlysolorank.apiserver.api.response
@@ -47,18 +50,21 @@ public class CommonResponse<T> {
             .status(new ApiStatus(errorCode.getMessage(), errorCode.getStatus().value())).build();
     }
 
-    public static CommonResponse fail(ErrorCode errorCode, String message){
+    public static CommonResponse fail(ErrorCode errorCode, String message) {
         return CommonResponse.builder()
             .status(new ApiStatus(message, errorCode.getStatus().value())).build();
     }
 
     public static <T extends CustomFieldError> CommonResponse<T> fail(ErrorCode errorCode, T data) {
         return CommonResponse.<T>builder()
-            .status(new ApiStatus(data.getMessage(), errorCode.getStatus().value(), data.getField())).build();
+            .status(
+                new ApiStatus(data.getMessage(), errorCode.getStatus().value(), data.getField()))
+            .build();
     }
 
     @Data
     private static class ApiStatus {
+
         private String message;
         private int code;
         @JsonInclude(JsonInclude.Include.NON_NULL)

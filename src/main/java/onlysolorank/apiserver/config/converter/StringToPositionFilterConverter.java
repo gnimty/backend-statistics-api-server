@@ -20,11 +20,12 @@ import org.springframework.stereotype.Component;
 @Component
 @ReadingConverter
 public class StringToPositionFilterConverter implements Converter<String, PositionFilter> {
+
     @Override
     public PositionFilter convert(String source) {
-        try{
+        try {
             return PositionFilter.valueOf(source);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return PositionFilter.ALL;
         }
     }

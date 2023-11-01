@@ -22,6 +22,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Getter
 @AllArgsConstructor
 public class SkinSale {
+
     @Id
     private String id;
     @Field("name_kr")

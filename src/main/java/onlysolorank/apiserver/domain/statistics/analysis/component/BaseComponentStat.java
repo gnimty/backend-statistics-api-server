@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @NoArgsConstructor
 @Getter
 public class BaseComponentStat {
+
     @Field("win_rate")
     private Double winRate;
 

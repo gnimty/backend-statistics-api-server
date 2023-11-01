@@ -1,11 +1,10 @@
 package onlysolorank.apiserver.domain.statistics.tier;
 
+import javax.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import javax.annotation.PostConstruct;
 
 /**
  * packageName    : onlysolorank.apiserver.domain.statistics.tier
@@ -23,6 +22,7 @@ import javax.annotation.PostConstruct;
 @AllArgsConstructor
 @Getter
 public class MiddleTier extends BaseChampionTier {
+
     @Field("MID")
     private Long championId;
 

@@ -12,4 +12,5 @@ package onlysolorank.apiserver.repository.team;
  * 2023/09/04        solmin       최초 생성
  */
 public interface TeamRepositoryCustom {
+
 }

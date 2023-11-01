@@ -1,9 +1,8 @@
 package onlysolorank.apiserver.domain.statistics.analysis.component;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.domain.dto.component
@@ -20,5 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class SkillComponentStat extends BaseComponentStat {
+
     private List<Long> skillTree;
 }

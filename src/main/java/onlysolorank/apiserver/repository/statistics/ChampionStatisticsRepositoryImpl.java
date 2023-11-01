@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.repository.statistics;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
@@ -8,7 +10,12 @@ import onlysolorank.apiserver.domain.statistics.stat.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.stat.DailyChampionStat;
 import onlysolorank.apiserver.domain.statistics.stat.MonthlyChampionStat;
 import onlysolorank.apiserver.domain.statistics.stat.WeeklyChampionStat;
-import onlysolorank.apiserver.domain.statistics.tier.*;
+import onlysolorank.apiserver.domain.statistics.tier.BaseChampionTier;
+import onlysolorank.apiserver.domain.statistics.tier.BottomTier;
+import onlysolorank.apiserver.domain.statistics.tier.JungleTier;
+import onlysolorank.apiserver.domain.statistics.tier.MiddleTier;
+import onlysolorank.apiserver.domain.statistics.tier.TopTier;
+import onlysolorank.apiserver.domain.statistics.tier.UtilityTier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
@@ -16,9 +23,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.statistics
@@ -34,17 +38,18 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepositoryCustom{
+public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepositoryCustom {
 
     @Autowired
     @Qualifier("secondaryMongoTemplate")
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public List<? extends BaseChampionStat> findStats(Period period, PositionFilter position, TierFilter tier) {
+    public List<? extends BaseChampionStat> findStats(Period period, PositionFilter position,
+        TierFilter tier) {
 
         Criteria criteria = Criteria.where("pick_cnt").ne(null).and("tier").is(tier);
-        if (position!=PositionFilter.ALL){
+        if (position != PositionFilter.ALL) {
             criteria = criteria.and("teamPosition").is(position);
         }
 
@@ -53,7 +58,7 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
 
         List<? extends BaseChampionStat> result = new ArrayList<>();
 
-        switch(period){
+        switch (period) {
             case DAY:
                 result = mongoTemplate.find(query, DailyChampionStat.class);
                 break;
@@ -78,21 +83,21 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
 
         List<? extends BaseChampionTier> result = new ArrayList<>();
 
-        switch(position){
+        switch (position) {
             case TOP:
-                result =  mongoTemplate.find(query, TopTier.class);
+                result = mongoTemplate.find(query, TopTier.class);
                 break;
             case JUNGLE:
-                result =  mongoTemplate.find(query, JungleTier.class);
+                result = mongoTemplate.find(query, JungleTier.class);
                 break;
             case MIDDLE:
-                result =  mongoTemplate.find(query, MiddleTier.class);
+                result = mongoTemplate.find(query, MiddleTier.class);
                 break;
             case BOTTOM:
-                result =  mongoTemplate.find(query, BottomTier.class);
+                result = mongoTemplate.find(query, BottomTier.class);
                 break;
             case UTILITY:
-                result =  mongoTemplate.find(query, UtilityTier.class);
+                result = mongoTemplate.find(query, UtilityTier.class);
                 break;
         }
 

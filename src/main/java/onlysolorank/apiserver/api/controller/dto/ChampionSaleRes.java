@@ -16,6 +16,7 @@ import onlysolorank.apiserver.domain.ChampionSale;
  */
 @Data
 public class ChampionSaleRes {
+
     private Long championId;
     private String krName;
     private String enName;

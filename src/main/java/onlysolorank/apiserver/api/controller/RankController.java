@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.api.controller;
 
+import java.util.List;
+import javax.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.controller.dto.ChampionSpecialistRes;
@@ -7,13 +9,15 @@ import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
-import onlysolorank.apiserver.api.service.dto.*;
+import onlysolorank.apiserver.api.service.dto.ChampionPlayWithSummonerDto;
+import onlysolorank.apiserver.api.service.dto.SummonerRankPageDto;
 import onlysolorank.apiserver.domain.dto.Tier;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.constraints.PositiveOrZero;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller
@@ -38,8 +42,10 @@ import java.util.List;
 @Validated
 @RequestMapping("/statistics/rank")
 public class RankController {
-    private final SummonerService summonerService;
+
     private final static Integer STD_MMR = 2400;
+    private final SummonerService summonerService;
+
     /**
      * Gets summoner rank.
      *
@@ -47,7 +53,8 @@ public class RankController {
      * @return the summoner rank
      */
     @GetMapping("/tier")
-    public CommonResponse<SummonerRankPageDto> getSummonerRank(@RequestParam(value = "page", defaultValue = "0") @PositiveOrZero(message = "page는 0보다 큰 값이어야 합니다.") Integer page){
+    public CommonResponse<SummonerRankPageDto> getSummonerRank(
+        @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero(message = "page는 0보다 큰 값이어야 합니다.") Integer page) {
         SummonerRankPageDto result = summonerService.getSummonerRankByMMR(page);
 
         return CommonResponse.success(result);
@@ -56,29 +63,30 @@ public class RankController {
     @GetMapping("/champion/{champion_name}")
     public CommonResponse getSpecialistsByChampionName(
         @RequestParam(value = "queue", defaultValue = "master") String queue,
-        @PathVariable("champion_name") String championName){
+        @PathVariable("champion_name") String championName) {
 
         // TODO redis 연동 후 챔피언아이디 검증해야 함
         Integer testChampionId = 30;
 
-        try{
+        try {
             Tier stdTier = Tier.valueOf(queue);
             // 다이아 이상의 티어 정보 호출이 아니라면 Exception
-            if (stdTier.getBasisMMR() < STD_MMR){
+            if (stdTier.getBasisMMR() < STD_MMR) {
                 throw new IllegalArgumentException();
             }
-            List<ChampionPlayWithSummonerDto> result = summonerService.getSpecialistsByChampionName(championName, stdTier);
+            List<ChampionPlayWithSummonerDto> result = summonerService.getSpecialistsByChampionName(
+                championName, stdTier);
 
             return CommonResponse.success(ChampionSpecialistRes
                 .builder()
                 .championId(testChampionId).championName(championName).championPlays(result)
                 .build());
 
-        }catch (IllegalArgumentException ex){
-            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE, "queue 정보가 diamond 미만이거나 잘못된 정보를 입력하였습니다." );
+        } catch (IllegalArgumentException ex) {
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE,
+                "queue 정보가 diamond 미만이거나 잘못된 정보를 입력하였습니다.");
         }
     }
-
 
 
 }

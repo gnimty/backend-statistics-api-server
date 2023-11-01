@@ -23,6 +23,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Getter
 @AllArgsConstructor
 public class Champion {
+
     @Id
     @JsonIgnore
     private String id;

@@ -1,8 +1,7 @@
 package onlysolorank.apiserver.api.service.dto;
 
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -17,6 +16,7 @@ import java.util.List;
  */
 @Data
 public class mostChampionsBySummonerDto {
+
     private String puuid;
     private List<Integer> championIds;
 

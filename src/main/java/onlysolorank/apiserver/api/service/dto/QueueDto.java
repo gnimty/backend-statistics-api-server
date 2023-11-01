@@ -19,8 +19,9 @@ import onlysolorank.apiserver.domain.dto.QueueType;
 
 @Data
 public class QueueDto {
+
     private Integer queueId;
-    private String queueInfo;
+    private String name;
     private String map;
 
     @JsonIgnore
@@ -30,7 +31,7 @@ public class QueueDto {
     public QueueDto(Integer queueId) {
         this.queueId = queueId;
 
-        switch (queueId){
+        switch (queueId) {
             case 420:
                 this.queueType = QueueType.RANK_SOLO;
                 break;
@@ -45,6 +46,6 @@ public class QueueDto {
                 break;
         }
         this.map = queueType.getMap();
-        this.queueInfo = queueType.getValue();
+        this.name = queueType.getValue();
     }
 }

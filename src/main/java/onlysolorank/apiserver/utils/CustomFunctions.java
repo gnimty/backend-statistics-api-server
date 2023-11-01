@@ -23,14 +23,15 @@ import java.util.Optional;
 
 
 public class CustomFunctions {
+
     /**
      * 영어, 한글, 숫자를 제외한 모든 문자 및 공백 제거 후 소문자로 변환
      *
      * @param keyword the keyword
      * @return the string
      */
-    public static String keywordToInternalName(String keyword){
-        if(keyword==null){
+    public static String keywordToInternalName(String keyword) {
+        if (keyword == null) {
             return null;
         }
 
@@ -47,12 +48,12 @@ public class CustomFunctions {
      * @param scale the scale: scale번째 자리수에서 반올림
      * @return the double
      */
-    public static Double doubleValueToHalfUp(Double value, int scale){
+    public static Double doubleValueToHalfUp(Double value, int scale) {
         return new BigDecimal(value).setScale(scale, RoundingMode.HALF_UP).doubleValue();
     }
 
-    public static Optional<Double> divideAndReturnDouble(Integer a, Integer b, int scale){
-        if(b==0){
+    public static Optional<Double> divideAndReturnDouble(Integer a, Integer b, int scale) {
+        if (b == 0) {
             return null;
         }
         return Optional.of(doubleValueToHalfUp(a.doubleValue() / b.doubleValue(), scale));

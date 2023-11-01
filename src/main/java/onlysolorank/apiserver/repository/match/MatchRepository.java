@@ -1,10 +1,9 @@
 package onlysolorank.apiserver.repository.match;
 
-import onlysolorank.apiserver.domain.Match;
-import org.springframework.data.mongodb.repository.MongoRepository;
-
 import java.util.List;
 import java.util.Optional;
+import onlysolorank.apiserver.domain.Match;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  * packageName    : onlysolorank.apiserver.repository
@@ -19,6 +18,8 @@ import java.util.Optional;
  * 2023/09/04        solmin       Custom Repository 분리
  */
 public interface MatchRepository extends MongoRepository<Match, String>, MatchRepositoryCustom {
+
     Optional<Match> findMatchByMatchId(String matchId);
+
     List<Match> findMatchesByMatchIdIn(List<String> matchIds);
 }

@@ -20,15 +20,16 @@ import org.springframework.stereotype.Component;
 @Component
 @ReadingConverter
 public class StringToPositionConverter implements Converter<String, PositionFilter> {
+
     @Override
     public PositionFilter convert(String source) {
-        try{
-            if (source==null){
+        try {
+            if (source == null) {
                 throw new IllegalArgumentException();
             }
 
             return PositionFilter.valueOf(source);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return PositionFilter.UNKNOWN;
         }
     }

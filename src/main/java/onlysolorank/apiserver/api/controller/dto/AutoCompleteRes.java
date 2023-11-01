@@ -1,11 +1,9 @@
 package onlysolorank.apiserver.api.controller.dto;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -21,12 +19,13 @@ import java.util.List;
 
 @Data
 public class AutoCompleteRes {
+
     private String keyword;
     private List<SummonerDto> summoners;
     private Integer matched;
 
     @Builder
-    public AutoCompleteRes(String keyword, List<SummonerDto> summoners){
+    public AutoCompleteRes(String keyword, List<SummonerDto> summoners) {
         this.keyword = keyword;
         this.summoners = summoners;
         this.matched = summoners.size();

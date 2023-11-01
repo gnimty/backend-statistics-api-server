@@ -1,13 +1,12 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
+
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.domain.dto.Position;
-
-import java.util.List;
-
-import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -23,6 +22,7 @@ import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
 
 @Data
 public class SummonerRankDto {
+
     private SummonerDto summoner;
     private List<Long> mostPlayedChampionIds;
     private List<Position> mostLanes;
@@ -32,11 +32,11 @@ public class SummonerRankDto {
     private Integer rank;
 
     @Builder
-    public SummonerRankDto(Summoner summoner, Integer rank){
+    public SummonerRankDto(Summoner summoner, Integer rank) {
         this.summoner = SummonerDto.builder().summoner(summoner).build();
         this.totalWin = summoner.getTotalWin();
         this.totalDefeat = summoner.getTotalDefeat();
-        this.winRate = doubleValueToHalfUp(totalWin.doubleValue()/totalDefeat.doubleValue(), 3);
+        this.winRate = doubleValueToHalfUp(totalWin.doubleValue() / totalDefeat.doubleValue(), 3);
         this.mostPlayedChampionIds = summoner.getMostChampionIds();
         this.mostLanes = summoner.getMostLanes();
         this.rank = rank;

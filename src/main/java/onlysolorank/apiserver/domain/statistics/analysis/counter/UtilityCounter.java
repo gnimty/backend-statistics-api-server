@@ -20,7 +20,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document("counter_SUP_SUP")
 @AllArgsConstructor
 @Getter
-public class UtilityCounter extends BaseCounter{
+public class UtilityCounter extends BaseCounter {
+
     @Field("SUP")
     protected Long championId;
 

@@ -23,7 +23,7 @@ public enum ChampionTier {
     TIER_5("5"),
     UNKNOWN("정보 없음");
 
-    private String value;
+    private final String value;
 
 
     ChampionTier(String value) {

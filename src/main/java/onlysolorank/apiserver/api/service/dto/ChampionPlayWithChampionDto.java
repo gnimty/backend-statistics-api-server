@@ -19,6 +19,7 @@ import lombok.ToString;
 @Data
 @ToString
 public class ChampionPlayWithChampionDto {
+
     private Integer championId;
     private String championName;
     private ChampionPlaysDto championPlay;
@@ -26,7 +27,7 @@ public class ChampionPlayWithChampionDto {
     private Integer rank;
 
     @Builder
-    public ChampionPlayWithChampionDto(ChampionPlaysDto championPlay, Integer rank){
+    public ChampionPlayWithChampionDto(ChampionPlaysDto championPlay, Integer rank) {
         this.championPlay = championPlay;
         this.championId = championPlay.getChampionId();
         this.championName = championPlay.getChampionName();

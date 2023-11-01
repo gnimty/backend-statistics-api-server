@@ -20,19 +20,16 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document
 @Getter
 public class BaseCounter {
-    @Id
-    private String id;
-
-    private Double score;
-    @Field("win_rate")
-    private Double winRate;
-
-    @Field("pick_rate")
-    private Double pickRate;
-
-    @Field("pick")
-    private Long plays;
 
     protected Long championId;
     protected Long opponentChampionId;
+    @Id
+    private String id;
+    private Double score;
+    @Field("win_rate")
+    private Double winRate;
+    @Field("pick_rate")
+    private Double pickRate;
+    @Field("pick")
+    private Long plays;
 }

@@ -1,14 +1,14 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.domain.Participant;
-import onlysolorank.apiserver.domain.dto.Perk;
 import onlysolorank.apiserver.domain.dto.ItemBundleDto;
+import onlysolorank.apiserver.domain.dto.Perk;
 import onlysolorank.apiserver.domain.dto.SoloTierDto;
 import onlysolorank.apiserver.domain.dto.Tier;
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -25,11 +25,12 @@ import java.util.List;
 
 @Data
 public class ParticipantDto {
+
     private Integer participantId;
     private SoloTierDto soloTier;
     private Integer championId;
     private String championName;
-//    private Boolean isMe;
+    //    private Boolean isMe;
     private Boolean win;
     private Integer teamId;
     private PositionFilter position;
@@ -64,7 +65,8 @@ public class ParticipantDto {
         this.participantId = participant.getParticipantId();
 
         // queue, tier, leaguepoints가 하나라도 null이면 soloTier를 null로
-        if (participant.getQueue()!=null && participant.getTier()!=null && participant.getLeaguePoints()!=null){
+        if (participant.getQueue() != null && participant.getTier() != null
+            && participant.getLeaguePoints() != null) {
             this.soloTier = new SoloTierDto(
                 Tier.valueOf(participant.getQueue()),
                 Integer.parseInt(participant.getTier()),
@@ -103,17 +105,17 @@ public class ParticipantDto {
             participant.getItem3(),
             participant.getItem4(),
             participant.getItem5());
-        this.accessory= participant.getItem6();
+        this.accessory = participant.getItem6();
         this.itemBuilds = participant.getItemBuild().entrySet()
-            .stream().map(build->new ItemBundleDto(build.getKey(), build.getValue())).toList();
+            .stream().map(build -> new ItemBundleDto(build.getKey(), build.getValue())).toList();
         this.skillBuilds = participant.getSkillBuild();
 
         try {
             this.position = PositionFilter.valueOf(participant.getLane());
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             this.position = PositionFilter.UNKNOWN;
         }
 
-        this.summonerName =summonerName;
+        this.summonerName = summonerName;
     }
 }

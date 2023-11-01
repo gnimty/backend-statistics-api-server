@@ -1,12 +1,11 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import static onlysolorank.apiserver.domain.Team.Ban;
+
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Team;
-
-import java.util.List;
-
-import static onlysolorank.apiserver.domain.Team.*;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto

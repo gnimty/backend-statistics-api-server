@@ -1,12 +1,11 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Match;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto

@@ -1,9 +1,8 @@
 package onlysolorank.apiserver.domain.dto;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -20,8 +19,9 @@ import java.util.List;
 @Getter
 @ToString
 public class ItemBundleDto {
-    private Integer minute;
-    private List<Integer> items;
+
+    private final Integer minute;
+    private final List<Integer> items;
 
     public ItemBundleDto(Integer minute, List<Integer> items) {
         this.minute = minute;

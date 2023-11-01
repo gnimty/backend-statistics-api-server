@@ -1,5 +1,9 @@
 package onlysolorank.apiserver.api.handler;
 
+import java.util.Arrays;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Path;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -13,11 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Path;
-import java.util.Arrays;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller
@@ -39,25 +38,30 @@ public class GlobalExceptionHandler {
 
     // 공통 Exception
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<CommonResponse> CommonExceptionHandler(Exception ex, BindingResult bindingResult) {
-        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<CommonResponse> CommonExceptionHandler(Exception ex,
+        BindingResult bindingResult) {
+        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR),
+            HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<CommonResponse> CustomExceptionHandler(CustomException ex) {
 
-        return new ResponseEntity<>(CommonResponse.fail(ex.getErrorCode(), ex.getMessage()), ex.getErrorCode().getStatus());
+        return new ResponseEntity<>(CommonResponse.fail(ex.getErrorCode(), ex.getMessage()),
+            ex.getErrorCode().getStatus());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<CommonResponse> IllegalArgumentExceptionHandler(IllegalArgumentException ex) {
+    public ResponseEntity<CommonResponse> IllegalArgumentExceptionHandler(
+        IllegalArgumentException ex) {
         log.info(ex.getMessage());
         ErrorCode ec = ErrorCode.INVALID_INPUT_VALUE;
         return new ResponseEntity<>(CommonResponse.fail(ec), ec.getStatus());
     }
 
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<CommonResponse> BindExceptionHandler(BindException ex, BindingResult result) {
+    public ResponseEntity<CommonResponse> BindExceptionHandler(BindException ex,
+        BindingResult result) {
         // BindingResult에서 하나만 가져오기
         FieldError err = result.getFieldErrors().stream().findFirst().get();
 
@@ -73,30 +77,33 @@ public class GlobalExceptionHandler {
                 .message(err.getDefaultMessage())
                 .field(err.getField())
                 .build()
-            ),HttpStatus.BAD_REQUEST);
+        ), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<CommonResponse> ConstraintViolationExceptionHandler(ConstraintViolationException ex) {
+    public ResponseEntity<CommonResponse> ConstraintViolationExceptionHandler(
+        ConstraintViolationException ex) {
         ConstraintViolation<?> violation = ex.getConstraintViolations().stream().findFirst().get();
 
         return new ResponseEntity<>(CommonResponse.fail(ErrorCode.CONSTRAINT_VIOLATION,
             CustomFieldError.builder()
                 .message(violation.getMessage())
                 .propertypath(violation.getPropertyPath())
-                .build()),HttpStatus.BAD_REQUEST);
+                .build()), HttpStatus.BAD_REQUEST);
     }
 
     @Data
-    public static class CustomFieldError{
+    public static class CustomFieldError {
+
         private String field;
         private String message;
 
         @Builder
-        public CustomFieldError(Path propertypath, String field, String message){
-            if (field ==null){
-                this.field =  Arrays.stream(propertypath.toString().split("\\.")).reduce((first, second) -> second).orElse("none");
-            }else{
+        public CustomFieldError(Path propertypath, String field, String message) {
+            if (field == null) {
+                this.field = Arrays.stream(propertypath.toString().split("\\."))
+                    .reduce((first, second) -> second).orElse("none");
+            } else {
                 this.field = field;
             }
             this.message = message;
