@@ -152,7 +152,10 @@ public class SummonerController {
         @PathVariable("summoner_name") String summonerName) {
         List<RecentMemberDto> data = summonerService.getRecentMemberInfo(summonerName);
 
-        return CommonResponse.success(new RecentMemberRes(data.size(), data));
+        return CommonResponse.success(RecentMemberRes.builder()
+            .recentMembers(data)
+            .count(data.size())
+            .build());
     }
 
 

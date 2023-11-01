@@ -2,6 +2,7 @@ package onlysolorank.apiserver.api.controller.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
 
@@ -19,6 +20,7 @@ import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class RecentMemberRes {
 
     List<RecentMemberDto> recentMembers;
