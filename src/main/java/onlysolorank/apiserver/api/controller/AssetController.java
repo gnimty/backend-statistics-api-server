@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.api.controller;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.controller.dto.ChampionSaleRes;
@@ -13,6 +14,7 @@ import onlysolorank.apiserver.domain.Rotation;
 import onlysolorank.apiserver.domain.Version;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,6 +86,13 @@ public class AssetController {
         List<Rotation> result = assetService.getRotationChampions();
 
         return CommonResponse.success(result);
+    }
+
+    @PatchMapping("/champion")
+    public CommonResponse initChampions(){
+        assetService.updateChampionCache();
+
+        return CommonResponse.success("챔피언 맵 갱신에 성공하였습니다.");
     }
 
 }

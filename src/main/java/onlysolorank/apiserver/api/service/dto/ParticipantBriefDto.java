@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,11 +23,11 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class ParticipantBriefDto {
-
+    @JsonIgnore
     private String matchId;
     private String puuid;
     private Integer participantId;
-    private Integer championId;
+    private Long championId;
     private String championName;
     private Integer teamId;
     private String summonerName;

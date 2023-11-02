@@ -1,35 +1,31 @@
 package onlysolorank.apiserver.config.converter;
 
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
-import onlysolorank.apiserver.api.exception.CustomException;
-import onlysolorank.apiserver.api.exception.ErrorCode;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
-import org.springframework.data.convert.WritingConverter;
 import org.springframework.stereotype.Component;
 
 /**
  * packageName    : onlysolorank.apiserver.config.converter
- * fileName       : StringToPositionConverter
+ * fileName       : StringToBooleanConverter
  * author         : solmin
- * date           : 2023/09/27
+ * date           : 11/1/23
  * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2023/09/27        solmin       최초 생성
+ * 11/1/23        solmin       최초 생성
  */
 
 @Component
 @ReadingConverter
-public class StringToPositionFilterConverter implements Converter<String, PositionFilter> {
+public class StringToBooleanConverter implements Converter<String, Boolean> {
 
     @Override
-    public PositionFilter convert(String source) {
+    public Boolean convert(String source) {
         try {
-            return PositionFilter.valueOf(source);
+            return Boolean.valueOf(source);
         } catch (IllegalArgumentException e) {
-            return PositionFilter.UNKNOWN;
+            return false;
         }
     }
 }

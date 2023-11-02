@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.config.converter;
 
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
+import onlysolorank.apiserver.domain.dto.Position;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.stereotype.Component;
@@ -19,18 +20,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ReadingConverter
-public class StringToPositionConverter implements Converter<String, PositionFilter> {
+public class StringToPositionConverter implements Converter<String, Position> {
 
     @Override
-    public PositionFilter convert(String source) {
+    public Position convert(String source) {
         try {
             if (source == null) {
                 throw new IllegalArgumentException();
             }
 
-            return PositionFilter.valueOf(source);
+            return Position.valueOf(source);
         } catch (IllegalArgumentException e) {
-            return PositionFilter.UNKNOWN;
+            return Position.UNKNOWN;
         }
     }
 }

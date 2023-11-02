@@ -23,6 +23,6 @@ public interface ChampionStatisticsRepositoryCustom {
     List<? extends BaseChampionStat> findStats(Period period, PositionFilter position,
         TierFilter tier);
 
-    List<? extends BaseChampionTier> findTierStats(PositionFilter position);
+    List<? extends BaseChampionTier> findTierStats(PositionFilter position, Boolean brief);
 
 }

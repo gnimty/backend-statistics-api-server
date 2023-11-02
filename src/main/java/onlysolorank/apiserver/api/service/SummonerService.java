@@ -339,13 +339,13 @@ public class SummonerService {
         log.info("현재 : {}", now.format(formatter));
         LocalDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES)
             .toLocalDateTime(); // 갱신가능 시간
-        log.info("갱신가능시각 : {}", renewableAfter.format(formatter));
+        log.info("갱신 가능 시각 : {}", renewableAfter.format(formatter));
 
         // 만약 현재 시간이 최종 갱신 시점 + 120초보다 이전이라면
         if (now.isBefore(renewableAfter)) {
             throw new CustomException(ErrorCode.TOO_MANY_REQUESTS,
-                "소환사에 대한 요청이 너무 많습니다. " + Duration.between(now, renewableAfter).getSeconds()
-                    + "초 후에 다시 시도해주세요.");
+                String.format("소환사에 대한 요청이 너무 많습니다. %s초 후에 다시 시도해주세요.",
+                    Duration.between(now, renewableAfter).getSeconds()));
         }
 
         // 3. RestTemplate으로 Request 보내기

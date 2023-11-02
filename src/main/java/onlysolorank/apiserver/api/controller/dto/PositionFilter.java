@@ -20,8 +20,8 @@ public enum PositionFilter {
     MIDDLE("미드"),
     BOTTOM("원딜"),
     UTILITY("서폿"),
-    ALL("모든 포지션"),
-    UNKNOWN("알 수 없음");
+    UNKNOWN("잘못된 포지션 정보"), // 잘못된 포지션 입력 시
+    ALL("모든 포지션"); // 상관 없음
 
     private final String value;
 
@@ -29,9 +29,9 @@ public enum PositionFilter {
         this.value = value;
     }
 
-    public static PositionFilter defaultValue() {
-        return UNKNOWN;
-    }
+//    public static PositionFilter defaultValue() {
+//        return UNKNOWN;
+//    }
 
     public String getValue() {
         return value;

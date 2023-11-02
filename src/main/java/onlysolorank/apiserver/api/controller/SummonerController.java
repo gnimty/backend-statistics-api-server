@@ -90,7 +90,10 @@ public class SummonerController {
         } else {
             List<MatchBriefDto> data = summonerService.get20MatchesByOptionalLastMatchId(
                 summonerName, lastMatchId.get());
-            return CommonResponse.success(data);
+            return CommonResponse.success(
+                SummonerMatchRes.builder()
+                    .matches(data)
+                    .build());
         }
     }
 

@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.api.controller.dto;
 
+import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
+
 import lombok.Data;
 import onlysolorank.apiserver.domain.SkinSale;
 
@@ -22,11 +24,13 @@ public class SkinSaleRes {
     private Integer originRp;
     private Integer discountedRp;
     private String skinImgUrl;
+    private Double discountedRate;
 
     public SkinSaleRes(SkinSale skinSale) {
         this.skinName = skinSale.getKrName();
         this.originRp = skinSale.getOriginRp();
         this.discountedRp = skinSale.getDiscountedRp();
         this.skinImgUrl = skinSale.getUrl();
+        this.discountedRate = divideAndReturnDouble(discountedRp, originRp, 2).get();
     }
 }

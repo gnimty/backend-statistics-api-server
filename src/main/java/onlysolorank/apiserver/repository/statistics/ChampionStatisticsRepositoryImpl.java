@@ -44,6 +44,8 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
     @Qualifier("secondaryMongoTemplate")
     private final MongoTemplate mongoTemplate;
 
+    private final int BRIEF_CNT = 5;
+
     @Override
     public List<? extends BaseChampionStat> findStats(Period period, PositionFilter position,
         TierFilter tier) {
@@ -74,12 +76,16 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
     }
 
     @Override
-    public List<? extends BaseChampionTier> findTierStats(PositionFilter position) {
+    public List<? extends BaseChampionTier> findTierStats(PositionFilter position, Boolean brief) {
 
         Criteria criteria = new Criteria();
 
         Query query = new Query(criteria)
             .with(Sort.by(Sort.Order.desc("score")));
+
+        if(brief){
+            query.limit(BRIEF_CNT);
+        }
 
         List<? extends BaseChampionTier> result = new ArrayList<>();
 

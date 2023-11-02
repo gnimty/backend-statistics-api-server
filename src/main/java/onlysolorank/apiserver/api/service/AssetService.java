@@ -2,11 +2,13 @@ package onlysolorank.apiserver.api.service;
 
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.domain.Champion;
+import onlysolorank.apiserver.domain.ChampionCache;
 import onlysolorank.apiserver.domain.ChampionSale;
 import onlysolorank.apiserver.domain.Rotation;
 import onlysolorank.apiserver.domain.SkinSale;
@@ -39,7 +41,7 @@ public class AssetService {
     private final SkinSaleRepository skinSaleRepository;
     private final VersionRepository versionRepository;
     private final ChampionRepository championRepository;
-
+    private final ChampionCache championCache;
 
     public Version getLatestVersion() {
         Optional<Version> version = versionRepository.findOneByOrder(0);
@@ -74,5 +76,10 @@ public class AssetService {
     public List<Rotation> getRotationChampions() {
         List<Rotation> rotationChampions = championRepository.findRotationChampions();
         return rotationChampions;
+    }
+
+    @PostConstruct
+    public void updateChampionCache(){
+        championCache.initOnCrawl(getAllChampions());
     }
 }

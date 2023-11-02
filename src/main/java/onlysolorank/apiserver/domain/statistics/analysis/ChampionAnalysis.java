@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.domain.statistics.analysis;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +16,7 @@ import onlysolorank.apiserver.domain.statistics.analysis.component.SkillComponen
 import onlysolorank.apiserver.domain.statistics.analysis.component.SpellComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.StatPerkComponentStat;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -39,6 +42,8 @@ public class ChampionAnalysis {
     private String id;
 
     private Long championId;
+    @Transient
+    private String championName;
 
     @Field("teamPosition")
     private PositionFilter position;
