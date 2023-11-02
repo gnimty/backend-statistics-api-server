@@ -33,6 +33,10 @@ public class SummonerPlayDto {
     private boolean isPerfect = false;
     private Long championId;
     private String championName;
+    private Double avgGold;
+    private Double avgDamage;
+    private Integer maxKill;
+    private Integer maxDeath;
 
     public SummonerPlayDto(SummonerPlay summonerPlay) {
         this.totalPlays = summonerPlay.getTotalPlays();
@@ -51,6 +55,11 @@ public class SummonerPlayDto {
             this.isPerfect = true;
             this.avgKda = null;
         }
+
+        this.avgGold = summonerPlay.getAvgGold();
+        this.avgDamage = summonerPlay.getAvgDamage();
+        this.maxKill = summonerPlay.getMaxKill();
+        this.maxDeath = summonerPlay.getMaxDeath();
     }
 
 }

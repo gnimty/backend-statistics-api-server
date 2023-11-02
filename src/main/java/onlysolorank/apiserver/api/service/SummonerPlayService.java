@@ -33,7 +33,7 @@ public class SummonerPlayService {
     }
 
     public List<SummonerPlay> getSummonerPlaysLimit(String puuid, int limit) {
-        return summonerPlayRepository.findSummonerPlaysByPuuid(puuid);
+        return summonerPlayRepository.findSummonerPlaysByPuuidAndLimit(puuid, limit);
     }
 
     public List<SummonerPlay> getSummonerPlaysByCondition(String championName, Integer limit) {
