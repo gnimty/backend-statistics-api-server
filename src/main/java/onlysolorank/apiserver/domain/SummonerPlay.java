@@ -44,4 +44,8 @@ public class SummonerPlay {
     private Integer totalDeath;
     private Integer totalAssist;
 
+    private Double avgGold;
+    private Double avgDamage;
+    private Integer maxKill;
+    private Integer maxDeath;
 }
