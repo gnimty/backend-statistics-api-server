@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.response.CommonResponse;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -37,12 +38,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     // 공통 Exception
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({Exception.class})
     public ResponseEntity<CommonResponse> CommonExceptionHandler(Exception ex,
         BindingResult bindingResult) {
         return new ResponseEntity<>(CommonResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR),
             HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(ConversionFailedException.class)
+    public ResponseEntity<CommonResponse> ConversionFailedExceptionHandler(
+        ConversionFailedException ex) {
+        log.info(ex.getMessage());
+        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.INVALID_INPUT_VALUE,
+            ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<CommonResponse> CustomExceptionHandler(CustomException ex) {

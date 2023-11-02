@@ -4,10 +4,14 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.controller.dto.ChampionAnalysisRes;
+import onlysolorank.apiserver.api.controller.dto.ChampionTierListRes;
 import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.api.controller.dto.TierFilter;
+import onlysolorank.apiserver.api.exception.CustomException;
+import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.response.CommonResponse;
+import onlysolorank.apiserver.api.service.AssetService;
 import onlysolorank.apiserver.api.service.StatisticsService;
 import onlysolorank.apiserver.api.service.dto.ChampionStatBriefDto;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
@@ -41,6 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChampionController {
 
     private final StatisticsService statisticsService;
+    private final AssetService assetService;
 
     @GetMapping("/stats/total")
     public CommonResponse<List<ChampionStatBriefDto>> getAllChampionStats(
@@ -55,22 +60,29 @@ public class ChampionController {
     }
 
     @GetMapping("/stats/tier")
-    public CommonResponse<List<ChampionTierDto>> getChampionDetail(
-        @RequestParam(value = "position", defaultValue = "TOP") PositionFilter position) {
+    public CommonResponse<ChampionTierListRes> getChampionTierList(
+        @RequestParam(value = "position", defaultValue = "ALL") PositionFilter position,
+        @RequestParam(value = "brief", defaultValue = "false") Boolean brief) {
 
         if (position == PositionFilter.ALL) {
             position = PositionFilter.TOP;
+        } else if (position == PositionFilter.UNKNOWN) {
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE, "정확한 포지션 정보를 입력하세요.");
         }
 
-        List<ChampionTierDto> result = statisticsService.getChampionDetail(position);
+        List<ChampionTierDto> results = statisticsService.getChampionTierList(position, brief);
 
-        return CommonResponse.success(result);
+        return CommonResponse.success(ChampionTierListRes.builder()
+            .position(position)
+            .version(assetService.getLatestVersion().getVersion())
+            .champions(results)
+            .build());
     }
 
     @GetMapping("/stats/detail/{champion_name}")
-    public CommonResponse<ChampionAnalysisRes> getChampionDetail(
+    public CommonResponse<ChampionAnalysisRes> getSpecificChampionDetail(
         @PathVariable("champion_name") String championName,
-        @RequestParam(value = "position", defaultValue = "ALL") PositionFilter position,
+        @RequestParam(value = "position", defaultValue = "UNKNOWN") PositionFilter position,
         @RequestParam(value = "tier", defaultValue = "EMERALD") TierFilter tier) {
 
         ChampionAnalysisRes result = statisticsService.getChampionAnalysis(championName, position,

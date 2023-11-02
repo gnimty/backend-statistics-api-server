@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.api.controller.dto;
 
+import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
+
 import lombok.Data;
 import onlysolorank.apiserver.domain.ChampionSale;
 
@@ -23,6 +25,7 @@ public class ChampionSaleRes {
     private Integer originRp;
     private Integer discountedRp;
     private Integer originIp;
+    private Double discountedRate;
 
     public ChampionSaleRes(ChampionSale championSale) {
         this.championId = championSale.getChampionId();
@@ -31,5 +34,6 @@ public class ChampionSaleRes {
         this.originRp = championSale.getOriginRp();
         this.discountedRp = championSale.getDiscountedRp();
         this.originIp = championSale.getOriginIp();
+        this.discountedRate = divideAndReturnDouble(discountedRp, originRp, 2).get();
     }
 }

@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.config;
 
+import onlysolorank.apiserver.config.converter.StringToBooleanConverter;
 import onlysolorank.apiserver.config.converter.StringToPeriodConverter;
 import onlysolorank.apiserver.config.converter.StringToPositionConverter;
 import onlysolorank.apiserver.config.converter.StringToPositionFilterConverter;
@@ -29,5 +30,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new StringToPeriodConverter());
         registry.addConverter(new StringToPositionFilterConverter());
         registry.addConverter(new StringToPositionConverter());
+        registry.addConverter(new StringToBooleanConverter());
     }
 }
