@@ -469,7 +469,7 @@ public class SummonerService {
      * @param summonerName 소환사이름
      * @return Summoner
      */
-    private Summoner getSummonerBySummonerName(String summonerName) {
+    public Summoner getSummonerBySummonerName(String summonerName) {
         String internalName = keywordToInternalName(summonerName);
         return summonerRepository.findSummonerByInternalName(internalName)
             .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND,

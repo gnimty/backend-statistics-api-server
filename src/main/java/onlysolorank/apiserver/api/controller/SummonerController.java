@@ -78,6 +78,16 @@ public class SummonerController {
                 .build());
     }
 
+    @GetMapping("/{summoner_name}")
+    public CommonResponse<SummonerDto> getSummoner(
+        @PathVariable("summoner_name") String summonerName) {
+
+        SummonerDto result = new SummonerDto(summonerService.getSummonerBySummonerName(summonerName));
+
+        return CommonResponse.success(result);
+    }
+
+
     @GetMapping("/matches/{summoner_name}")
     public CommonResponse getSummonerMatchInfoBySummonerName(
         @PathVariable("summoner_name") String summonerName,
