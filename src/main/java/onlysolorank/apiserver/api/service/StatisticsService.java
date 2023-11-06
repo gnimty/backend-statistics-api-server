@@ -11,7 +11,7 @@ import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.api.controller.dto.TierFilter;
 import onlysolorank.apiserver.api.exception.CustomException;
-import onlysolorank.apiserver.api.service.dto.ChampionStatBriefDto;
+import onlysolorank.apiserver.api.service.dto.ChampionStatDto;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
 import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.ChampionCache;
@@ -42,23 +42,20 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StatisticsService {
 
-//    private final ChampionStatisticsRepository championStatisticsRepository;
-//    private final ChampionStatisticsRepositoryV2 championStatisticsRepositoryV2;
     private final ChampionStatisticsRepositoryCustom championStatisticsRepositoryCustom;
     private final ChampionAnalysisRepository championAnalysisRepository;
     private final ChampionRepository championRepository;
     private final ChampionCounterRepository championCounterRepository;
     private final ChampionCache championCache;
 
-    public List<ChampionStatBriefDto> getAllChampionStats(TierFilter tier, Period period,
-        PositionFilter position) {
-
-        List<ChampionStatBriefDto> result = championStatisticsRepositoryCustom.findStats(period,
-            position, tier).stream().map(ChampionStatBriefDto::new).toList();
-
-        // position = all 이면 positionfilter 없애기
-        // 그렇지 않으면 position에 따른 통계 정보만 보여주기
-
+    public List<ChampionStatDto> getAllChampionStats(TierFilter tier, Period period,
+                                                     PositionFilter position) {
+        List<ChampionStatDto> result = championStatisticsRepositoryCustom.findStats(period,
+            position, tier).stream()
+                .map(championStat-> ChampionStatDto.builder()
+                .stat(championStat)
+                .championName(championCache.resolve(championStat.getChampionId()))
+                .build()).toList();
         return result;
     }
 
@@ -75,18 +72,19 @@ public class StatisticsService {
         return result;
     }
 
-    public ChampionAnalysisRes getChampionAnalysis(String championName, PositionFilter position,
-        TierFilter tier) {
+    public ChampionAnalysisRes getChampionAnalysis(String championName, PositionFilter position, TierFilter tier) {
         Champion champion = championRepository.findOneByEnName(championName).orElseThrow(
             () -> new CustomException(RESULT_NOT_FOUND, "champion 이름에 해당하는 챔피언 정보가 없습니다."));
 
         Optional<ChampionAnalysis> optionalAnalysis;
+
         // 1. position==UNKNOWN일 경우 해당 티어대에서 가장 많이 플레이한 position 정보로 변경하기
         // db.getCollection("champion_statistics_detail").find({"championId":517, "tier":"EMERALD"}).sort({"gameVersion_":-1, "pickRate":-1}).limit(1)
         if (position == PositionFilter.UNKNOWN) {
             optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndTierOrderByVersionDescPickRateDesc(
                 champion.getChampionId(), tier);
         }
+
         // 2. position이 지정되어 있다면 해당 정보들로 바로 쿼리
         // db.getCollection("champion_statistics_detail").find({"championId":517, "tier":"EMERALD", "teamPosition":"JUNGLE"}).sort({"gameVersion_":-1}).limit(1)
         else {
@@ -99,7 +97,6 @@ public class StatisticsService {
         }
 
         // 3. 추적한 position 정보로 counter champion, easy champion 얻기
-
         ChampionAnalysis analysis = optionalAnalysis.get();
 
         List<BaseCounter> counterChampions = championCounterRepository.findCounterChampions(
@@ -109,12 +106,5 @@ public class StatisticsService {
 
         return ChampionAnalysisRes.toRes(analysis, counterChampions, easyChampions);
     }
-
-//    private PositionFilter replaceToPopularPosition(PositionFilter position){
-//        if(position==PositionFilter.UNKNOWN){
-//            // TODO
-//        }
-//        return position;
-//    }
 
 }

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import onlysolorank.apiserver.api.service.dto.ChampionDto;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,7 +25,7 @@ public class ChampionCache {
     private Map<Long, String> krMap = new HashMap<>();
     private Map<Long, String> enMap = new HashMap<>();
 
-    public void initOnCrawl(List<Champion> champions){
+    public void initOnCrawl(List<ChampionDto> champions){
         krMap = champions.stream().collect(Collectors.toMap(c->c.getChampionId(), c->c.getKrName()));
         enMap = champions.stream().collect(Collectors.toMap(c->c.getChampionId(), c->c.getEnName()));
     }

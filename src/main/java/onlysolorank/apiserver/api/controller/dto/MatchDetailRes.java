@@ -1,10 +1,13 @@
-package onlysolorank.apiserver.api.service.dto;
+package onlysolorank.apiserver.api.controller.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.api.service.dto.ParticipantDto;
+import onlysolorank.apiserver.api.service.dto.QueueDto;
+import onlysolorank.apiserver.api.service.dto.TeamDto;
 import onlysolorank.apiserver.domain.Match;
 
 /**
@@ -21,7 +24,7 @@ import onlysolorank.apiserver.domain.Match;
 
 @Data
 @AllArgsConstructor
-public class MatchDetailDto {
+public class MatchDetailRes {
 
     private String matchId;
     private String gameVersion;
@@ -33,7 +36,7 @@ public class MatchDetailDto {
     private List<TeamDto> teams;
 
     @Builder
-    public MatchDetailDto(Match match, List<ParticipantDto> participants, List<TeamDto> teams) {
+    public MatchDetailRes(Match match, List<ParticipantDto> participants, List<TeamDto> teams) {
         this.matchId = match.getMatchId();
         this.gameVersion = match.getVersion();
         this.gameEndAt = match.getGameEndAt();

@@ -6,7 +6,7 @@ import java.time.ZoneId;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.api.service.dto.IngameParticipantDto;
+import onlysolorank.apiserver.api.service.dto.CurrentGameParticipantDto;
 import onlysolorank.apiserver.api.service.dto.QueueDto;
 
 /**
@@ -22,17 +22,17 @@ import onlysolorank.apiserver.api.service.dto.QueueDto;
  */
 
 @Data
-public class IngameInfoRes {
+public class CurrentGameRes {
 
-    private List<IngameParticipantDto> participants;
+    private List<CurrentGameParticipantDto> participants;
     private QueueDto queueInfo;
     private LocalDateTime gameStartTime;
     private Long gameLength;
 
 
     @Builder
-    public IngameInfoRes(Long gameLength, Long startTime, Integer queueId,
-        List<IngameParticipantDto> participants) {
+    public CurrentGameRes(Long gameLength, Long startTime, Integer queueId,
+                          List<CurrentGameParticipantDto> participants) {
         this.gameLength = gameLength;
 
         // epochMilliseconds to LocalDatetime

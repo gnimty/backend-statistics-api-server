@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.api.controller.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Version;
 
@@ -15,15 +16,18 @@ import onlysolorank.apiserver.domain.Version;
  * 2023/09/13        solmin       최초 생성
  */
 @Data
+@Builder
 public class VersionRes {
 
     private String version;
     private String releaseNoteUrl;
     private String releaseNoteImgUrl;
 
-    public VersionRes(Version version) {
-        this.version = version.getVersion();
-        this.releaseNoteUrl = version.getReleaseNoteUrl();
-        this.releaseNoteImgUrl = version.getReleaseNoteImgUrl();
+    public static VersionRes from(Version version) {
+        return VersionRes.builder()
+                .version(version.getVersion())
+                .releaseNoteImgUrl(version.getReleaseNoteImgUrl())
+                .releaseNoteUrl(version.getReleaseNoteUrl())
+                .build();
     }
 }

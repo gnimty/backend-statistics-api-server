@@ -5,13 +5,14 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onlysolorank.apiserver.api.controller.dto.VersionRes;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
+import onlysolorank.apiserver.api.service.dto.ChampionDto;
+import onlysolorank.apiserver.api.service.dto.ChampionSaleDto;
+import onlysolorank.apiserver.api.service.dto.SkinSaleDto;
 import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.ChampionCache;
-import onlysolorank.apiserver.domain.ChampionSale;
-import onlysolorank.apiserver.domain.Rotation;
-import onlysolorank.apiserver.domain.SkinSale;
 import onlysolorank.apiserver.domain.Version;
 import onlysolorank.apiserver.repository.champion.ChampionRepository;
 import onlysolorank.apiserver.repository.crawl.ChampionSaleRepository;
@@ -43,39 +44,59 @@ public class AssetService {
     private final ChampionRepository championRepository;
     private final ChampionCache championCache;
 
-    public Version getLatestVersion() {
-        Optional<Version> version = versionRepository.findOneByOrder(0);
+    public VersionRes getLatestVersion() {
+        Optional<Version> version = getVersion();
 
-        if (version.isPresent()) {
-            return version.get();
+        if(version.isPresent()){
+            return VersionRes.from(version.get());
         }
+
         return null;
     }
 
-    public List<ChampionSale> getAllChampionSalesInfo() {
-        return championSaleRepository.findAll();
+    public String getLatestVersionString(){
+        Optional<Version> version = getVersion();
+
+        if(version.isPresent()){
+            return version.get().getVersion();
+        }
+
+        return null;
     }
 
-    public List<SkinSale> getAllSkinSalesInfo() {
-        return skinSaleRepository.findAll();
+    private Optional<Version> getVersion() {
+        Optional<Version> version = versionRepository.findOneByOrder(0);
+        return version;
     }
 
-
-    public List<Champion> getAllChampions() {
-        return championRepository.findAll();
+    public List<ChampionSaleDto> getAllChampionSalesInfo() {
+        return championSaleRepository.findAll().stream()
+                .map(championSale -> ChampionSaleDto.from(championSale))
+                .toList();
     }
 
-    public Champion getChamiponByChampionId(Long championId) {
+    public List<SkinSaleDto> getAllSkinSalesInfo() {
+        return skinSaleRepository.findAll().stream()
+                .map(skinSale -> SkinSaleDto.fromSkinSale(skinSale))
+                .toList();
+    }
+    public List<ChampionDto> getAllChampions() {
+        return championRepository.findAll().stream()
+                .map(champion-> ChampionDto.from(champion))
+                .toList();
+    }
+
+    public ChampionDto getChampion(Long championId) {
         Champion champion = championRepository.findOneByChampionId(championId.toString())
-            .orElseThrow(
-                () -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "챔피언 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND, "챔피언 정보가 존재하지 않습니다."));
 
-        return champion;
+        return ChampionDto.from(champion);
     }
 
-    public List<Rotation> getRotationChampions() {
-        List<Rotation> rotationChampions = championRepository.findRotationChampions();
-        return rotationChampions;
+    public List<ChampionDto> getRotationChampions() {
+        return championRepository.findRotationChampions().stream()
+                .map(rotation -> ChampionDto.from(rotation))
+                .toList();
     }
 
     @PostConstruct
