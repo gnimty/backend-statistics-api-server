@@ -2,6 +2,11 @@ package onlysolorank.apiserver.repository.statistics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
@@ -16,6 +21,7 @@ import onlysolorank.apiserver.domain.statistics.tier.JungleTier;
 import onlysolorank.apiserver.domain.statistics.tier.MiddleTier;
 import onlysolorank.apiserver.domain.statistics.tier.TopTier;
 import onlysolorank.apiserver.domain.statistics.tier.UtilityTier;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
@@ -76,7 +82,7 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
     }
 
     @Override
-    public List<? extends BaseChampionTier> findTierStats(PositionFilter position, Boolean brief) {
+    public List<? extends BaseChampionTier> findTier(PositionFilter position, Boolean brief) {
 
         Criteria criteria = new Criteria();
 
@@ -89,24 +95,46 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
 
         List<? extends BaseChampionTier> result = new ArrayList<>();
 
-        switch (position) {
-            case TOP:
-                result = mongoTemplate.find(query, TopTier.class);
-                break;
-            case JUNGLE:
-                result = mongoTemplate.find(query, JungleTier.class);
-                break;
-            case MIDDLE:
-                result = mongoTemplate.find(query, MiddleTier.class);
-                break;
-            case BOTTOM:
-                result = mongoTemplate.find(query, BottomTier.class);
-                break;
-            case UTILITY:
-                result = mongoTemplate.find(query, UtilityTier.class);
-                break;
-        }
+        Class targetPositionClass = getTargetPositionClass(position).getTargetClass();
+
+        result = mongoTemplate.find(query, targetPositionClass);
 
         return result;
     }
+
+    @Override
+    public Optional<? extends BaseChampionTier> findTier(PositionFilter position, Long championId){
+        TargetPositionClass tpc = getTargetPositionClass(position);
+
+        Query query = new Query(Criteria.where(tpc.getTargetField()).is(championId));
+
+        return Optional.of((BaseChampionTier) mongoTemplate.find(query, tpc.getTargetClass()));
+    }
+
+    private static TargetPositionClass getTargetPositionClass(PositionFilter position) {
+
+
+        switch (position) {
+            case TOP:
+                return new TargetPositionClass(TopTier.class, "TOP");
+            case JUNGLE:
+                return new TargetPositionClass(JungleTier.class, "JUG");
+            case MIDDLE:
+                return new TargetPositionClass(MiddleTier.class, "MID");
+            case BOTTOM:
+                return new TargetPositionClass(BottomTier.class, "ADC");
+            case UTILITY:
+                return new TargetPositionClass(UtilityTier.class, "SUP");
+        }
+        return null;
+    }
+
+
+    @Data
+    @AllArgsConstructor
+    private static class TargetPositionClass{
+        private Class targetClass;
+        private String targetField;
+    }
+
 }

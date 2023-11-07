@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.api.service.dto.PuuidChampionIdPair;
 import onlysolorank.apiserver.domain.SummonerPlay;
 import onlysolorank.apiserver.repository.summoner_play.SummonerPlayRepository;
 import org.springframework.stereotype.Service;
@@ -40,7 +39,7 @@ public class SummonerPlayService {
         return summonerPlayRepository.findSpecialists(championName, limit);
     }
 
-    public List<SummonerPlay> getSummonerPlaysByPairs(List<PuuidChampionIdPair> pairs) {
+    public List<SummonerPlay> getSummonerPlaysByPairs(Map<String, Long> pairs) {
         return summonerPlayRepository.findByPuuidChampionIdPairs(pairs);
     }
 

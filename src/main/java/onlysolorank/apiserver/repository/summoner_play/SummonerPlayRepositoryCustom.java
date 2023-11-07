@@ -2,7 +2,6 @@ package onlysolorank.apiserver.repository.summoner_play;
 
 import java.util.List;
 import java.util.Map;
-import onlysolorank.apiserver.api.service.dto.PuuidChampionIdPair;
 import onlysolorank.apiserver.domain.SummonerPlay;
 
 /**
@@ -21,7 +20,7 @@ public interface SummonerPlayRepositoryCustom {
 
     List<SummonerPlay> findSpecialists(String championName, int totalPlays);
 
-    List<SummonerPlay> findByPuuidChampionIdPairs(List<PuuidChampionIdPair> pairs);
+    List<SummonerPlay> findByPuuidChampionIdPairs(Map<String, Long> pairs);
 
     List<SummonerPlay> findSummonerPlaysByPuuidAndLimit(String puuid, int limit);
 

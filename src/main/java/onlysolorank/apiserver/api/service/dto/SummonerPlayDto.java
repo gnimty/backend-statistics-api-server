@@ -53,6 +53,7 @@ public class SummonerPlayDto {
         return SummonerPlayDto.builder()
                 .totalPlays(summonerPlay.getTotalPlays())
                 .avgCsPerMinute(summonerPlay.getAvgCsPerMinute())
+                .avgCs(summonerPlay.getAvgCs())
                 .avgKda(summonerPlay.getAvgKda())
                 .avgKill(summonerPlay.getAvgKill())
                 .avgDeath(summonerPlay.getAvgDeath())

@@ -2,6 +2,7 @@ package onlysolorank.apiserver.domain;
 
 import java.util.List;
 import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -77,12 +78,9 @@ public class Participant {
     private Map<Integer, List<Integer>> itemBuild;
     private List<Integer> skillBuild;
 
-    public static SoloTierDto toSoloTierDto(Participant participant){
+    public static SoloTierDto toSoloTierDto(Participant participant) {
         // queue, tier, leaguepoints가 하나라도 null이면 soloTier를 null로
-        if (List.of(
-                participant.getQueue(),
-                participant.getTier(),
-                participant.getLeaguePoints()).contains(null)) {
+        if (participant.getQueue() == null || participant.getTier() == null || participant.getLeaguePoints() == null) {
             return null;
         }
 

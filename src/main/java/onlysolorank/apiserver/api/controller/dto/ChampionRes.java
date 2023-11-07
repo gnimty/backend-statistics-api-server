@@ -2,6 +2,7 @@ package onlysolorank.apiserver.api.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
+import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.ChampionDto;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
  * 11/6/23        solmin       최초 생성
  */
 
+@Data
 public class ChampionRes {
     // 복수 챔피언
     @JsonInclude(JsonInclude.Include.NON_NULL)

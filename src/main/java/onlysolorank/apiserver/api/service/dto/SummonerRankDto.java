@@ -33,7 +33,7 @@ public class SummonerRankDto {
 
     @Builder
     public SummonerRankDto(Summoner summoner, Integer rank) {
-        this.summoner = SummonerDto.builder().summoner(summoner).build();
+        this.summoner = SummonerDto.from(summoner);
         this.totalWin = summoner.getTotalWin();
         this.totalDefeat = summoner.getTotalDefeat();
         this.winRate = doubleValueToHalfUp(totalWin.doubleValue() / totalDefeat.doubleValue(), 3);

@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.api.service.dto.ChampionPlayWithSummonerDto;
+import onlysolorank.apiserver.api.service.dto.SummonerPlayWithSummonerDto;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller
@@ -23,7 +23,7 @@ import onlysolorank.apiserver.api.service.dto.ChampionPlayWithSummonerDto;
 @Builder
 public class ChampionSpecialistRes {
 
-    List<ChampionPlayWithSummonerDto> championPlays;
+    List<SummonerPlayWithSummonerDto> championPlays;
     private Integer championId;
     private String championName;
 }

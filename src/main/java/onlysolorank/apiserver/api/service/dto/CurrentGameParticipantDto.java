@@ -2,7 +2,6 @@ package onlysolorank.apiserver.api.service.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.dto.Perk;
 
 /**
@@ -31,7 +30,7 @@ public class CurrentGameParticipantDto {
     private Perk perks;
 
     @Builder
-    public CurrentGameParticipantDto(SpectatorV4GetCurrentGameInfo.CurrentGameParticipant participant,
+    public CurrentGameParticipantDto(SpectatorV4CurrentGameDto.CurrentGameParticipant participant,
                                      SummonerDto summoner, SummonerPlayDto summonerPlayDto,
                                      ChampionDto champion) {
         this.teamId = participant.getTeamId();

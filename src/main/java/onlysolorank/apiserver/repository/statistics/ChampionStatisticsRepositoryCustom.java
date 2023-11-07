@@ -1,6 +1,8 @@
 package onlysolorank.apiserver.repository.statistics;
 
 import java.util.List;
+import java.util.Optional;
+
 import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.api.controller.dto.TierFilter;
@@ -23,6 +25,7 @@ public interface ChampionStatisticsRepositoryCustom {
     List<? extends BaseChampionStat> findStats(Period period, PositionFilter position,
         TierFilter tier);
 
-    List<? extends BaseChampionTier> findTierStats(PositionFilter position, Boolean brief);
+    List<? extends BaseChampionTier> findTier(PositionFilter position, Boolean brief);
 
+    Optional<? extends BaseChampionTier> findTier(PositionFilter position, Long championId);
 }

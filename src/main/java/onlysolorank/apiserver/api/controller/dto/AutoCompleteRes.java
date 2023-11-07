@@ -21,8 +21,8 @@ import onlysolorank.apiserver.api.service.dto.SummonerDto;
 public class AutoCompleteRes {
 
     private String keyword;
-    private List<SummonerDto> summoners;
     private Integer matched;
+    private List<SummonerDto> summoners;
 
     @Builder
     public AutoCompleteRes(String keyword, List<SummonerDto> summoners) {

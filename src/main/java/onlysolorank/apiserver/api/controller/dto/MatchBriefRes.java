@@ -1,10 +1,14 @@
-package onlysolorank.apiserver.api.service.dto;
+package onlysolorank.apiserver.api.controller.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.api.service.dto.MatchDto;
+import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
+import onlysolorank.apiserver.api.service.dto.ParticipantDto;
+import onlysolorank.apiserver.api.service.dto.QueueDto;
 import onlysolorank.apiserver.domain.Match;
 import onlysolorank.apiserver.domain.Participant;
 
@@ -22,7 +26,7 @@ import onlysolorank.apiserver.domain.Participant;
 
 @Data
 @AllArgsConstructor
-public class MatchBriefDto {
+public class MatchBriefRes {
 
     private String matchId;
     private String gameVersion;
@@ -35,15 +39,15 @@ public class MatchBriefDto {
     private List<ParticipantBriefDto> allParticipants;
 
     @Builder
-    public MatchBriefDto(Match match, Participant participant, String summonerName,
-        List<ParticipantBriefDto> allParticipants) {
+    public MatchBriefRes(MatchDto match, ParticipantDto participant,
+                         List<ParticipantBriefDto> allParticipants) {
         this.matchId = match.getMatchId();
         this.gameVersion = match.getVersion();
         this.gameEndAt = match.getGameEndAt();
         this.queueInfo = QueueDto.builder().queueId(match.getQueueId()).build();
         this.gameEndedInEarlySurrender = match.getEarlyEnded();
         this.gameDuration = match.getGameDuration();
-        this.participant = new ParticipantDto(participant, summonerName);
+        this.participant = participant;
         this.win = participant.getWin();
         this.allParticipants = allParticipants;
     }

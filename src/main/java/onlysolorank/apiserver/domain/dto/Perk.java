@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import onlysolorank.apiserver.api.service.dto.SpectatorV4GetCurrentGameInfo;
+import onlysolorank.apiserver.api.service.dto.SpectatorV4CurrentGameDto;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -33,7 +33,7 @@ public class Perk {
         this.styles = styles;
     }
 
-    public static Perk getPerk(SpectatorV4GetCurrentGameInfo.IngamePerks perks) {
+    public static Perk getPerk(SpectatorV4CurrentGameDto.CurrentGamePerks perks) {
         List<Long> perkIds = perks.getPerkIds();
 
         Integer offense = perkIds.get(6).intValue();

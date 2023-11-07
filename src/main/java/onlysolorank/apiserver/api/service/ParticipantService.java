@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.api.service.dto.ChampionPlaysDto;
+import onlysolorank.apiserver.api.service.dto.ChampionPlayDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
-import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
+import onlysolorank.apiserver.api.service.dto.MostChampionsDto;
 import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.repository.participant.ParticipantRepository;
 import onlysolorank.apiserver.repository.participant.ParticipantRepository.DistinctParticipantTeam;
@@ -39,7 +39,7 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
 
 
-    public List<ChampionPlaysDto> getChampionStatus(String puuid, int limit) {
+    public List<ChampionPlayDto> getChampionStatus(String puuid, int limit) {
         return participantRepository.findTopChampionStatsByPuuid(puuid, limit);
     }
 
@@ -57,7 +57,7 @@ public class ParticipantService {
     }
 
     public Map<String, List<Integer>> getTopNChampionIdsByPuuids(List<String> puuids, int limit) {
-        List<mostChampionsBySummonerDto> topChampionsForEachSummoner = participantRepository.findTopChampionsForEachSummoner(
+        List<MostChampionsDto> topChampionsForEachSummoner = participantRepository.findTopChampionsForEachSummoner(
             puuids, limit);
 
         Map<String, List<Integer>> mostChampionMap = new HashMap<>();
@@ -70,7 +70,7 @@ public class ParticipantService {
     }
 
 
-    public ChampionPlaysDto getChampionPlaysByPuuidAndChampionId(String puuid, Long championId) {
+    public ChampionPlayDto getChampionPlaysByPuuidAndChampionId(String puuid, Long championId) {
         return participantRepository.findChampionPlayInfoByPuuidAndChampionId(puuid, championId)
             .get(0);
     }

@@ -11,7 +11,6 @@ import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
 import onlysolorank.apiserver.api.service.dto.*;
 import onlysolorank.apiserver.api.controller.dto.MatchDetailRes;
-import org.jetbrains.annotations.ApiStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,7 +74,7 @@ public class SummonerController {
     public CommonResponse<SummonerDto> getSummoner(
             @PathVariable("summoner_name") String summonerName) {
 
-        SummonerDto result = SummonerDto.from(summonerService.getSummonerBySummonerName(summonerName));
+        SummonerDto result = SummonerDto.from(summonerService.getSummonerByName(summonerName));
 
         return CommonResponse.success(result);
     }
@@ -150,7 +149,7 @@ public class SummonerController {
 
     @GetMapping("/ingame/{summoner_name}")
     public CommonResponse<CurrentGameRes> getCurrentGame(@PathVariable("summoner_name") String summonerName) {
-        return CommonResponse.success(summonerService.getIngameInfo(summonerName));
+        return CommonResponse.success(summonerService.getCurrentGame(summonerName));
     }
 
 

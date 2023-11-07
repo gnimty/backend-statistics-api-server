@@ -9,7 +9,7 @@ import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.AssetService;
 import onlysolorank.apiserver.api.service.StatisticsService;
-import onlysolorank.apiserver.api.service.dto.ChampionStatDto;
+import onlysolorank.apiserver.api.service.dto.ChampionTotalStatDto;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +49,7 @@ public class ChampionController {
         @RequestParam(value = "period", defaultValue = "DAY") Period period,
         @RequestParam(value = "position", defaultValue = "ALL") PositionFilter position) {
 
-        List<ChampionStatDto> result = statisticsService.getAllChampionStats(tier, period, position);
+        List<ChampionTotalStatDto> result = statisticsService.getAllChampionStats(tier, period, position);
 
         return CommonResponse.success(ChampionStatsRes.builder()
                 .championStats(result)

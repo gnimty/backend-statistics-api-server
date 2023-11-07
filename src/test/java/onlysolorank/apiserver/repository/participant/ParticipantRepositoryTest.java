@@ -1,8 +1,8 @@
 package onlysolorank.apiserver.repository.participant;
 
-import onlysolorank.apiserver.api.service.dto.ChampionPlaysDto;
+import onlysolorank.apiserver.api.service.dto.ChampionPlayDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
-import onlysolorank.apiserver.api.service.dto.mostChampionsBySummonerDto;
+import onlysolorank.apiserver.api.service.dto.MostChampionsDto;
 import onlysolorank.apiserver.domain.Participant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,9 +72,9 @@ class ParticipantRepositoryTest {
 
     @Test
     public void getMost10Plays(){
-        List<ChampionPlaysDto> topChampionStatsByPuuid = participantRepository.findTopChampionStatsByPuuid(testPuuid1, 10);
+        List<ChampionPlayDto> topChampionStatsByPuuid = participantRepository.findTopChampionStatsByPuuid(testPuuid1, 10);
 
-        for (ChampionPlaysDto championPlaysDto : topChampionStatsByPuuid) {
+        for (ChampionPlayDto championPlaysDto : topChampionStatsByPuuid) {
             System.out.println(championPlaysDto);
         }
     }
@@ -82,10 +82,10 @@ class ParticipantRepositoryTest {
     @Test
     public void testGetTop3ChampionsByPuuids(){
 
-        List<mostChampionsBySummonerDto> topChampionsForEachSummoner =
+        List<MostChampionsDto> topChampionsForEachSummoner =
             participantRepository.findTopChampionsForEachSummoner(List.of(testPuuid1, testPuuid2), 3);
 
-        for (mostChampionsBySummonerDto mostChampionsBySummonerDto : topChampionsForEachSummoner) {
+        for (MostChampionsDto mostChampionsBySummonerDto : topChampionsForEachSummoner) {
             for(Integer championId : mostChampionsBySummonerDto.getChampionIds()){
                 System.out.println("championId = " + championId);
             }
@@ -96,7 +96,7 @@ class ParticipantRepositoryTest {
 
     @Test
     public void testGetChampionPlaysDtoBySummonerIdAndChampionId(){
-        List<ChampionPlaysDto> championPlayInfoByChampionIdAndSummonerId =
+        List<ChampionPlayDto> championPlayInfoByChampionIdAndSummonerId =
             participantRepository.findChampionPlayInfoByPuuidAndChampionId(
                 "p3sOFe72XJw93VP7ylLhObH1IGf7wXEedp_0MT8iHQtaRZcoNHt9hKJuR0vYMZIrK0Ct8SujMWk-gQ", 266L);
 

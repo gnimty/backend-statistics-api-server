@@ -1,7 +1,7 @@
 package onlysolorank.apiserver.api.controller.dto;
 
 import lombok.Builder;
-import onlysolorank.apiserver.api.service.dto.ChampionStatDto;
+import onlysolorank.apiserver.api.service.dto.ChampionTotalStatDto;
 
 import java.util.List;
 
@@ -18,5 +18,7 @@ import java.util.List;
  */
 @Builder
 public class ChampionStatsRes {
-    List<ChampionStatDto> championStats;
+    List<ChampionTotalStatDto> championStats;
+    Period period;
+
 }

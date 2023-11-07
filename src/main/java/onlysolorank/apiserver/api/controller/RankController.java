@@ -9,8 +9,8 @@ import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
-import onlysolorank.apiserver.api.service.dto.ChampionPlayWithSummonerDto;
-import onlysolorank.apiserver.api.service.dto.SummonerRankPageDto;
+import onlysolorank.apiserver.api.service.dto.SummonerPlayWithSummonerDto;
+import onlysolorank.apiserver.api.controller.dto.SummonerRankPageRes;
 import onlysolorank.apiserver.domain.dto.Tier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,9 +53,9 @@ public class RankController {
      * @return the summoner rank
      */
     @GetMapping("/tier")
-    public CommonResponse<SummonerRankPageDto> getSummonerRank(
+    public CommonResponse<SummonerRankPageRes> getSummonerRank(
         @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero(message = "page는 0보다 큰 값이어야 합니다.") Integer page) {
-        SummonerRankPageDto result = summonerService.getSummonerRankByMMR(page);
+        SummonerRankPageRes result = summonerService.getSummonerRankByMMR(page);
 
         return CommonResponse.success(result);
     }
@@ -74,7 +74,7 @@ public class RankController {
             if (stdTier.getBasisMMR() < STD_MMR) {
                 throw new IllegalArgumentException();
             }
-            List<ChampionPlayWithSummonerDto> result = summonerService.getSpecialistsByChampionName(
+            List<SummonerPlayWithSummonerDto> result = summonerService.getSpecialistsByChampionName(
                 championName, stdTier);
 
             return CommonResponse.success(ChampionSpecialistRes

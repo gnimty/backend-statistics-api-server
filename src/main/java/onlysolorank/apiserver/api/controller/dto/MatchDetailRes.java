@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.api.service.dto.MatchDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantDto;
 import onlysolorank.apiserver.api.service.dto.QueueDto;
 import onlysolorank.apiserver.api.service.dto.TeamDto;
@@ -36,7 +37,7 @@ public class MatchDetailRes {
     private List<TeamDto> teams;
 
     @Builder
-    public MatchDetailRes(Match match, List<ParticipantDto> participants, List<TeamDto> teams) {
+    public MatchDetailRes(MatchDto match, List<ParticipantDto> participants, List<TeamDto> teams) {
         this.matchId = match.getMatchId();
         this.gameVersion = match.getVersion();
         this.gameEndAt = match.getGameEndAt();

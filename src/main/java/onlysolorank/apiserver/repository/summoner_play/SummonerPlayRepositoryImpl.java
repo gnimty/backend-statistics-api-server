@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import onlysolorank.apiserver.api.service.dto.PuuidChampionIdPair;
 import onlysolorank.apiserver.domain.SummonerPlay;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
@@ -50,10 +49,15 @@ public class SummonerPlayRepositoryImpl implements SummonerPlayRepositoryCustom 
     }
 
     @Override
-    public List<SummonerPlay> findByPuuidChampionIdPairs(List<PuuidChampionIdPair> pairs) {
-        List<Criteria> criteriaList = pairs.stream().map(p ->
-            Criteria.where("puuid").is(p.getPuuid()).and("championId").is(p.getChampionId())
-        ).toList();
+    public List<SummonerPlay> findByPuuidChampionIdPairs(Map<String, Long> pairs) {
+        List<Criteria> criteriaList = pairs.entrySet().stream()
+                .map(pair-> {
+                    String puuid = pair.getKey();
+                    Long championId = pair.getValue();
+                    return Criteria.where("puuid").is(puuid)
+                            .and("championId").is(championId);
+                })
+                .toList();
 
         Query query = new Query(new Criteria().orOperator(criteriaList));
 

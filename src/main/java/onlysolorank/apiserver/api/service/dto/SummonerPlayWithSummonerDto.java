@@ -19,15 +19,15 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class ChampionPlayWithSummonerDto {
+public class SummonerPlayWithSummonerDto {
 
     private SummonerDto summoner;
     private SummonerPlayDto summonerPlay;
     private Integer rank;
 
     @Builder
-    public ChampionPlayWithSummonerDto(SummonerDto summoner, SummonerPlayDto summonerPlay,
-        Integer rank) {
+    public SummonerPlayWithSummonerDto(SummonerDto summoner, SummonerPlayDto summonerPlay,
+                                       Integer rank) {
         this.summoner = summoner;
         this.summonerPlay = summonerPlay;
         this.rank = rank;

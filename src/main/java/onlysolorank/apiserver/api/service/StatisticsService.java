@@ -11,12 +11,13 @@ import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.api.controller.dto.TierFilter;
 import onlysolorank.apiserver.api.exception.CustomException;
-import onlysolorank.apiserver.api.service.dto.ChampionStatDto;
+import onlysolorank.apiserver.api.service.dto.ChampionTotalStatDto;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
 import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.ChampionCache;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import onlysolorank.apiserver.domain.statistics.analysis.counter.BaseCounter;
+import onlysolorank.apiserver.domain.statistics.tier.BaseChampionTier;
 import onlysolorank.apiserver.repository.analysis.ChampionAnalysisRepository;
 import onlysolorank.apiserver.repository.champion.ChampionRepository;
 import onlysolorank.apiserver.repository.counter.ChampionCounterRepository;
@@ -48,11 +49,11 @@ public class StatisticsService {
     private final ChampionCounterRepository championCounterRepository;
     private final ChampionCache championCache;
 
-    public List<ChampionStatDto> getAllChampionStats(TierFilter tier, Period period,
-                                                     PositionFilter position) {
-        List<ChampionStatDto> result = championStatisticsRepositoryCustom.findStats(period,
+    public List<ChampionTotalStatDto> getAllChampionStats(TierFilter tier, Period period,
+                                                          PositionFilter position) {
+        List<ChampionTotalStatDto> result = championStatisticsRepositoryCustom.findStats(period,
             position, tier).stream()
-                .map(championStat-> ChampionStatDto.builder()
+                .map(championStat-> ChampionTotalStatDto.builder()
                 .stat(championStat)
                 .championName(championCache.resolve(championStat.getChampionId()))
                 .build()).toList();
@@ -62,7 +63,7 @@ public class StatisticsService {
     public List<ChampionTierDto> getChampionTierList(PositionFilter position, Boolean brief) {
 
         List<ChampionTierDto> result =
-            championStatisticsRepositoryCustom.findTierStats(position, brief).stream()
+            championStatisticsRepositoryCustom.findTier(position, brief).stream()
                 .map(b -> ChampionTierDto.builder()
                     .stat(b)
                     .championName(championCache.resolve(b.getChampionId()))
@@ -104,7 +105,19 @@ public class StatisticsService {
         List<BaseCounter> easyChampions = championCounterRepository.findCounterChampions(
             champion.getChampionId(), analysis.getPosition(), false);
 
-        return ChampionAnalysisRes.toRes(analysis, counterChampions, easyChampions);
+        BaseChampionTier championTier = championStatisticsRepositoryCustom.findTier(position, champion.getChampionId())
+                .orElseGet(null);
+
+        if(championTier==null){
+            return ChampionAnalysisRes.toRes(analysis, counterChampions, easyChampions, null);
+        }else{
+            ChampionTierDto championTierDto = ChampionTierDto.builder()
+                    .stat(championTier)
+                    .championName(championName)
+                    .build();
+
+            return ChampionAnalysisRes.toRes(analysis, counterChampions, easyChampions, championTierDto);
+        }
     }
 
 }
