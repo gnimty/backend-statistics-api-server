@@ -25,7 +25,7 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class ChampionPlaysDto {
+public class ChampionPlayDto {
 
     private Integer totalPlays;
     private Double avgCsPerMinute;
@@ -56,11 +56,11 @@ public class ChampionPlaysDto {
     private Integer totalAssist;
 
     @Builder
-    public ChampionPlaysDto(String puuid, Integer championId, String championName,
-        Integer totalPlays, Double avgCsPerMinute, Double avgKill, Double avgDeath,
-        Double avgAssist, Double winRate, Integer totalWin, Integer totalDefeat, Integer totalCs,
-        Integer totalGameDuration,
-        Integer totalKill, Integer totalDeath, Integer totalAssist) {
+    public ChampionPlayDto(String puuid, Integer championId, String championName,
+                           Integer totalPlays, Double avgCsPerMinute, Double avgKill, Double avgDeath,
+                           Double avgAssist, Double winRate, Integer totalWin, Integer totalDefeat, Integer totalCs,
+                           Integer totalGameDuration,
+                           Integer totalKill, Integer totalDeath, Integer totalAssist) {
         this.puuid = puuid;
         this.championId = championId;
         this.championName = championName;
@@ -72,8 +72,8 @@ public class ChampionPlaysDto {
         // totalDeath == 0인 경우 Perfect 처리
         if (totalDeath != 0) {
             this.avgKda = doubleValueToHalfUp(
-                (totalKill.doubleValue() + totalAssist.doubleValue()) / totalDeath.doubleValue(),
-                3);
+                    (totalKill.doubleValue() + totalAssist.doubleValue()) / totalDeath.doubleValue(),
+                    3);
         } else {
             this.isPerfect = true;
         }
@@ -86,7 +86,7 @@ public class ChampionPlaysDto {
         this.totalCs = totalCs;
         this.totalGameDuration = totalGameDuration;
         this.avgCsPerMinute = doubleValueToHalfUp(
-            totalCs.doubleValue() / (totalGameDuration.doubleValue() / 60), 2);
+                totalCs.doubleValue() / (totalGameDuration.doubleValue() / 60), 2);
     }
 
 }

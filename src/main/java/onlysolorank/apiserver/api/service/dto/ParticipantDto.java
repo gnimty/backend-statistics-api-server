@@ -7,8 +7,6 @@ import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.domain.dto.ItemBundleDto;
 import onlysolorank.apiserver.domain.dto.Perk;
-import onlysolorank.apiserver.domain.dto.SoloTierDto;
-import onlysolorank.apiserver.domain.dto.Tier;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -63,16 +61,7 @@ public class ParticipantDto {
     @Builder
     public ParticipantDto(Participant participant, String summonerName) {
         this.participantId = participant.getParticipantId();
-
-        // queue, tier, leaguepoints가 하나라도 null이면 soloTier를 null로
-        if (participant.getQueue() != null && participant.getTier() != null
-            && participant.getLeaguePoints() != null) {
-            this.soloTier = new SoloTierDto(
-                Tier.valueOf(participant.getQueue()),
-                Integer.parseInt(participant.getTier()),
-                Integer.parseInt(participant.getLeaguePoints()));
-        }
-
+        this.soloTier = Participant.toSoloTierDto(participant);
         this.championId = participant.getChampionId();
         this.championName = participant.getChampionName();
         this.win = participant.getWin();

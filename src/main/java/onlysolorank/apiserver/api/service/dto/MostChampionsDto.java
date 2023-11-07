@@ -15,12 +15,12 @@ import lombok.Data;
  * 2023/08/16        solmin       최초 생성
  */
 @Data
-public class mostChampionsBySummonerDto {
+public class MostChampionsDto {
 
     private String puuid;
     private List<Integer> championIds;
 
-    public mostChampionsBySummonerDto(String puuid, List<Integer> championIds) {
+    public MostChampionsDto(String puuid, List<Integer> championIds) {
         this.puuid = puuid;
         this.championIds = championIds;
     }

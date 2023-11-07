@@ -19,10 +19,15 @@ import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
  */
 
 @Data
-@AllArgsConstructor
-@Builder
 public class RecentMemberRes {
 
     List<RecentMemberDto> recentMembers;
     private Integer count;
+
+    @Builder
+    public RecentMemberRes(List<RecentMemberDto> recentMembers){
+        this.recentMembers = recentMembers;
+        this.count = recentMembers.size();
+    }
+
 }

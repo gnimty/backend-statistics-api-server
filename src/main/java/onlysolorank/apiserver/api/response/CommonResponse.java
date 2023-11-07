@@ -38,7 +38,9 @@ public class CommonResponse<T> {
     private T data;
 
     public static CommonResponse success(String message, HttpStatus status) {
-        return CommonResponse.builder().status(new ApiStatus(message, status.value())).build();
+        return CommonResponse.builder()
+                .status(new ApiStatus(message, status.value()))
+                .build();
     }
 
     public static <T> CommonResponse<T> success(T data) {
@@ -64,7 +66,6 @@ public class CommonResponse<T> {
 
     @Data
     private static class ApiStatus {
-
         private String message;
         private int code;
         @JsonInclude(JsonInclude.Include.NON_NULL)

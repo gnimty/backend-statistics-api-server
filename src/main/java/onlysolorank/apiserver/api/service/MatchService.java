@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onlysolorank.apiserver.api.service.dto.MatchDto;
 import onlysolorank.apiserver.domain.Match;
 import onlysolorank.apiserver.repository.match.MatchRepository;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,19 @@ public class MatchService {
     private final MatchRepository matchRepository;
 
 
-    public List<Match> getMatchListByMatchIdList(List<String> matchIds) {
-        return matchRepository.findMatchesByMatchIdIn(matchIds);
+    public List<MatchDto> getMatchListByMatchIdList(List<String> matchIds) {
+        return matchRepository.findMatchesByMatchIdIn(matchIds).stream()
+                .map(match -> MatchDto.from(match))
+                .toList();
     }
 
-    public Optional<Match> getMatchById(String matchId) {
-        return matchRepository.findMatchByMatchId(matchId);
+    public Optional<MatchDto> getMatchById(String matchId) {
+        Optional<Match> match = matchRepository.findMatchByMatchId(matchId);
+        if(match.isPresent()){
+            return Optional.of(MatchDto.from(match.get()));
+        }else{
+            return Optional.empty();
+        }
     }
 
 

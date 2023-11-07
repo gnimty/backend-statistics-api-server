@@ -2,6 +2,7 @@ package onlysolorank.apiserver.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -54,7 +55,7 @@ public class CustomFunctions {
 
     public static Optional<Double> divideAndReturnDouble(Integer a, Integer b, int scale) {
         if (b == 0) {
-            return null;
+            return Optional.of(0.0);
         }
         return Optional.of(doubleValueToHalfUp(a.doubleValue() / b.doubleValue(), scale));
     }

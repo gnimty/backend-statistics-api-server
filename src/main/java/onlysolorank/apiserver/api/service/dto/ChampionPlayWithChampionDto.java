@@ -22,12 +22,12 @@ public class ChampionPlayWithChampionDto {
 
     private Integer championId;
     private String championName;
-    private ChampionPlaysDto championPlay;
+    private ChampionPlayDto championPlay;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer rank;
 
     @Builder
-    public ChampionPlayWithChampionDto(ChampionPlaysDto championPlay, Integer rank) {
+    public ChampionPlayWithChampionDto(ChampionPlayDto championPlay, Integer rank) {
         this.championPlay = championPlay;
         this.championId = championPlay.getChampionId();
         this.championName = championPlay.getChampionName();

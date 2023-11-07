@@ -22,7 +22,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @NoArgsConstructor
-public class SpectatorV4GetCurrentGameInfo {
+public class SpectatorV4CurrentGameDto {
 
     private Long gameId;
     private Long mapId;
@@ -37,9 +37,8 @@ public class SpectatorV4GetCurrentGameInfo {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CurrentGameParticipant {
-
         private Long championId;
-        private IngamePerks perks;
+        private CurrentGamePerks perks;
         private Long profileIconId;
         private Boolean bot;
         private Long teamId;
@@ -52,8 +51,7 @@ public class SpectatorV4GetCurrentGameInfo {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class IngamePerks {
-
+    public static class CurrentGamePerks {
         private List<Long> perkIds;
         private Long perkStyle;
         private Long perkSubStyle;

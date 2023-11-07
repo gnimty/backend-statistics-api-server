@@ -1,9 +1,10 @@
-package onlysolorank.apiserver.api.service.dto;
+package onlysolorank.apiserver.api.controller.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.api.service.dto.SummonerRankDto;
 import onlysolorank.apiserver.domain.Summoner;
 import org.springframework.data.domain.Page;
 
@@ -22,7 +23,7 @@ import org.springframework.data.domain.Page;
 
 @Data
 @AllArgsConstructor
-public class SummonerRankPageDto {
+public class SummonerRankPageRes {
 
     private List<SummonerRankDto> ranks;
     private Boolean next;
@@ -32,7 +33,7 @@ public class SummonerRankPageDto {
     private Integer totalSummoners;
 
     @Builder
-    public SummonerRankPageDto(List<SummonerRankDto> summonerRanks, Page<Summoner> summonerPage) {
+    public SummonerRankPageRes(List<SummonerRankDto> summonerRanks, Page<Summoner> summonerPage) {
         this.ranks = summonerRanks;
         this.next = summonerPage.hasNext();
         this.prev = summonerPage.hasPrevious();

@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import onlysolorank.apiserver.domain.SummonerPlay;
@@ -17,7 +19,7 @@ import onlysolorank.apiserver.domain.SummonerPlay;
  */
 
 @Data
-@ToString
+@Builder
 public class SummonerPlayDto {
 
     private Integer totalPlays;
@@ -30,7 +32,7 @@ public class SummonerPlayDto {
     private Double winRate;
     private Integer totalWin;
     private Integer totalDefeat;
-    private boolean isPerfect = false;
+    private boolean isPerfect;
     private Long championId;
     private String championName;
     private Double avgGold;
@@ -38,28 +40,36 @@ public class SummonerPlayDto {
     private Integer maxKill;
     private Integer maxDeath;
 
-    public SummonerPlayDto(SummonerPlay summonerPlay) {
-        this.totalPlays = summonerPlay.getTotalPlays();
-        this.avgCsPerMinute = summonerPlay.getAvgCsPerMinute();
-        this.avgKda = summonerPlay.getAvgKda();
-        this.avgKill = summonerPlay.getAvgKill();
-        this.avgDeath = summonerPlay.getAvgDeath();
-        this.avgAssist = summonerPlay.getAvgAssist();
-        this.winRate = summonerPlay.getWinRate();
-        this.totalWin = summonerPlay.getTotalWin();
-        this.totalDefeat = summonerPlay.getTotalDefeat();
-        this.championId = summonerPlay.getChampionId();
-        this.championName = summonerPlay.getChampionName();
-        this.avgCs = summonerPlay.getAvgCs();
-        if (summonerPlay.getTotalDeath() == 0) {
-            this.isPerfect = true;
-            this.avgKda = null;
+    public static SummonerPlayDto from(SummonerPlay summonerPlay) {
+        boolean isPerfect = false;
+        Double avgKda = summonerPlay.getAvgKda();
+        Integer totalDeath = summonerPlay.getTotalDeath();
+
+        if (totalDeath.equals(0)) {
+            isPerfect = true;
+            avgKda = null;
         }
 
-        this.avgGold = summonerPlay.getAvgGold();
-        this.avgDamage = summonerPlay.getAvgDamage();
-        this.maxKill = summonerPlay.getMaxKill();
-        this.maxDeath = summonerPlay.getMaxDeath();
+        return SummonerPlayDto.builder()
+                .totalPlays(summonerPlay.getTotalPlays())
+                .avgCsPerMinute(summonerPlay.getAvgCsPerMinute())
+                .avgCs(summonerPlay.getAvgCs())
+                .avgKda(summonerPlay.getAvgKda())
+                .avgKill(summonerPlay.getAvgKill())
+                .avgDeath(summonerPlay.getAvgDeath())
+                .avgAssist(summonerPlay.getAvgAssist())
+                .winRate(summonerPlay.getWinRate())
+                .totalWin(summonerPlay.getTotalWin())
+                .totalDefeat(summonerPlay.getTotalDefeat())
+                .championId(summonerPlay.getChampionId())
+                .championName(summonerPlay.getChampionName())
+                .isPerfect(isPerfect)
+                .avgKda(avgKda)
+                .avgGold(summonerPlay.getAvgGold())
+                .avgDamage(summonerPlay.getAvgDamage())
+                .maxKill(summonerPlay.getMaxKill())
+                .maxDeath(summonerPlay.getMaxDeath())
+                .build();
     }
 
 }

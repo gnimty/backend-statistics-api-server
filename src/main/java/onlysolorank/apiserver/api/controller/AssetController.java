@@ -1,17 +1,17 @@
 package onlysolorank.apiserver.api.controller;
 
 import java.util.List;
-import javax.annotation.PostConstruct;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onlysolorank.apiserver.api.controller.dto.ChampionRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionSaleRes;
 import onlysolorank.apiserver.api.controller.dto.SkinSaleRes;
 import onlysolorank.apiserver.api.controller.dto.VersionRes;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.AssetService;
-import onlysolorank.apiserver.domain.Champion;
-import onlysolorank.apiserver.domain.Rotation;
-import onlysolorank.apiserver.domain.Version;
+import onlysolorank.apiserver.api.service.dto.ChampionDto;
+import onlysolorank.apiserver.api.service.dto.ChampionSaleDto;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -43,53 +43,56 @@ public class AssetController {
 
     @GetMapping("/version")
     public CommonResponse<VersionRes> getLatestVersion() {
-        Version latestVersion = assetService.getLatestVersion();
-
-        return CommonResponse.success(new VersionRes(latestVersion));
+        return CommonResponse.success(assetService.getLatestVersion());
     }
 
     @GetMapping("/sale/champion")
-    public CommonResponse<List<ChampionSaleRes>> getChampionSalesInfo() {
-        List<ChampionSaleRes> allChampionSalesInfo = assetService.getAllChampionSalesInfo()
-            .stream()
-            .map(ChampionSaleRes::new)
-            .toList();
+    public CommonResponse<ChampionSaleRes> getChampionSales() {
+        List<ChampionSaleDto> results = assetService.getAllChampionSalesInfo();
 
-        return CommonResponse.success(allChampionSalesInfo);
+        return CommonResponse.success(ChampionSaleRes.builder()
+                .championSales(results)
+                .build()
+        );
     }
 
     @GetMapping("/sale/skin")
-    public CommonResponse<List<SkinSaleRes>> getSkinSalesInfo() {
-        List<SkinSaleRes> allSkinSalesInfo = assetService.getAllSkinSalesInfo()
-            .stream()
-            .map(SkinSaleRes::new)
-            .toList();
-
-        return CommonResponse.success(allSkinSalesInfo);
+    public CommonResponse<SkinSaleRes> getSkinSales() {
+        return CommonResponse.success(SkinSaleRes.builder()
+                .skinSales(assetService.getAllSkinSalesInfo())
+                .build());
     }
 
     @GetMapping("/champion")
-    public CommonResponse<List<Champion>> getAllChampion() {
-        List<Champion> result = assetService.getAllChampions();
-        return CommonResponse.success(result);
+    public CommonResponse<ChampionRes> getAllChampion() {
+        List<ChampionDto> results = assetService.getAllChampions();
+
+        return CommonResponse.success(ChampionRes.multiBuilder()
+                .champions(results)
+                .build());
     }
 
     @GetMapping("/champion/{champion_id}")
-    public CommonResponse<Champion> getAllChampion(@PathVariable("champion_id") Long championId) {
-        Champion result = assetService.getChamiponByChampionId(championId);
+    public CommonResponse<ChampionRes> getChampion(@PathVariable("champion_id") Long championId) {
+        ChampionDto result = assetService.getChampion(championId);
 
-        return CommonResponse.success(result);
+        return CommonResponse.success(ChampionRes.singleBuilder()
+                .champion(result)
+                .build()
+        );
     }
 
     @GetMapping("/rotation")
-    public CommonResponse<List<Rotation>> getRotationChampions() {
-        List<Rotation> result = assetService.getRotationChampions();
+    public CommonResponse<ChampionRes> getRotations() {
+        List<ChampionDto> results = assetService.getRotationChampions();
 
-        return CommonResponse.success(result);
+        return CommonResponse.success(ChampionRes.multiBuilder()
+                .champions(results)
+                .build());
     }
 
     @PatchMapping("/champion")
-    public CommonResponse initChampions(){
+    public CommonResponse initChampions() {
         assetService.updateChampionCache();
 
         return CommonResponse.success("챔피언 맵 갱신에 성공하였습니다.");

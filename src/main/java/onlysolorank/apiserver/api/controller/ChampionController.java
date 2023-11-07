@@ -3,17 +3,13 @@ package onlysolorank.apiserver.api.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.api.controller.dto.ChampionAnalysisRes;
-import onlysolorank.apiserver.api.controller.dto.ChampionTierListRes;
-import onlysolorank.apiserver.api.controller.dto.Period;
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
-import onlysolorank.apiserver.api.controller.dto.TierFilter;
+import onlysolorank.apiserver.api.controller.dto.*;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.AssetService;
 import onlysolorank.apiserver.api.service.StatisticsService;
-import onlysolorank.apiserver.api.service.dto.ChampionStatBriefDto;
+import onlysolorank.apiserver.api.service.dto.ChampionTotalStatDto;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,19 +44,20 @@ public class ChampionController {
     private final AssetService assetService;
 
     @GetMapping("/stats/total")
-    public CommonResponse<List<ChampionStatBriefDto>> getAllChampionStats(
+    public CommonResponse<ChampionStatsRes> getAllChampionStats(
         @RequestParam(value = "tier", defaultValue = "EMERALD") TierFilter tier,
         @RequestParam(value = "period", defaultValue = "DAY") Period period,
         @RequestParam(value = "position", defaultValue = "ALL") PositionFilter position) {
 
-        List<ChampionStatBriefDto> result = statisticsService.getAllChampionStats(tier, period,
-            position);
+        List<ChampionTotalStatDto> result = statisticsService.getAllChampionStats(tier, period, position);
 
-        return CommonResponse.success(result);
+        return CommonResponse.success(ChampionStatsRes.builder()
+                .championStats(result)
+                .build());
     }
 
     @GetMapping("/stats/tier")
-    public CommonResponse<ChampionTierListRes> getChampionTierList(
+    public CommonResponse<ChampionTierRes> getChampionTierList(
         @RequestParam(value = "position", defaultValue = "ALL") PositionFilter position,
         @RequestParam(value = "brief", defaultValue = "false") Boolean brief) {
 
@@ -72,9 +69,9 @@ public class ChampionController {
 
         List<ChampionTierDto> results = statisticsService.getChampionTierList(position, brief);
 
-        return CommonResponse.success(ChampionTierListRes.builder()
+        return CommonResponse.success(ChampionTierRes.builder()
             .position(position)
-            .version(assetService.getLatestVersion().getVersion())
+            .version(assetService.getLatestVersionString())
             .champions(results)
             .build());
     }
@@ -85,8 +82,7 @@ public class ChampionController {
         @RequestParam(value = "position", defaultValue = "UNKNOWN") PositionFilter position,
         @RequestParam(value = "tier", defaultValue = "EMERALD") TierFilter tier) {
 
-        ChampionAnalysisRes result = statisticsService.getChampionAnalysis(championName, position,
-            tier);
+        ChampionAnalysisRes result = statisticsService.getChampionAnalysis(championName, position, tier);
 
         return CommonResponse.success(result);
     }

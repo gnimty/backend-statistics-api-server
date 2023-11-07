@@ -1,6 +1,5 @@
 package onlysolorank.apiserver.api.controller.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.time.ZonedDateTime;
@@ -8,7 +7,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.api.service.dto.MatchBriefDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
 
@@ -33,7 +31,7 @@ public class SummonerMatchRes {
     private SummonerDto summoner;
     @JsonInclude(Include.NON_NULL)
     private ZonedDateTime renewableAfter;
-    private List<MatchBriefDto> matches;
+    private List<MatchBriefRes> matches;
     @JsonInclude(Include.NON_NULL)
     private List<SummonerPlayDto> mostPlayed;
 

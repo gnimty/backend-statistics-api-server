@@ -1,11 +1,8 @@
 package onlysolorank.apiserver.api.service.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.domain.Summoner;
-import onlysolorank.apiserver.domain.dto.SoloTierDto;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -21,8 +18,7 @@ import onlysolorank.apiserver.domain.dto.SoloTierDto;
  * 2023/08/30        solmin       총 승리/패배 및 플레이수 필드 추가
  */
 @Data
-@AllArgsConstructor
-@Slf4j
+@Builder
 public class SummonerDto {
 
     private String summonerName;
@@ -36,23 +32,29 @@ public class SummonerDto {
     private Integer totalDefeat;
     private Integer totalPlays;
 
-    @Builder
-    public SummonerDto(Summoner summoner) {
-        this.summonerName = summoner.getName();
-        this.internalName = summoner.getInternalName();
-        this.summonerId = summoner.getSummonerId();
-        this.puuid = summoner.getPuuid();
-        this.profileIconId = summoner.getProfileIconId();
-        this.summonerLevel = summoner.getSummonerLevel();
-        this.soloTierInfo = SoloTierDto.builder().summoner(summoner).build();
-        this.totalWin = summoner.getTotalWin();
-        this.totalDefeat = summoner.getTotalDefeat();
+    public static SummonerDto from(Summoner summoner) {
+        Integer totalPlays = null;
+        Integer totalWin = summoner.getTotalWin();
+        Integer totalDefeat = summoner.getTotalDefeat();
 
-        if (totalWin == null || totalDefeat == null) {
-            this.totalPlays = null;
-        } else {
-            this.totalPlays = totalWin + totalDefeat;
+        SoloTierDto soloTier = SoloTierDto.from(summoner);
+
+        if (summoner.getTotalWin() != null && summoner.getTotalDefeat() != null) {
+            totalPlays = totalWin + totalDefeat;
         }
+
+        return SummonerDto.builder()
+                .summonerName(summoner.getName())
+                .internalName(summoner.getInternalName())
+                .summonerId(summoner.getSummonerId())
+                .puuid(summoner.getPuuid())
+                .profileIconId(summoner.getProfileIconId())
+                .summonerLevel(summoner.getSummonerLevel())
+                .soloTierInfo(soloTier)
+                .totalWin(totalWin)
+                .totalDefeat(totalDefeat)
+                .totalPlays(totalPlays)
+                .build();
     }
 
 }
