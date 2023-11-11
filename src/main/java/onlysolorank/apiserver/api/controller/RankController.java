@@ -55,6 +55,7 @@ public class RankController {
     @GetMapping("/tier")
     public CommonResponse<SummonerRankPageRes> getSummonerRank(
         @RequestParam(value = "page", defaultValue = "1") @Positive(message = "page는 1보다 큰 값이어야 합니다.") Integer page) {
+
         SummonerRankPageRes result = summonerService.getSummonerRankByMMR(page);
 
         return CommonResponse.success(result);
