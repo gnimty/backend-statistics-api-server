@@ -467,7 +467,7 @@ public class SummonerService {
     }
 
     private Page<Summoner> getSummonerPage(Integer page, Sort sort, int size) {
-        Page<Summoner> summoners = summonerRepository.findAll(PageRequest.of(page, size, sort));
+        Page<Summoner> summoners = summonerRepository.findAll(PageRequest.of(page-1, size, sort));
         return summoners;
     }
 

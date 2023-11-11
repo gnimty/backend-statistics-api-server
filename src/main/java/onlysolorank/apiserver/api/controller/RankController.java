@@ -1,7 +1,7 @@
 package onlysolorank.apiserver.api.controller;
 
 import java.util.List;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.controller.dto.ChampionSpecialistRes;
@@ -54,7 +54,7 @@ public class RankController {
      */
     @GetMapping("/tier")
     public CommonResponse<SummonerRankPageRes> getSummonerRank(
-        @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero(message = "page는 0보다 큰 값이어야 합니다.") Integer page) {
+        @RequestParam(value = "page", defaultValue = "1") @Positive(message = "page는 1보다 큰 값이어야 합니다.") Integer page) {
         SummonerRankPageRes result = summonerService.getSummonerRankByMMR(page);
 
         return CommonResponse.success(result);

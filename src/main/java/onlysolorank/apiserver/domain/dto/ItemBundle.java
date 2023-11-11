@@ -1,8 +1,9 @@
 package onlysolorank.apiserver.domain.dto;
 
 import java.util.List;
-import lombok.Getter;
-import lombok.ToString;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -16,15 +17,9 @@ import lombok.ToString;
  * 2023/07/31        solmin       최초 생성
  */
 
-@Getter
-@ToString
-public class ItemBundleDto {
-
+@Data
+@AllArgsConstructor
+public class ItemBundle {
     private final Integer minute;
     private final List<Integer> items;
-
-    public ItemBundleDto(Integer minute, List<Integer> items) {
-        this.minute = minute;
-        this.items = items;
-    }
 }

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.domain.Participant;
-import onlysolorank.apiserver.domain.dto.ItemBundleDto;
+import onlysolorank.apiserver.domain.dto.ItemBundle;
 import onlysolorank.apiserver.domain.dto.Perk;
 
 /**
@@ -54,7 +54,7 @@ public class ParticipantDto {
     private Perk perks;
     private List<Integer> items;
     private Integer accessory;
-    private List<ItemBundleDto> itemBuilds;
+    private List<ItemBundle> itemBuilds;
     private List<Integer> skillBuilds;
     private String summonerName;
 
@@ -96,7 +96,7 @@ public class ParticipantDto {
             participant.getItem5());
         this.accessory = participant.getItem6();
         this.itemBuilds = participant.getItemBuild().entrySet()
-            .stream().map(build -> new ItemBundleDto(build.getKey(), build.getValue())).toList();
+            .stream().map(build -> new ItemBundle(build.getKey(), build.getValue())).toList();
         this.skillBuilds = participant.getSkillBuild();
 
         try {
