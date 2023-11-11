@@ -36,7 +36,7 @@ public class SummonerRankDto {
         this.summoner = SummonerDto.from(summoner);
         this.totalWin = summoner.getTotalWin();
         this.totalDefeat = summoner.getTotalDefeat();
-        this.winRate = doubleValueToHalfUp(totalWin.doubleValue() / totalWin.doubleValue() + totalDefeat.doubleValue(), 3);
+        this.winRate = doubleValueToHalfUp(totalWin.doubleValue() / (totalWin.doubleValue() + totalDefeat.doubleValue()), 3);
         this.mostPlayedChampionIds = summoner.getMostChampionIds();
         this.mostLanes = summoner.getMostLanes();
         this.rank = rank;
