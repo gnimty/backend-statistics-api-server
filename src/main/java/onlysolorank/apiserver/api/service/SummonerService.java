@@ -256,6 +256,7 @@ public class SummonerService {
         // mmr을 기준으로 내림차순하여 랭크 정보 생성
         Sort sort = Sort.by(Sort.Direction.DESC, "mmr");
         int pageSize = 100;
+        page = page-1;
 
         // 1. MMR 기준 Summoner page 조회
         Page<Summoner> summoners = getSummonerPage(page, sort, pageSize);
@@ -467,7 +468,7 @@ public class SummonerService {
     }
 
     private Page<Summoner> getSummonerPage(Integer page, Sort sort, int size) {
-        Page<Summoner> summoners = summonerRepository.findAll(PageRequest.of(page-1, size, sort));
+        Page<Summoner> summoners = summonerRepository.findAll(PageRequest.of(page, size, sort));
         return summoners;
     }
 
