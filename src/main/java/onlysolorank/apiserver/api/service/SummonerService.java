@@ -263,6 +263,7 @@ public class SummonerService {
 
         AtomicInteger startRank = new AtomicInteger(page * pageSize);
 
+
         // 2. 각 summoner별 랭크 정보 매기기 + most 3 champion ID 정보 가져오기
         List<SummonerRankDto> summonerRanks = summoners.stream()
             .map(s -> SummonerRankDto.builder()

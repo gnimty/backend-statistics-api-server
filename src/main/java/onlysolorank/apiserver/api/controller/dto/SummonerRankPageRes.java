@@ -29,7 +29,6 @@ public class SummonerRankPageRes {
     private Boolean next;
     private Boolean prev;
     private Integer summonersInPage;
-    private Integer page;
     private Integer totalSummoners;
 
     @Builder
@@ -38,7 +37,6 @@ public class SummonerRankPageRes {
         this.next = summonerPage.hasNext();
         this.prev = summonerPage.hasPrevious();
         this.summonersInPage = summonerRanks.size();
-        this.page = summonerPage.getPageable().getPageNumber();
         this.totalSummoners = (int) summonerPage.getTotalElements(); // 소혼사 최대 크기가 integer 범위에서 절대 벗어나지 않기 때문에, 간단하게 형변환 취해서 가져옴
     }
 }
