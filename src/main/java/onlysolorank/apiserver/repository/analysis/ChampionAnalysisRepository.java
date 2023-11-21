@@ -1,8 +1,8 @@
 package onlysolorank.apiserver.repository.analysis;
 
 import java.util.Optional;
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
-import onlysolorank.apiserver.api.controller.dto.TierFilter;
+import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -20,8 +20,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface ChampionAnalysisRepository extends MongoRepository<ChampionAnalysis, String> {
 
     Optional<ChampionAnalysis> findTop1ByChampionIdAndPositionAndTierOrderByVersionDesc(
-        Long championId, PositionFilter position, TierFilter tier);
+        Long championId, Position position, Tier tier);
 
     Optional<ChampionAnalysis> findTop1ByChampionIdAndTierOrderByVersionDescPickRateDesc(
-        Long championId, TierFilter tier);
+        Long championId, Tier tier);
 }

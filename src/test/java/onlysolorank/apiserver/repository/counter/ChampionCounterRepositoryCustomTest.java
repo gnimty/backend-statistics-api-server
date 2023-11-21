@@ -1,6 +1,6 @@
 package onlysolorank.apiserver.repository.counter;
 
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
+import onlysolorank.apiserver.domain.dto.Position;
 import onlysolorank.apiserver.domain.statistics.analysis.counter.BaseCounter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ class ChampionCounterRepositoryCustomTest {
 
     @Test
     void findCounterChampions() {
-        List<? extends BaseCounter> counterChampions = championCounterRepository.findCounterChampions(266L, PositionFilter.TOP, true);
+        List<? extends BaseCounter> counterChampions = championCounterRepository.findCounterChampions(266L, Position.TOP, true);
 
         System.out.println("counterChampions = " + counterChampions);
 

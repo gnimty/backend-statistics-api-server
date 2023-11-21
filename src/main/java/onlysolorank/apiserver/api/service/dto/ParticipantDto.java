@@ -3,10 +3,10 @@ package onlysolorank.apiserver.api.service.dto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.domain.dto.ItemBundle;
 import onlysolorank.apiserver.domain.dto.Perk;
+import onlysolorank.apiserver.domain.dto.Position;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -31,7 +31,7 @@ public class ParticipantDto {
     //    private Boolean isMe;
     private Boolean win;
     private Integer teamId;
-    private PositionFilter position;
+    private Position position;
     private Integer kill;
     private Integer death;
     private Integer assist;
@@ -100,9 +100,9 @@ public class ParticipantDto {
         this.skillBuilds = participant.getSkillBuild();
 
         try {
-            this.position = PositionFilter.valueOf(participant.getLane());
+            this.position = Position.valueOf(participant.getLane());
         } catch (IllegalArgumentException e) {
-            this.position = PositionFilter.UNKNOWN;
+            this.position = Position.UNKNOWN;
         }
 
         this.summonerName = summonerName;

@@ -3,8 +3,6 @@ package onlysolorank.apiserver.config;
 import onlysolorank.apiserver.config.converter.StringToBooleanConverter;
 import onlysolorank.apiserver.config.converter.StringToPeriodConverter;
 import onlysolorank.apiserver.config.converter.StringToPositionConverter;
-import onlysolorank.apiserver.config.converter.StringToPositionFilterConverter;
-import onlysolorank.apiserver.config.converter.StringToTierFilterConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -26,9 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new StringToTierFilterConverter());
         registry.addConverter(new StringToPeriodConverter());
-        registry.addConverter(new StringToPositionFilterConverter());
         registry.addConverter(new StringToPositionConverter());
         registry.addConverter(new StringToBooleanConverter());
     }

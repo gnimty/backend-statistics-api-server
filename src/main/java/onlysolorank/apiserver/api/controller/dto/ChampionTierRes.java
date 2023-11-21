@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
+import onlysolorank.apiserver.domain.dto.Position;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -23,6 +24,13 @@ import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
 @AllArgsConstructor
 public class ChampionTierRes {
     private String version;
-    private PositionFilter position;
-    private List<ChampionTierDto> champions;
+    private List<ChampionTierByPosition> results;
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class ChampionTierByPosition {
+        private Position position;
+        private List<ChampionTierDto> champions;
+    }
 }

@@ -33,7 +33,7 @@ import onlysolorank.apiserver.domain.statistics.analysis.counter.BaseCounter;
 @AllArgsConstructor
 @Builder
 public class ChampionAnalysisRes {
-    private PositionFilter position;
+    private Position position;
     private ChampionTierDto championTier;
     private List<BaseCounter> counterChampions;
     private List<BaseCounter> easyChampions;

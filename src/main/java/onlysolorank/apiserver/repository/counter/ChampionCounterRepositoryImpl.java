@@ -2,7 +2,7 @@ package onlysolorank.apiserver.repository.counter;
 
 import java.util.ArrayList;
 import java.util.List;
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
+import onlysolorank.apiserver.domain.dto.Position;
 import onlysolorank.apiserver.domain.statistics.analysis.counter.BaseCounter;
 import onlysolorank.apiserver.domain.statistics.analysis.counter.BottomCounter;
 import onlysolorank.apiserver.domain.statistics.analysis.counter.JungleCounter;
@@ -36,7 +36,7 @@ public class ChampionCounterRepositoryImpl implements ChampionCounterRepositoryC
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<BaseCounter> findCounterChampions(Long championId, PositionFilter position,
+    public List<BaseCounter> findCounterChampions(Long championId, Position position,
         boolean isCounter) {
 
         Query query;

@@ -1,13 +1,11 @@
 package onlysolorank.apiserver.domain.statistics.analysis;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
-import onlysolorank.apiserver.api.controller.dto.TierFilter;
+import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBootsComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemRarityComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemStartComponentStat;
@@ -46,12 +44,12 @@ public class ChampionAnalysis {
     private String championName;
 
     @Field("teamPosition")
-    private PositionFilter position;
+    private Position position;
 
     @Field("gameVersion_")
     private String version;
 
-    private TierFilter tier;
+    private Tier tier;
 
     private Double winRate;
     private Double pickRate;

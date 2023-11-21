@@ -18,7 +18,8 @@ public enum Position {
     MIDDLE("미드"),
     BOTTOM("원딜"),
     UTILITY("서폿"),
-    UNKNOWN("알 수 없음");
+    UNKNOWN("알 수 없음"),
+    ALL("상관 없음");
 
     private final String value;
 
@@ -28,6 +29,11 @@ public enum Position {
 
     public static Position defaultValue() {
         return UNKNOWN;
+    }
+
+    public static Position[] getActualPosition() {
+        Position[] targets = {TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY};
+        return targets;
     }
 
     public String getValue() {
