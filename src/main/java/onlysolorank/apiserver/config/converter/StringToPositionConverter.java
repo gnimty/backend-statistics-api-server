@@ -1,6 +1,5 @@
 package onlysolorank.apiserver.config.converter;
 
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
 import onlysolorank.apiserver.domain.dto.Position;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;

@@ -1,7 +1,7 @@
 package onlysolorank.apiserver.repository.counter;
 
 import java.util.List;
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
+import onlysolorank.apiserver.domain.dto.Position;
 import onlysolorank.apiserver.domain.statistics.analysis.counter.BaseCounter;
 
 /**
@@ -17,6 +17,6 @@ import onlysolorank.apiserver.domain.statistics.analysis.counter.BaseCounter;
  */
 public interface ChampionCounterRepositoryCustom {
 
-    List<BaseCounter> findCounterChampions(Long championId, PositionFilter position,
+    List<BaseCounter> findCounterChampions(Long championId, Position position,
         boolean isCounter);
 }

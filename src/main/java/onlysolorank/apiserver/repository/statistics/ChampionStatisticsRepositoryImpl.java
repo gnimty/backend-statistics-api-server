@@ -2,15 +2,14 @@ package onlysolorank.apiserver.repository.statistics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import onlysolorank.apiserver.api.controller.dto.Period;
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
-import onlysolorank.apiserver.api.controller.dto.TierFilter;
+import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.stat.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.stat.DailyChampionStat;
 import onlysolorank.apiserver.domain.statistics.stat.MonthlyChampionStat;
@@ -21,7 +20,6 @@ import onlysolorank.apiserver.domain.statistics.tier.JungleTier;
 import onlysolorank.apiserver.domain.statistics.tier.MiddleTier;
 import onlysolorank.apiserver.domain.statistics.tier.TopTier;
 import onlysolorank.apiserver.domain.statistics.tier.UtilityTier;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
@@ -53,11 +51,10 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
     private final int BRIEF_CNT = 5;
 
     @Override
-    public List<? extends BaseChampionStat> findStats(Period period, PositionFilter position,
-        TierFilter tier) {
+    public List<? extends BaseChampionStat> findStats(Period period, Position position, Tier tier) {
 
         Criteria criteria = Criteria.where("pick_cnt").ne(null).and("tier").is(tier);
-        if (position != PositionFilter.ALL) {
+        if (position != Position.ALL) {
             criteria = criteria.and("teamPosition").is(position);
         }
 
@@ -82,7 +79,7 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
     }
 
     @Override
-    public List<? extends BaseChampionTier> findTier(PositionFilter position, Boolean brief) {
+    public List<? extends BaseChampionTier> findTier(Position position, Boolean brief) {
 
         Criteria criteria = new Criteria();
 
@@ -103,7 +100,7 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
     }
 
     @Override
-    public Optional<? extends BaseChampionTier> findTier(PositionFilter position, Long championId){
+    public Optional<? extends BaseChampionTier> findTier(Position position, Long championId){
         TargetPositionClass tpc = getTargetPositionClass(position);
 
         Query query = new Query(Criteria.where(tpc.getTargetField()).is(championId));
@@ -111,7 +108,7 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
         return Optional.of((BaseChampionTier) mongoTemplate.find(query, tpc.getTargetClass()));
     }
 
-    private static TargetPositionClass getTargetPositionClass(PositionFilter position) {
+    private static TargetPositionClass getTargetPositionClass(Position position) {
 
 
         switch (position) {
