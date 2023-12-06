@@ -2,11 +2,10 @@ package onlysolorank.apiserver.domain;
 
 import java.util.List;
 import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import onlysolorank.apiserver.api.service.dto.SoloTierDto;
+import onlysolorank.apiserver.api.service.dto.SummonerTierDto;
 import onlysolorank.apiserver.domain.dto.Perk;
 import onlysolorank.apiserver.domain.dto.Tier;
 import org.springframework.data.annotation.Id;
@@ -78,17 +77,17 @@ public class Participant {
     private Map<Integer, List<Integer>> itemBuild;
     private List<Integer> skillBuild;
 
-    public static SoloTierDto toSoloTierDto(Participant participant) {
+    public static SummonerTierDto toSoloTierDto(Participant participant) {
         // queue, tier, leaguepoints가 하나라도 null이면 soloTier를 null로
         if (participant.getQueue() == null || participant.getTier() == null || participant.getLeaguePoints() == null) {
             return null;
         }
 
-        return SoloTierDto.builder()
-                .tier(Tier.valueOf(participant.getQueue()))
-                .division(Integer.parseInt(participant.getTier()))
-                .lp(Integer.parseInt(participant.getLeaguePoints()))
-                .build();
+        return SummonerTierDto.builder()
+            .tier(Tier.valueOf(participant.getQueue()))
+            .division(Integer.parseInt(participant.getTier()))
+            .lp(Integer.parseInt(participant.getLeaguePoints()))
+            .build();
     }
 
 }

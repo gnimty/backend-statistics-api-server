@@ -9,7 +9,6 @@ import onlysolorank.apiserver.api.service.dto.MatchDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantDto;
 import onlysolorank.apiserver.api.service.dto.QueueDto;
 import onlysolorank.apiserver.api.service.dto.TeamDto;
-import onlysolorank.apiserver.domain.Match;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto

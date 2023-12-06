@@ -3,14 +3,22 @@ package onlysolorank.apiserver.api.controller;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.api.controller.dto.*;
+import onlysolorank.apiserver.api.controller.dto.AutoCompleteRes;
+import onlysolorank.apiserver.api.controller.dto.CurrentGameRes;
+import onlysolorank.apiserver.api.controller.dto.KeywordReq;
+import onlysolorank.apiserver.api.controller.dto.MatchDetailRes;
+import onlysolorank.apiserver.api.controller.dto.RecentMemberRes;
+import onlysolorank.apiserver.api.controller.dto.SummonerHistoryRes;
+import onlysolorank.apiserver.api.controller.dto.SummonerMatchRes;
+import onlysolorank.apiserver.api.controller.dto.SummonerPlayRes;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
-import onlysolorank.apiserver.api.service.dto.*;
-import onlysolorank.apiserver.api.controller.dto.MatchDetailRes;
+import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
+import onlysolorank.apiserver.api.service.dto.SummonerTierDto;
+import onlysolorank.apiserver.api.service.dto.SummonerDto;
+import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,30 +59,26 @@ public class SummonerController {
 
     private final SummonerService summonerService;
 
-    /**
-     * internalName과 유사한 이름을 가진 소환사를 사전 순으로 최대 5개를 조회합니다.
-     *
-     * @param keywordReq Query Parameter (keyword)를 포함한 데이터
-     * @return CommonResponse<AutoCompleteRes>
-     */
+
     @GetMapping("/autocomplete")
     public CommonResponse<AutoCompleteRes> getAutoCompleteResults(
-            @ModelAttribute @Valid KeywordReq keywordReq) {
-        String internalName = keywordReq.getInternalName();
+        @ModelAttribute @Valid KeywordReq keywordReq) {
 
-        List<SummonerDto> results = summonerService.getTop5SummonersByInternalName(internalName);
+        String internalTagName = keywordReq.getKeyword();
+
+        List<SummonerDto> results = summonerService.getTop5SummonersByInternalTagName(internalTagName);
 
         return CommonResponse.success(AutoCompleteRes.builder()
-                .summoners(results)
-                .keyword(internalName)
-                .build());
+            .summoners(results)
+            .keyword(internalTagName)
+            .build());
     }
 
     @GetMapping("/{summoner_name}")
     public CommonResponse<SummonerDto> getSummoner(
-            @PathVariable("summoner_name") String summonerName) {
+        @PathVariable("summoner_name") String summonerName) {
 
-        SummonerDto result = SummonerDto.from(summonerService.getSummonerByName(summonerName));
+        SummonerDto result = SummonerDto.from(summonerService.getSummonerByinternalTagName(summonerName));
 
         return CommonResponse.success(result);
     }
@@ -82,18 +86,18 @@ public class SummonerController {
 
     @GetMapping("/matches/{summoner_name}")
     public CommonResponse<SummonerMatchRes> getSummonerMatchInfoBySummonerName(
-            @PathVariable("summoner_name") String summonerName,
-            @RequestParam("ended") Optional<String> lastMatchId) {
+        @PathVariable("summoner_name") String summonerName,
+        @RequestParam("ended") Optional<String> lastMatchId) {
         // TODO lastMatchId 바꾸기
         SummonerMatchRes result;
 
         if (lastMatchId.isEmpty() || lastMatchId.get().isBlank()) {
-             result = summonerService.getSummonerMatchInfoBySummonerName(summonerName);
+            result = summonerService.getSummonerMatchInfoBySummonerName(summonerName);
 
         } else {
             result = SummonerMatchRes.builder()
-                    .matches(summonerService.get20MatchesByOptionalLastMatchId(summonerName, lastMatchId.get()))
-                    .build();
+                .matches(summonerService.get20MatchesByOptionalLastMatchId(summonerName, lastMatchId.get()))
+                .build();
         }
 
         return CommonResponse.success(result);
@@ -101,7 +105,7 @@ public class SummonerController {
 
     @GetMapping("/matches/id/{match_id}")
     public CommonResponse<MatchDetailRes> getMatchDetailByMatchId(
-            @PathVariable("match_id") String matchId) {
+        @PathVariable("match_id") String matchId) {
         return CommonResponse.success(summonerService.getMatchDetail(matchId));
     }
 
@@ -114,14 +118,14 @@ public class SummonerController {
      */
     @GetMapping("/champion/{summoner_name}")
     public CommonResponse<SummonerPlayRes> getAllChampionPlayInfoBySummonerName(
-            @PathVariable("summoner_name") String summonerName) {
+        @PathVariable("summoner_name") String summonerName) {
 
         List<SummonerPlayDto> results = summonerService.getAllChampionPlayInfoBySummonerName(
-                summonerName);
+            summonerName);
 
         return CommonResponse.success(SummonerPlayRes.builder()
-                .summonerPlays(results)
-                .build());
+            .summonerPlays(results)
+            .build());
     }
 
     /**
@@ -132,12 +136,12 @@ public class SummonerController {
      */
     @GetMapping("/tier/{summoner_name}")
     public CommonResponse<SummonerHistoryRes> getSummonerHistory(
-            @PathVariable("summoner_name") String summonerName) {
-        List<SoloTierDto> results = summonerService.getSummonerHistory(summonerName);
+        @PathVariable("summoner_name") String summonerName) {
+        List<SummonerTierDto> results = summonerService.getSummonerHistory(summonerName);
 
         return CommonResponse.success(SummonerHistoryRes.builder()
-                .histories(results)
-                .build());
+            .histories(results)
+            .build());
     }
 
     @PostMapping("/{puuid}")
@@ -155,12 +159,12 @@ public class SummonerController {
 
     @GetMapping("/together/{summoner_name}")
     public CommonResponse<RecentMemberRes> getRecentMembers(
-            @PathVariable("summoner_name") String summonerName) {
+        @PathVariable("summoner_name") String summonerName) {
         List<RecentMemberDto> results = summonerService.getRecentMemberInfo(summonerName);
 
         return CommonResponse.success(RecentMemberRes.builder()
-                .recentMembers(results)
-                .build());
+            .recentMembers(results)
+            .build());
     }
 
 

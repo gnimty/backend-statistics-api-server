@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 /**
  * packageName    : onlysolorank.apiserver.repository
  * fileName       : SummonerMatchRepositoryTest
@@ -21,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 @SpringBootTest
 class SummonerMatchRepositoryTest {
-    @Autowired
-    private SummonerMatchRepository summonerMatchRepository;
 
     private final static String testPuuid = "toDrnYVtSfaNMqhh8Vq3hvFau7DqbI54-GXN7-tjDrw2y55U6RpwadXH_lZnJ5MUPFjk-WqxEePd1w";
+    @Autowired
+    private SummonerMatchRepository summonerMatchRepository;
 
 //    @Test
 //    public void get20MatchIds(){

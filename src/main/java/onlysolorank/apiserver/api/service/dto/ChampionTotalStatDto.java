@@ -21,6 +21,7 @@ import onlysolorank.apiserver.domain.statistics.stat.ChampionStatistics;
 @Data
 // 임시용, 추후 ChampionStatsDto로 변환할 예정
 public class ChampionTotalStatDto {
+
     private Long championId;
     private String championName;
     private Long plays;

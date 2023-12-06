@@ -1,7 +1,6 @@
 package onlysolorank.apiserver.api.service.dto;
 
 import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
-import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
 
 import java.util.List;
 import lombok.Builder;
@@ -35,13 +34,13 @@ public class SummonerRankDto {
     @Builder
     public SummonerRankDto(Summoner summoner, Integer rank) {
         this.summoner = SummonerDto.from(summoner);
-        if(summoner.getTotalWin()!=null){
+        if (summoner.getTotalWin() != null) {
             this.totalWin = summoner.getTotalWin();
         }
-        if(summoner.getTotalDefeat()!=null){
+        if (summoner.getTotalDefeat() != null) {
             this.totalDefeat = summoner.getTotalDefeat();
         }
-        this.winRate = divideAndReturnDouble(totalWin , (totalWin + totalDefeat), 3).get();
+        this.winRate = divideAndReturnDouble(totalWin, (totalWin + totalDefeat), 3).get();
         this.mostPlayedChampionIds = summoner.getMostChampionIds();
         this.mostLanes = summoner.getMostLanes();
         this.rank = rank;

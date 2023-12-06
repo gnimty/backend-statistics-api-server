@@ -1,9 +1,7 @@
 package onlysolorank.apiserver.api.service.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 import onlysolorank.apiserver.domain.SummonerPlay;
 
 /**
@@ -51,25 +49,25 @@ public class SummonerPlayDto {
         }
 
         return SummonerPlayDto.builder()
-                .totalPlays(summonerPlay.getTotalPlays())
-                .avgCsPerMinute(summonerPlay.getAvgCsPerMinute())
-                .avgCs(summonerPlay.getAvgCs())
-                .avgKda(summonerPlay.getAvgKda())
-                .avgKill(summonerPlay.getAvgKill())
-                .avgDeath(summonerPlay.getAvgDeath())
-                .avgAssist(summonerPlay.getAvgAssist())
-                .winRate(summonerPlay.getWinRate())
-                .totalWin(summonerPlay.getTotalWin())
-                .totalDefeat(summonerPlay.getTotalDefeat())
-                .championId(summonerPlay.getChampionId())
-                .championName(summonerPlay.getChampionName())
-                .isPerfect(isPerfect)
-                .avgKda(avgKda)
-                .avgGold(summonerPlay.getAvgGold())
-                .avgDamage(summonerPlay.getAvgDamage())
-                .maxKill(summonerPlay.getMaxKill())
-                .maxDeath(summonerPlay.getMaxDeath())
-                .build();
+            .totalPlays(summonerPlay.getTotalPlays())
+            .avgCsPerMinute(summonerPlay.getAvgCsPerMinute())
+            .avgCs(summonerPlay.getAvgCs())
+            .avgKda(summonerPlay.getAvgKda())
+            .avgKill(summonerPlay.getAvgKill())
+            .avgDeath(summonerPlay.getAvgDeath())
+            .avgAssist(summonerPlay.getAvgAssist())
+            .winRate(summonerPlay.getWinRate())
+            .totalWin(summonerPlay.getTotalWin())
+            .totalDefeat(summonerPlay.getTotalDefeat())
+            .championId(summonerPlay.getChampionId())
+            .championName(summonerPlay.getChampionName())
+            .isPerfect(isPerfect)
+            .avgKda(avgKda)
+            .avgGold(summonerPlay.getAvgGold())
+            .avgDamage(summonerPlay.getAvgDamage())
+            .maxKill(summonerPlay.getMaxKill())
+            .maxDeath(summonerPlay.getMaxDeath())
+            .build();
     }
 
 }

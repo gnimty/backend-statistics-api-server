@@ -1,11 +1,9 @@
 package onlysolorank.apiserver.api.controller.dto;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.api.service.dto.SoloTierDto;
-
-import java.util.List;
+import onlysolorank.apiserver.api.service.dto.SummonerTierDto;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -21,5 +19,6 @@ import java.util.List;
 @Data
 @Builder
 public class SummonerHistoryRes {
-    List<SoloTierDto> histories;
+
+    List<SummonerTierDto> histories;
 }

@@ -1,6 +1,6 @@
 package onlysolorank.apiserver.api.controller.dto;
 
-import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalName;
+import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalTagName;
 
 import javax.validation.constraints.NotBlank;
 
@@ -23,10 +23,10 @@ public class KeywordReq {
     private final String keyword;
 
     public KeywordReq(String keyword) {
-        this.keyword = keywordToInternalName(keyword);
+        this.keyword = keywordToInternalTagName(keyword);
     }
 
-    public String getInternalName() {
+    public String getKeyword() {
         return this.keyword;
     }
 }

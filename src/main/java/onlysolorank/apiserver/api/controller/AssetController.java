@@ -1,7 +1,6 @@
 package onlysolorank.apiserver.api.controller;
 
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.controller.dto.ChampionRes;
@@ -51,16 +50,16 @@ public class AssetController {
         List<ChampionSaleDto> results = assetService.getAllChampionSalesInfo();
 
         return CommonResponse.success(ChampionSaleRes.builder()
-                .championSales(results)
-                .build()
+            .championSales(results)
+            .build()
         );
     }
 
     @GetMapping("/sale/skin")
     public CommonResponse<SkinSaleRes> getSkinSales() {
         return CommonResponse.success(SkinSaleRes.builder()
-                .skinSales(assetService.getAllSkinSalesInfo())
-                .build());
+            .skinSales(assetService.getAllSkinSalesInfo())
+            .build());
     }
 
     @GetMapping("/champion")
@@ -68,8 +67,8 @@ public class AssetController {
         List<ChampionDto> results = assetService.getAllChampions();
 
         return CommonResponse.success(ChampionRes.multiBuilder()
-                .champions(results)
-                .build());
+            .champions(results)
+            .build());
     }
 
     @GetMapping("/champion/{champion_id}")
@@ -77,8 +76,8 @@ public class AssetController {
         ChampionDto result = assetService.getChampion(championId);
 
         return CommonResponse.success(ChampionRes.singleBuilder()
-                .champion(result)
-                .build()
+            .champion(result)
+            .build()
         );
     }
 
@@ -87,8 +86,8 @@ public class AssetController {
         List<ChampionDto> results = assetService.getRotationChampions();
 
         return CommonResponse.success(ChampionRes.multiBuilder()
-                .champions(results)
-                .build());
+            .champions(results)
+            .build());
     }
 
     @PatchMapping("/champion")

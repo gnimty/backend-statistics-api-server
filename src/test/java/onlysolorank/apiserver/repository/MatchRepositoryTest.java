@@ -1,5 +1,9 @@
 package onlysolorank.apiserver.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.domain.Match;
@@ -8,10 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * packageName    : onlysolorank.apiserver.repository
@@ -28,14 +28,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 @SpringBootTest
 class MatchRepositoryTest {
-    @Autowired
-    private MatchRepository matchRepository;
 
     private final String matchId1 = "KR_6654612499";
     private final String matchId2 = "KR_6654548635";
     private final String wrongMatchId = "awefawefefwe";
+    @Autowired
+    private MatchRepository matchRepository;
+
     @Test
-    public void 매치ID_두개로조회(){
+    public void 매치ID_두개로조회() {
         List<String> matchIds = List.of(matchId1, matchId2);
 
         List<Match> matches = matchRepository.findMatchesByMatchIdIn(matchIds);
@@ -44,7 +45,7 @@ class MatchRepositoryTest {
     }
 
     @Test
-    public void 매치ID_하나로조회(){
+    public void 매치ID_하나로조회() {
         List<String> matchIds = List.of(matchId1);
 
         List<Match> matches = matchRepository.findMatchesByMatchIdIn(matchIds);
@@ -52,7 +53,7 @@ class MatchRepositoryTest {
         assertEquals(1, matches.size());
 
         matchRepository.findMatchByMatchId(matchId2)
-            .orElseThrow(()-> new CustomException(ErrorCode.RESULT_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND));
     }
 
     @Test

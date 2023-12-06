@@ -31,15 +31,15 @@ public class MatchService {
 
     public List<MatchDto> getMatchListByMatchIdList(List<String> matchIds) {
         return matchRepository.findMatchesByMatchIdIn(matchIds).stream()
-                .map(match -> MatchDto.from(match))
-                .toList();
+            .map(match -> MatchDto.from(match))
+            .toList();
     }
 
     public Optional<MatchDto> getMatchById(String matchId) {
         Optional<Match> match = matchRepository.findMatchByMatchId(matchId);
-        if(match.isPresent()){
+        if (match.isPresent()) {
             return Optional.of(MatchDto.from(match.get()));
-        }else{
+        } else {
             return Optional.empty();
         }
     }

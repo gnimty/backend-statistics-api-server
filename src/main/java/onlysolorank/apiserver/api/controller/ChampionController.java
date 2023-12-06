@@ -2,7 +2,8 @@ package onlysolorank.apiserver.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.api.controller.dto.*;
+import onlysolorank.apiserver.api.controller.dto.ChampionAnalysisRes;
+import onlysolorank.apiserver.api.controller.dto.ChampionTierRes;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.StatisticsService;
 import onlysolorank.apiserver.domain.dto.Position;
@@ -59,9 +60,9 @@ public class ChampionController {
     public CommonResponse getChampionStats(
         @RequestParam(value = "tier", defaultValue = "emerald") Tier tier,
         @RequestParam(value = "brief", defaultValue = "false") Boolean brief,
-        @RequestParam(value = "mode", defaultValue = "RANK_SOLO") QueueType mode){
+        @RequestParam(value = "mode", defaultValue = "RANK_SOLO") QueueType mode) {
 
-        switch(mode){
+        switch (mode) {
             case RANK_SOLO:
                 ChampionTierRes result = statisticsService.getChampionTierList(brief, tier);
                 return CommonResponse.success(result);

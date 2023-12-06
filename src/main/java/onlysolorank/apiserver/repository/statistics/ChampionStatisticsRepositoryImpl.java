@@ -3,7 +3,6 @@ package onlysolorank.apiserver.repository.statistics;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +49,23 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
 
     private final int BRIEF_CNT = 5;
 
+    private static TargetPositionClass getTargetPositionClass(Position position) {
+
+        switch (position) {
+            case TOP:
+                return new TargetPositionClass(TopTier.class, "TOP");
+            case JUNGLE:
+                return new TargetPositionClass(JungleTier.class, "JUG");
+            case MIDDLE:
+                return new TargetPositionClass(MiddleTier.class, "MID");
+            case BOTTOM:
+                return new TargetPositionClass(BottomTier.class, "ADC");
+            case UTILITY:
+                return new TargetPositionClass(UtilityTier.class, "SUP");
+        }
+        return null;
+    }
+
     @Override
     public List<? extends BaseChampionStat> findStats(Period period, Position position, Tier tier) {
 
@@ -86,7 +102,7 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
         Query query = new Query(criteria)
             .with(Sort.by(Sort.Order.desc("score")));
 
-        if(brief){
+        if (brief) {
             query.limit(BRIEF_CNT);
         }
 
@@ -100,7 +116,7 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
     }
 
     @Override
-    public Optional<? extends BaseChampionTier> findTier(Position position, Long championId){
+    public Optional<? extends BaseChampionTier> findTier(Position position, Long championId) {
         TargetPositionClass tpc = getTargetPositionClass(position);
 
         Query query = new Query(Criteria.where(tpc.getTargetField()).is(championId));
@@ -108,28 +124,10 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
         return Optional.of((BaseChampionTier) mongoTemplate.find(query, tpc.getTargetClass()));
     }
 
-    private static TargetPositionClass getTargetPositionClass(Position position) {
-
-
-        switch (position) {
-            case TOP:
-                return new TargetPositionClass(TopTier.class, "TOP");
-            case JUNGLE:
-                return new TargetPositionClass(JungleTier.class, "JUG");
-            case MIDDLE:
-                return new TargetPositionClass(MiddleTier.class, "MID");
-            case BOTTOM:
-                return new TargetPositionClass(BottomTier.class, "ADC");
-            case UTILITY:
-                return new TargetPositionClass(UtilityTier.class, "SUP");
-        }
-        return null;
-    }
-
-
     @Data
     @AllArgsConstructor
-    private static class TargetPositionClass{
+    private static class TargetPositionClass {
+
         private Class targetClass;
         private String targetField;
     }

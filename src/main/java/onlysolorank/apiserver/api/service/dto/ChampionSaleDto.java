@@ -1,10 +1,10 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
+
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.ChampionSale;
-
-import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -20,6 +20,7 @@ import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble
 @Data
 @Builder
 public class ChampionSaleDto {
+
     private Long championId;
     private String krName;
     private String enName;
@@ -30,13 +31,13 @@ public class ChampionSaleDto {
 
     public static ChampionSaleDto from(ChampionSale championSale) {
         return ChampionSaleDto.builder()
-                .championId(championSale.getChampionId())
-                .krName(championSale.getKrName())
-                .enName(championSale.getEnName())
-                .originRp(championSale.getOriginRp())
-                .discountedRp(championSale.getDiscountedRp())
-                .originIp(championSale.getOriginIp())
-                .discountedRate(divideAndReturnDouble(championSale.getDiscountedRp(), championSale.getOriginRp(), 2).get())
-                .build();
+            .championId(championSale.getChampionId())
+            .krName(championSale.getKrName())
+            .enName(championSale.getEnName())
+            .originRp(championSale.getOriginRp())
+            .discountedRp(championSale.getDiscountedRp())
+            .originIp(championSale.getOriginIp())
+            .discountedRate(divideAndReturnDouble(championSale.getDiscountedRp(), championSale.getOriginRp(), 2).get())
+            .build();
     }
 }

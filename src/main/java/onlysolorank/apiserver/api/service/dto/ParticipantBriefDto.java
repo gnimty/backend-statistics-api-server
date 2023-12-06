@@ -23,6 +23,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class ParticipantBriefDto {
+
     @JsonIgnore
     private String matchId;
     private String puuid;

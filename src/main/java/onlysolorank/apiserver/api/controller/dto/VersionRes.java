@@ -25,9 +25,9 @@ public class VersionRes {
 
     public static VersionRes from(Version version) {
         return VersionRes.builder()
-                .version(version.getVersion())
-                .releaseNoteImgUrl(version.getReleaseNoteImgUrl())
-                .releaseNoteUrl(version.getReleaseNoteUrl())
-                .build();
+            .version(version.getVersion())
+            .releaseNoteImgUrl(version.getReleaseNoteImgUrl())
+            .releaseNoteUrl(version.getReleaseNoteUrl())
+            .build();
     }
 }

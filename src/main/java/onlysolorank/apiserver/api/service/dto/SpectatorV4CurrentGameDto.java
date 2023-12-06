@@ -37,6 +37,7 @@ public class SpectatorV4CurrentGameDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CurrentGameParticipant {
+
         private Long championId;
         private CurrentGamePerks perks;
         private Long profileIconId;
@@ -52,6 +53,7 @@ public class SpectatorV4CurrentGameDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CurrentGamePerks {
+
         private List<Long> perkIds;
         private Long perkStyle;
         private Long perkSubStyle;

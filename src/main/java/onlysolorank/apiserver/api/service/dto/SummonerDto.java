@@ -3,6 +3,7 @@ package onlysolorank.apiserver.api.service.dto;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Summoner;
+import onlysolorank.apiserver.domain.dto.QueueType;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -22,39 +23,59 @@ import onlysolorank.apiserver.domain.Summoner;
 public class SummonerDto {
 
     private String summonerName;
+    private String puuid;
     private String internalName;
     private String summonerId;
-    private String puuid;
+    private String tagLine;
+    private String internalTagName;
     private Integer profileIconId;
     private Integer summonerLevel;
-    private SoloTierDto soloTierInfo;
+
+    private SummonerTierDto soloTierInfo;
+    private SummonerTierDto flexTierInfo;
+
     private Integer totalWin;
     private Integer totalDefeat;
     private Integer totalPlays;
 
+    private Integer totalWinFlex;
+    private Integer totalDefeatFlex;
+    private Integer totalPlaysFlex;
+
+
     public static SummonerDto from(Summoner summoner) {
         Integer totalPlays = null;
-        Integer totalWin = summoner.getTotalWin();
-        Integer totalDefeat = summoner.getTotalDefeat();
+        Integer totalPlaysFlex = null;
 
-        SoloTierDto soloTier = SoloTierDto.from(summoner);
+        SummonerTierDto soloTier = SummonerTierDto.from(summoner, QueueType.RANK_SOLO);
+        SummonerTierDto flexTier = SummonerTierDto.from(summoner, QueueType.RANK_FLEX);
 
         if (summoner.getTotalWin() != null && summoner.getTotalDefeat() != null) {
-            totalPlays = totalWin + totalDefeat;
+            totalPlays = summoner.getTotalWin() + summoner.getTotalDefeat();
+        }
+
+        if (summoner.getTotalWinFlex() != null && summoner.getTotalDefeatFlex() != null) {
+            totalPlaysFlex = summoner.getTotalWinFlex() + summoner.getTotalDefeatFlex();
         }
 
         return SummonerDto.builder()
-                .summonerName(summoner.getName())
-                .internalName(summoner.getInternalName())
-                .summonerId(summoner.getSummonerId())
-                .puuid(summoner.getPuuid())
-                .profileIconId(summoner.getProfileIconId())
-                .summonerLevel(summoner.getSummonerLevel())
-                .soloTierInfo(soloTier)
-                .totalWin(totalWin)
-                .totalDefeat(totalDefeat)
-                .totalPlays(totalPlays)
-                .build();
+            .summonerName(summoner.getName())
+            .internalName(summoner.getInternalName())
+            .internalTagName(summoner.getInternalTagName())
+            .tagLine(summoner.getTagLine())
+            .summonerId(summoner.getSummonerId())
+            .puuid(summoner.getPuuid())
+            .profileIconId(summoner.getProfileIconId())
+            .summonerLevel(summoner.getSummonerLevel())
+            .soloTierInfo(soloTier)
+            .flexTierInfo(flexTier)
+            .totalWin(summoner.getTotalWin())
+            .totalDefeat(summoner.getTotalDefeat())
+            .totalPlays(totalPlays)
+            .totalWinFlex(summoner.getTotalWinFlex())
+            .totalDefeatFlex(summoner.getTotalDefeatFlex())
+            .totalPlaysFlex(totalPlaysFlex)
+            .build();
     }
 
 }

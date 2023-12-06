@@ -27,7 +27,7 @@ public class SummonerPlayWithSummonerDto {
 
     @Builder
     public SummonerPlayWithSummonerDto(SummonerDto summoner, SummonerPlayDto summonerPlay,
-                                       Integer rank) {
+        Integer rank) {
         this.summoner = summoner;
         this.summonerPlay = summonerPlay;
         this.rank = rank;

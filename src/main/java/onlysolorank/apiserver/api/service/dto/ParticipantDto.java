@@ -25,7 +25,7 @@ import onlysolorank.apiserver.domain.dto.Position;
 public class ParticipantDto {
 
     private Integer participantId;
-    private SoloTierDto soloTier;
+    private SummonerTierDto soloTier;
     private Integer championId;
     private String championName;
     //    private Boolean isMe;

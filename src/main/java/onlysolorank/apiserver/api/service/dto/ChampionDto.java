@@ -22,15 +22,16 @@ import onlysolorank.apiserver.domain.Champion;
 @Builder
 @AllArgsConstructor
 public class ChampionDto {
+
     private Long championId;
     private String krName;
     private String enName;
 
-    public static ChampionDto from(Champion champion){
+    public static ChampionDto from(Champion champion) {
         return ChampionDto.builder()
-                .championId(champion.getChampionId())
-                .krName(champion.getKrName())
-                .enName(champion.getEnName())
-                .build();
+            .championId(champion.getChampionId())
+            .krName(champion.getKrName())
+            .enName(champion.getEnName())
+            .build();
     }
 }

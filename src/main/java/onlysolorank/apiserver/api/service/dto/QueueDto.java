@@ -30,21 +30,7 @@ public class QueueDto {
     @Builder
     public QueueDto(Integer queueId) {
         this.queueId = queueId;
-
-        switch (queueId) {
-            case 420:
-                this.queueType = QueueType.RANK_SOLO;
-                break;
-            case 430:
-                this.queueType = QueueType.BLIND;
-                break;
-            case 440:
-                this.queueType = QueueType.RANK_FLEX;
-                break;
-            case 450:
-                this.queueType = QueueType.ARAM;
-                break;
-        }
+        this.queueType = QueueType.getByQueueId(queueId);
         this.map = queueType.getMap();
         this.name = queueType.getValue();
     }

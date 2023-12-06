@@ -9,8 +9,6 @@ import onlysolorank.apiserver.api.service.dto.MatchDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantDto;
 import onlysolorank.apiserver.api.service.dto.QueueDto;
-import onlysolorank.apiserver.domain.Match;
-import onlysolorank.apiserver.domain.Participant;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -40,7 +38,7 @@ public class MatchBriefRes {
 
     @Builder
     public MatchBriefRes(MatchDto match, ParticipantDto participant,
-                         List<ParticipantBriefDto> allParticipants) {
+        List<ParticipantBriefDto> allParticipants) {
         this.matchId = match.getMatchId();
         this.gameVersion = match.getVersion();
         this.gameEndAt = match.getGameEndAt();

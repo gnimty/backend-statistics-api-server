@@ -31,8 +31,8 @@ public class CurrentGameParticipantDto {
 
     @Builder
     public CurrentGameParticipantDto(SpectatorV4CurrentGameDto.CurrentGameParticipant participant,
-                                     SummonerDto summoner, SummonerPlayDto summonerPlayDto,
-                                     ChampionDto champion) {
+        SummonerDto summoner, SummonerPlayDto summonerPlayDto,
+        ChampionDto champion) {
         this.teamId = participant.getTeamId();
         this.summoner = summoner;
         this.championId = champion.getChampionId();

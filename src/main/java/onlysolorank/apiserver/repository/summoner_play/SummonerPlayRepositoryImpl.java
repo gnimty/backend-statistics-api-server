@@ -51,13 +51,13 @@ public class SummonerPlayRepositoryImpl implements SummonerPlayRepositoryCustom 
     @Override
     public List<SummonerPlay> findByPuuidChampionIdPairs(Map<String, Long> pairs) {
         List<Criteria> criteriaList = pairs.entrySet().stream()
-                .map(pair-> {
-                    String puuid = pair.getKey();
-                    Long championId = pair.getValue();
-                    return Criteria.where("puuid").is(puuid)
-                            .and("championId").is(championId);
-                })
-                .toList();
+            .map(pair -> {
+                String puuid = pair.getKey();
+                Long championId = pair.getValue();
+                return Criteria.where("puuid").is(puuid)
+                    .and("championId").is(championId);
+            })
+            .toList();
 
         Query query = new Query(new Criteria().orOperator(criteriaList));
 

@@ -1,10 +1,9 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Match;
-
-import java.time.LocalDateTime;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -21,6 +20,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class MatchDto {
+
     private String matchId;
     private String version;
     private LocalDateTime gameStartAt;
@@ -28,15 +28,16 @@ public class MatchDto {
     private Long gameDuration;
     private Integer queueId;
     private Boolean earlyEnded;
-    public static MatchDto from(Match match){
+
+    public static MatchDto from(Match match) {
         return MatchDto.builder()
-                .matchId(match.getMatchId())
-                .version(match.getVersion())
-                .gameStartAt(match.getGameStartAt())
-                .gameEndAt(match.getGameEndAt())
-                .gameDuration(match.getGameDuration())
-                .queueId(match.getQueueId())
-                .earlyEnded(match.getEarlyEnded())
-                .build();
+            .matchId(match.getMatchId())
+            .version(match.getVersion())
+            .gameStartAt(match.getGameStartAt())
+            .gameEndAt(match.getGameEndAt())
+            .gameDuration(match.getGameDuration())
+            .queueId(match.getQueueId())
+            .earlyEnded(match.getEarlyEnded())
+            .build();
     }
 }

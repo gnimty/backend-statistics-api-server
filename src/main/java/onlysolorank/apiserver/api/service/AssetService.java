@@ -47,17 +47,17 @@ public class AssetService {
     public VersionRes getLatestVersion() {
         Optional<Version> version = getVersion();
 
-        if(version.isPresent()){
+        if (version.isPresent()) {
             return VersionRes.from(version.get());
         }
 
         return null;
     }
 
-    public String getLatestVersionString(){
+    public String getLatestVersionString() {
         Optional<Version> version = getVersion();
 
-        if(version.isPresent()){
+        if (version.isPresent()) {
             return version.get().getVersion();
         }
 
@@ -71,19 +71,20 @@ public class AssetService {
 
     public List<ChampionSaleDto> getAllChampionSalesInfo() {
         return championSaleRepository.findAll().stream()
-                .map(championSale -> ChampionSaleDto.from(championSale))
-                .toList();
+            .map(championSale -> ChampionSaleDto.from(championSale))
+            .toList();
     }
 
     public List<SkinSaleDto> getAllSkinSalesInfo() {
         return skinSaleRepository.findAll().stream()
-                .map(skinSale -> SkinSaleDto.fromSkinSale(skinSale))
-                .toList();
+            .map(skinSale -> SkinSaleDto.fromSkinSale(skinSale))
+            .toList();
     }
+
     public List<ChampionDto> getAllChampions() {
         return championRepository.findAll().stream()
-                .map(champion-> ChampionDto.from(champion))
-                .toList();
+            .map(champion -> ChampionDto.from(champion))
+            .toList();
     }
 
     public ChampionDto getChampion(Long championId) {
@@ -95,12 +96,12 @@ public class AssetService {
 
     public List<ChampionDto> getRotationChampions() {
         return championRepository.findRotationChampions().stream()
-                .map(rotation -> ChampionDto.from(rotation))
-                .toList();
+            .map(rotation -> ChampionDto.from(rotation))
+            .toList();
     }
 
     @PostConstruct
-    public void updateChampionCache(){
+    public void updateChampionCache() {
         championCache.initOnCrawl(getAllChampions());
     }
 }
