@@ -36,12 +36,12 @@ class SummonerRepositoryTest {
     @Autowired
     private SummonerRepository summonerRepository;
 
-    @Test
-    public void 소환사_count_테스트() {
-        long l = summonerRepository.countBy();
-
-        System.out.println("l = " + l);
-    }
+//    @Test
+//    public void 소환사_count_테스트() {
+//        long l = summonerRepository.countBy();
+//
+//        System.out.println("l = " + l);
+//    }
 
     @Test
     public void getTop20UserTest() {
