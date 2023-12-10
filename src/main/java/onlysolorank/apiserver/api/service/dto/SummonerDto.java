@@ -23,40 +23,22 @@ import onlysolorank.apiserver.domain.dto.QueueType;
 public class SummonerDto {
 
     private String summonerName;
-    private String puuid;
     private String internalName;
-    private String summonerId;
     private String tagLine;
     private String internalTagName;
+    private String puuid;
+    private String summonerId;
     private Integer profileIconId;
     private Integer summonerLevel;
 
     private SummonerTierDto soloTierInfo;
     private SummonerTierDto flexTierInfo;
 
-    private Integer totalWin;
-    private Integer totalDefeat;
-    private Integer totalPlays;
-
-    private Integer totalWinFlex;
-    private Integer totalDefeatFlex;
-    private Integer totalPlaysFlex;
-
 
     public static SummonerDto from(Summoner summoner) {
-        Integer totalPlays = null;
-        Integer totalPlaysFlex = null;
 
         SummonerTierDto soloTier = SummonerTierDto.from(summoner, QueueType.RANK_SOLO);
         SummonerTierDto flexTier = SummonerTierDto.from(summoner, QueueType.RANK_FLEX);
-
-        if (summoner.getTotalWin() != null && summoner.getTotalDefeat() != null) {
-            totalPlays = summoner.getTotalWin() + summoner.getTotalDefeat();
-        }
-
-        if (summoner.getTotalWinFlex() != null && summoner.getTotalDefeatFlex() != null) {
-            totalPlaysFlex = summoner.getTotalWinFlex() + summoner.getTotalDefeatFlex();
-        }
 
         return SummonerDto.builder()
             .summonerName(summoner.getName())
@@ -69,12 +51,6 @@ public class SummonerDto {
             .summonerLevel(summoner.getSummonerLevel())
             .soloTierInfo(soloTier)
             .flexTierInfo(flexTier)
-            .totalWin(summoner.getTotalWin())
-            .totalDefeat(summoner.getTotalDefeat())
-            .totalPlays(totalPlays)
-            .totalWinFlex(summoner.getTotalWinFlex())
-            .totalDefeatFlex(summoner.getTotalDefeatFlex())
-            .totalPlaysFlex(totalPlaysFlex)
             .build();
     }
 

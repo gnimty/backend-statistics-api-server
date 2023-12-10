@@ -6,7 +6,7 @@ import onlysolorank.apiserver.domain.Match;
 
 
 @Data
-public class SummonerMatchDTO {
+public class SummonerMatchDto {
 
     private String puuid;
     private List<Match> matches;

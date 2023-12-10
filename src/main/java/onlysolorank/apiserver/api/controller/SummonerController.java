@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.api.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
@@ -10,15 +12,16 @@ import onlysolorank.apiserver.api.controller.dto.CurrentGameRes;
 import onlysolorank.apiserver.api.controller.dto.KeywordReq;
 import onlysolorank.apiserver.api.controller.dto.MatchDetailRes;
 import onlysolorank.apiserver.api.controller.dto.RecentMemberRes;
-import onlysolorank.apiserver.api.controller.dto.SummonerHistoryRes;
 import onlysolorank.apiserver.api.controller.dto.SummonerMatchRes;
 import onlysolorank.apiserver.api.controller.dto.SummonerPlayRes;
+import onlysolorank.apiserver.api.exception.CustomException;
+import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
 import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
-import onlysolorank.apiserver.api.service.dto.SummonerTierDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
+import onlysolorank.apiserver.domain.dto.QueueType;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,7 +67,7 @@ public class SummonerController {
     public CommonResponse<AutoCompleteRes> getAutoCompleteResults(
         @ModelAttribute @Valid KeywordReq keywordReq) {
 
-        String internalTagName = keywordReq.getKeyword();
+        String internalTagName = keywordReq.keyword();
 
         List<SummonerDto> results = summonerService.getTop5SummonersByInternalTagName(internalTagName);
 
@@ -74,29 +77,29 @@ public class SummonerController {
             .build());
     }
 
-    @GetMapping("/{summoner_name}")
+    @GetMapping("/{summoner_tag_name}")
     public CommonResponse<SummonerDto> getSummoner(
-        @PathVariable("summoner_name") String summonerName) {
+        @PathVariable("summoner_tag_name") String summonerTagName) {
 
-        SummonerDto result = SummonerDto.from(summonerService.getSummonerByinternalTagName(summonerName));
+        SummonerDto result = SummonerDto.from(summonerService.getSummonerBySummonerTagName(summonerTagName));
 
         return CommonResponse.success(result);
     }
 
 
-    @GetMapping("/matches/{summoner_name}")
+    @GetMapping("/matches/{summoner_tag_name}")
     public CommonResponse<SummonerMatchRes> getSummonerMatchInfoBySummonerName(
-        @PathVariable("summoner_name") String summonerName,
-        @RequestParam("ended") Optional<String> lastMatchId) {
-        // TODO lastMatchId 바꾸기
+        @PathVariable("summoner_tag_name") String summonerTagName,
+        @RequestParam("ended") Optional<String> lastMatchId,
+        @RequestParam(value = "queue_type", defaultValue = "ALL") QueueType queueType) {
+
         SummonerMatchRes result;
 
         if (lastMatchId.isEmpty() || lastMatchId.get().isBlank()) {
-            result = summonerService.getSummonerMatchInfoBySummonerName(summonerName);
-
+            result = summonerService.getSummonerMatchInfoBySummonerName(summonerTagName, queueType);
         } else {
             result = SummonerMatchRes.builder()
-                .matches(summonerService.get20MatchesByOptionalLastMatchId(summonerName, lastMatchId.get()))
+                .matches(summonerService.get20MatchesByOptionalLastMatchId(summonerTagName, lastMatchId.get(), queueType))
                 .build();
         }
 
@@ -116,33 +119,42 @@ public class SummonerController {
      * @param summonerName the summoner name
      * @return the all champion play info by puuid
      */
-    @GetMapping("/champion/{summoner_name}")
+    @GetMapping("/champion/{summoner_tag_name}")
     public CommonResponse<SummonerPlayRes> getAllChampionPlayInfoBySummonerName(
-        @PathVariable("summoner_name") String summonerName) {
+        @PathVariable("summoner_tag_name") String summonerTagName,
+        @RequestParam(value = "queue_type", defaultValue = "ALL") QueueType queueType,
+        @RequestParam(value = "brief", defaultValue = "false") Boolean brief) {
 
-        List<SummonerPlayDto> results = summonerService.getAllChampionPlayInfoBySummonerName(
-            summonerName);
+        List<QueueType> available = new ArrayList<>(Arrays.asList(QueueType.ALL, QueueType.RANK_SOLO, QueueType.RANK_FLEX));
+
+        if (!available.contains(queueType) ){
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE, "queue_type은 ALL, RANK_SOLO, RANK_FLEX 중 하나여야 합니다.");
+        }
+
+        List<SummonerPlayDto> results = summonerService.getChampionPlayInfo(
+            summonerTagName, queueType, brief);
 
         return CommonResponse.success(SummonerPlayRes.builder()
             .summonerPlays(results)
             .build());
     }
 
-    /**
-     * Gets summoner history.
-     *
-     * @param summonerName the summoner name
-     * @return the summoner history
-     */
-    @GetMapping("/tier/{summoner_name}")
-    public CommonResponse<SummonerHistoryRes> getSummonerHistory(
-        @PathVariable("summoner_name") String summonerName) {
-        List<SummonerTierDto> results = summonerService.getSummonerHistory(summonerName);
-
-        return CommonResponse.success(SummonerHistoryRes.builder()
-            .histories(results)
-            .build());
-    }
+//    /**
+//     * Gets summoner history.
+//     *
+//     * @param summonerName the summoner name
+//     * @return the summoner history
+//     */
+    // deprecated
+//    @GetMapping("/tier/{summoner_name}")
+//    public CommonResponse<SummonerHistoryRes> getSummonerHistory(
+//        @PathVariable("summoner_name") String summonerName) {
+//        List<SummonerTierDto> results = summonerService.getSummonerHistory(summonerName);
+//
+//        return CommonResponse.success(SummonerHistoryRes.builder()
+//            .histories(results)
+//            .build());
+//    }
 
     @PostMapping("/{puuid}")
     public CommonResponse refreshSummoner(@PathVariable("puuid") String puuid) {
@@ -151,16 +163,24 @@ public class SummonerController {
         return CommonResponse.success("소환사 정보를 성공적으로 갱신했습니다.", HttpStatus.OK);
     }
 
-    @GetMapping("/ingame/{summoner_name}")
-    public CommonResponse<CurrentGameRes> getCurrentGame(@PathVariable("summoner_name") String summonerName) {
-        return CommonResponse.success(summonerService.getCurrentGame(summonerName));
+    @GetMapping("/ingame/{summoner_tag_name}")
+    public CommonResponse<CurrentGameRes> getCurrentGame(@PathVariable("summoner_tag_name") String summonerTagName) {
+        return CommonResponse.success(summonerService.getCurrentGame(summonerTagName));
     }
 
 
-    @GetMapping("/together/{summoner_name}")
+    @GetMapping("/together/{summoner_tag_name}")
     public CommonResponse<RecentMemberRes> getRecentMembers(
-        @PathVariable("summoner_name") String summonerName) {
-        List<RecentMemberDto> results = summonerService.getRecentMemberInfo(summonerName);
+        @PathVariable("summoner_tag_name") String summonerTagName,
+        @RequestParam(value = "queue_type", defaultValue = "RANK_SOLO") QueueType queueType) {
+
+        List<QueueType> available = new ArrayList<>(Arrays.asList(QueueType.RANK_SOLO, QueueType.RANK_FLEX));
+
+        if (!available.contains(queueType) ){
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE, "queue_type은 RANK_SOLO, RANK_FLEX 중 하나여야 합니다.");
+        }
+
+        List<RecentMemberDto> results = summonerService.getRecentMemberInfo(summonerTagName, queueType);
 
         return CommonResponse.success(RecentMemberRes.builder()
             .recentMembers(results)

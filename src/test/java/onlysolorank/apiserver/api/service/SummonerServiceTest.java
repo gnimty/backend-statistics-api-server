@@ -8,6 +8,7 @@ import java.util.List;
 import javax.validation.ConstraintViolationException;
 import onlysolorank.apiserver.api.controller.dto.KeywordReq;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
+import onlysolorank.apiserver.domain.dto.QueueType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,9 +39,9 @@ class SummonerServiceTest {
 
     @Test
     void 키워드_변환결과_확인() {
-        assertEquals(new KeywordReq(keyword).getKeyword(), "hideonbush");
+        assertEquals(new KeywordReq(keyword).keyword(), "hideonbush");
 
-        assertFalse("hideonbus".equals(new KeywordReq(keyword).getKeyword()));
+        assertFalse("hideonbus".equals(new KeywordReq(keyword).keyword()));
     }
 
 
@@ -48,12 +49,12 @@ class SummonerServiceTest {
     void 잘못된_패턴의_매치ID로_조회하면_오류발생() {
 
         assertThrows(ConstraintViolationException.class,
-            () -> summonerService.get20MatchesByOptionalLastMatchId("HideOnbush", wrongPatternMatchId));
+            () -> summonerService.get20MatchesByOptionalLastMatchId("HideOnbush", wrongPatternMatchId, QueueType.ALL));
     }
 
     @Test
     void 키워드로_검색_테스트(){
-        String search = new KeywordReq(keyword).getKeyword();
+        String search = new KeywordReq(keyword).keyword();
         List<SummonerDto> top5SummonersByInternalTagName = summonerService.getTop5SummonersByInternalTagName(search);
 
         for(SummonerDto s : top5SummonersByInternalTagName){
@@ -63,7 +64,7 @@ class SummonerServiceTest {
 
     @Test
     void 키워드로_검색_테스트_2(){
-        String search = new KeywordReq(keyword2).getKeyword();
+        String search = new KeywordReq(keyword2).keyword();
         List<SummonerDto> top5SummonersByInternalTagName = summonerService.getTop5SummonersByInternalTagName(search);
 
         for(SummonerDto s : top5SummonersByInternalTagName){

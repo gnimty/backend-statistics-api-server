@@ -2,7 +2,8 @@ package onlysolorank.apiserver.api.service.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.domain.SummonerPlay;
+import onlysolorank.apiserver.domain.summoner_play.BaseSummonerPlay;
+import onlysolorank.apiserver.domain.summoner_play.SummonerPlay;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -38,7 +39,7 @@ public class SummonerPlayDto {
     private Integer maxKill;
     private Integer maxDeath;
 
-    public static SummonerPlayDto from(SummonerPlay summonerPlay) {
+    public static SummonerPlayDto from(BaseSummonerPlay summonerPlay) {
         boolean isPerfect = false;
         Double avgKda = summonerPlay.getAvgKda();
         Integer totalDeath = summonerPlay.getTotalDeath();

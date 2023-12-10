@@ -14,6 +14,7 @@ import onlysolorank.apiserver.repository.crawl.VersionRepository;
 import onlysolorank.apiserver.repository.history.SummonerHistoryRepository;
 import onlysolorank.apiserver.repository.match.MatchRepository;
 import onlysolorank.apiserver.repository.participant.ParticipantRepository;
+import onlysolorank.apiserver.repository.season.SeasonRepository;
 import onlysolorank.apiserver.repository.statistics.ChampionStatisticsRepository;
 import onlysolorank.apiserver.repository.summoner.SummonerRepository;
 import onlysolorank.apiserver.repository.summoner_match.SummonerMatchRepository;
@@ -58,7 +59,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
         TeamRepository.class,
         ParticipantRepository.class,
         SummonerPlayRepository.class,
-        SummonerHistoryRepository.class
+        SummonerHistoryRepository.class,
+        SeasonRepository.class
     },
     mongoTemplateRef = "primaryMongoTemplate")
 @EnableConfigurationProperties

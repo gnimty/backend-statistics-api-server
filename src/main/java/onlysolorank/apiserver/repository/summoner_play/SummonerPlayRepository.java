@@ -1,7 +1,7 @@
 package onlysolorank.apiserver.repository.summoner_play;
 
 import java.util.List;
-import onlysolorank.apiserver.domain.SummonerPlay;
+import onlysolorank.apiserver.domain.summoner_play.SummonerPlay;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
@@ -17,8 +17,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface SummonerPlayRepository extends MongoRepository<SummonerPlay, String>,
     SummonerPlayRepositoryCustom {
-
-    List<SummonerPlay> findSummonerPlaysByPuuid(String puuid);
 
     List<SummonerPlay> findTop100SummonerPlaysByChampionNameAndTotalPlaysGreaterThanEqualOrderByTotalPlaysDesc(
         String championName, int totalPlays);

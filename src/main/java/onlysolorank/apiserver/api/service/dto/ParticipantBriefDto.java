@@ -32,4 +32,6 @@ public class ParticipantBriefDto {
     private String championName;
     private Integer teamId;
     private String summonerName;
+    private String tagLine;
+    private String internalTagName;
 }

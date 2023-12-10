@@ -34,6 +34,7 @@ public class Participant {
     private String matchId;
     private Integer teamId;
     private String puuid;
+    private Integer queueId;
     private Integer participantId;
     private Long totalDamageTaken;
     private Long totalDamageDealtToChampions;

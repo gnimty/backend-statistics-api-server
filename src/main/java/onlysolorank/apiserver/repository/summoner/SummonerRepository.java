@@ -2,8 +2,12 @@ package onlysolorank.apiserver.repository.summoner;
 
 import java.util.List;
 import java.util.Optional;
+import onlysolorank.apiserver.api.service.dto.SummonerNameDto;
 import onlysolorank.apiserver.domain.Summoner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 /**
  * packageName    : onlysolorank.apiserver.repository
@@ -25,7 +29,7 @@ public interface SummonerRepository extends MongoRepository<Summoner, String>,
     // 소환사의 internalName과 패턴이 일치하는 (키워드로 시작하는) 소환사 정보를 사전 순으로 최대 5명까지 조회
     List<Summoner> findTop5ByInternalTagNameStartsWithOrderByInternalTagNameAscMmrDesc(String internalTagName);
 
-    Optional<Summoner> findSummonerByInternalName(String internalName);
+    Optional<Summoner> findSummonerByInternalTagName(String internalTagName);
 
     Optional<Summoner> findSummonerByPuuid(String puuid);
 
@@ -36,4 +40,10 @@ public interface SummonerRepository extends MongoRepository<Summoner, String>,
     List<Summoner> findSummonersBySummonerIdIn(List<String> puuids);
 
     List<Summoner> findSummonersByMmrGreaterThanEqual(Integer mmr);
+
+    List<SummonerNameDto> findSummonerNameDtosByPuuidIn(List<String> puuids);
+
+//    Page<Summoner> findAll(Pageable pageable);
+
+
 }

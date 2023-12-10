@@ -37,8 +37,8 @@ class ParticipantRepositoryTest {
 
     @Test
     void 최근20게임_팀ID_승리여부_조회() {
-        List<DistinctParticipantTeam> top20ByPuuidOrderByMatchId = participantRepository.findTop20ByPuuidOrderByMatchId(
-            puuid1);
+        List<DistinctParticipantTeam> top20ByPuuidOrderByMatchId = participantRepository.findTop20ByPuuidAndQueueIdOrderByMatchIdDesc(
+            puuid1, 420);
 
         for (DistinctParticipantTeam distinctParticipantTeam : top20ByPuuidOrderByMatchId) {
             System.out.println("distinctParticipantTeam = " + distinctParticipantTeam);
@@ -47,8 +47,8 @@ class ParticipantRepositoryTest {
 
     @Test
     void 최근_20게임의_팀원들_조회() {
-        List<DistinctParticipantTeam> top20ByPuuidOrderByMatchId = participantRepository.findTop20ByPuuidOrderByMatchId(
-            puuid1);
+        List<DistinctParticipantTeam> top20ByPuuidOrderByMatchId = participantRepository.findTop20ByPuuidAndQueueIdOrderByMatchIdDesc(
+            puuid1, 420);
 
         List<Participant> byDistinctParticipantTeamsExceptMe = participantRepository.findByDistinctParticipantTeamsExceptMe(
             top20ByPuuidOrderByMatchId, puuid1);

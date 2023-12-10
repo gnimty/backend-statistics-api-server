@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Match;
+import onlysolorank.apiserver.domain.dto.Tier;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -28,8 +29,21 @@ public class MatchDto {
     private Long gameDuration;
     private Integer queueId;
     private Boolean earlyEnded;
+    private Tier averageTier;
 
     public static MatchDto from(Match match) {
+        if (match.getAverageTier()!=null) {
+            return MatchDto.builder()
+                .matchId(match.getMatchId())
+                .version(match.getVersion())
+                .gameStartAt(match.getGameStartAt())
+                .gameEndAt(match.getGameEndAt())
+                .gameDuration(match.getGameDuration())
+                .queueId(match.getQueueId())
+                .earlyEnded(match.getEarlyEnded())
+                .averageTier(match.getAverageTier())
+                .build();
+        }
         return MatchDto.builder()
             .matchId(match.getMatchId())
             .version(match.getVersion())
@@ -39,5 +53,6 @@ public class MatchDto {
             .queueId(match.getQueueId())
             .earlyEnded(match.getEarlyEnded())
             .build();
+
     }
 }

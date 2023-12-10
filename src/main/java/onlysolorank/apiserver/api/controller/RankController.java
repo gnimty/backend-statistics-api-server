@@ -1,6 +1,10 @@
 package onlysolorank.apiserver.api.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +15,7 @@ import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.SummonerService;
 import onlysolorank.apiserver.api.service.dto.SummonerPlayWithSummonerDto;
+import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,9 +59,20 @@ public class RankController {
      */
     @GetMapping("/tier")
     public CommonResponse<SummonerRankPageRes> getSummonerRank(
-        @RequestParam(value = "page", defaultValue = "1") @Positive(message = "page는 1보다 큰 값이어야 합니다.") Integer page) {
+        @RequestParam(value = "page", defaultValue = "1")
+        @Positive(message = "page는 1보다 큰 값이어야 합니다.") Integer page,
+        @RequestParam(value = "size", defaultValue = "100")
+        @Min(value = 1, message = "size는 1 이상이어야 합니다.")
+        @Max(value = 100, message = "size는 100 이하여야 합니다.") Integer size,
+        @RequestParam(value = "queue_type", defaultValue = "RANK_SOLO") QueueType queueType) {
 
-        SummonerRankPageRes result = summonerService.getSummonerRankByMMR(page);
+        List<QueueType> available = new ArrayList<>(Arrays.asList(QueueType.RANK_SOLO, QueueType.RANK_FLEX));
+
+        if (!available.contains(queueType) ){
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE, "queue_type은 RANK_SOLO, RANK_FLEX 중 하나여야 합니다.");
+        }
+
+        SummonerRankPageRes result = summonerService.getSummonerRankByMMR(page, queueType, size);
 
         return CommonResponse.success(result);
     }

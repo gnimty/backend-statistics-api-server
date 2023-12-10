@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -33,31 +35,58 @@ public class SummonerTierDto {
     private Tier tier;
     private Integer division;
     private Integer lp;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer plays;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer wins;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer defeats;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Double winRate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ZonedDateTime updatedAt;
 
     public static SummonerTierDto from(Summoner summoner, QueueType queueType) {
+        Integer wins;
+        Integer defeats;
+
+        Double winRate = null;
+        Integer plays = null;
+
         if (queueType==QueueType.RANK_SOLO){
             if (Objects.isNull(summoner.getQueue())){
                 return null;
             }
-            return SummonerTierDto.builder()
-                .tier(Tier.valueOf(summoner.getQueue()))
-                .division(summoner.getTier())
-                .lp(summoner.getLp())
-                .build();
+
+            wins = summoner.getTotalWin();
+            defeats = summoner.getTotalDefeat();
         } else if (queueType==QueueType.RANK_FLEX) {
             if (Objects.isNull(summoner.getQueueFlex())){
                 return null;
             }
-            return SummonerTierDto.builder()
-                .tier(Tier.valueOf(summoner.getQueueFlex()))
-                .division(summoner.getTier())
-                .lp(summoner.getLp())
-                .build();
+
+            wins = summoner.getTotalWinFlex();
+            defeats = summoner.getTotalDefeatFlex();
+
+        } else{
+            return null;
         }
-        return null;
+
+        if (wins != null && defeats != null) {
+            plays = wins + defeats;
+            winRate = divideAndReturnDouble(wins, (wins + defeats), 3).get();
+        }
+
+        return SummonerTierDto.builder()
+            .tier(Tier.valueOf(summoner.getQueue()))
+            .division(summoner.getTier())
+            .lp(summoner.getLp())
+            .plays(plays)
+            .wins(wins)
+            .defeats(defeats)
+            .winRate(winRate)
+            .build();
     }
 
     public static SummonerTierDto from(History history) {

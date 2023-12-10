@@ -46,10 +46,11 @@ public class CustomFunctions {
         String[] split = keyword.split("-");
 
         split[0] = keywordToInternalName(split[0]);
+
         if (split.length != 2) { // 1-1. 만약 tagLine이 존재하지 않으면 keywordToInternalName 리턴
             return split[0];
         } else { // 1-2. tagLine이 존재한다면 strip() 처리 후 internalName에 붙이기
-            split[1] = split[1].strip();
+            split[1] = split[1].replaceAll("^\\s+", "").toLowerCase();
             return String.join("#",split);
         }
     }

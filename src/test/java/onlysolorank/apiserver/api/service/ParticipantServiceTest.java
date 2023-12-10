@@ -2,6 +2,7 @@ package onlysolorank.apiserver.api.service;
 
 import java.util.List;
 import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
+import onlysolorank.apiserver.domain.dto.QueueType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +31,7 @@ class ParticipantServiceTest {
 
     @Test
     void 최근_20게임의_팀원들_조회() {
-        List<RecentMemberDto> distinctTeamMembersExceptMe = participantService.getDistinctTeamMembersExceptMe(puuid2);
+        List<RecentMemberDto> distinctTeamMembersExceptMe = participantService.getDistinctTeamMembersByQueueTypeExceptMe(puuid2, QueueType.RANK_SOLO);
 
         return;
     }

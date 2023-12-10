@@ -40,36 +40,20 @@ public class ChampionController {
 
     private final StatisticsService statisticsService;
 
-    // deprecated
-//    @GetMapping("/stats/total")
-//    public CommonResponse<ChampionStatsRes> getAllChampionStats(
-//        @RequestParam(value = "tier", defaultValue = "emerald") Tier tier,
-//        @RequestParam(value = "period", defaultValue = "DAY") Period period,
-//        @RequestParam(value = "position", defaultValue = "ALL") Position position) {
-//
-//        List<ChampionTotalStatDto> result = statisticsService.getAllChampionStats(tier, period, position);
-//
-//        return CommonResponse.success(ChampionStatsRes.builder()
-//                .championStats(result)
-//                .build());
-//    }
-
     // 당장은 개별 포지션에 구분되는 티어 리스트를 가져올 필요가 없어 보이므로 Response 변경
     // 추후 티어별로 구분하여 티어 정보도 가져올 예정
     @GetMapping("/stats")
     public CommonResponse getChampionStats(
         @RequestParam(value = "tier", defaultValue = "emerald") Tier tier,
         @RequestParam(value = "brief", defaultValue = "false") Boolean brief,
-        @RequestParam(value = "mode", defaultValue = "RANK_SOLO") QueueType mode) {
+        @RequestParam(value = "queue_type", defaultValue = "RANK_SOLO") QueueType queueType) {
 
-        switch (mode) {
+        switch (queueType) {
             case RANK_SOLO:
                 ChampionTierRes result = statisticsService.getChampionTierList(brief, tier);
                 return CommonResponse.success(result);
             case RANK_FLEX:
             case ARAM:
-            case BLIND:
-                break;
         }
 
         return null;

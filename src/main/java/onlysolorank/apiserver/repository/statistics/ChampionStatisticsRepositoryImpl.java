@@ -121,7 +121,7 @@ public class ChampionStatisticsRepositoryImpl implements ChampionStatisticsRepos
 
         Query query = new Query(Criteria.where(tpc.getTargetField()).is(championId));
 
-        return Optional.of((BaseChampionTier) mongoTemplate.find(query, tpc.getTargetClass()));
+        return Optional.of((BaseChampionTier) mongoTemplate.findOne(query, tpc.getTargetClass()));
     }
 
     @Data

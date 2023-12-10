@@ -57,9 +57,11 @@ public class ParticipantDto {
     private List<ItemBundle> itemBuilds;
     private List<Integer> skillBuilds;
     private String summonerName;
+    private String tagLine;
+    private String internalTagName;
 
     @Builder
-    public ParticipantDto(Participant participant, String summonerName) {
+    public ParticipantDto(Participant participant, String summonerName, String tagLine, String internalTagName) {
         this.participantId = participant.getParticipantId();
         this.soloTier = Participant.toSoloTierDto(participant);
         this.championId = participant.getChampionId();
@@ -106,5 +108,7 @@ public class ParticipantDto {
         }
 
         this.summonerName = summonerName;
+        this.internalTagName = internalTagName;
+        this.tagLine = tagLine;
     }
 }

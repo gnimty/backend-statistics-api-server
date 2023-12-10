@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import onlysolorank.apiserver.domain.SummonerPlay;
+import onlysolorank.apiserver.domain.summoner_play.SummonerPlay;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +32,15 @@ class SummonerPlayRepositoryTest {
     @Autowired
     private SummonerPlayRepository summonerPlayRepository;
 
-    @Test
-    public void PUUID로_챔피언_플레이정보_가져오기() {
-        List<SummonerPlay> summonerPlays = summonerPlayRepository.findSummonerPlaysByPuuid(puuid1);
-
-        for (SummonerPlay s : summonerPlays) {
-            System.out.printf("championName = %s,  championPlays = %d\n", s.getChampionName(), s.getTotalPlays());
-        }
-
-    }
+//    @Test
+//    public void PUUID로_챔피언_플레이정보_가져오기() {
+//        List<SummonerPlay> summonerPlays = summonerPlayRepository.findSummonerPlaysByPuuidAndSeasonName(puuid1);
+//
+//        for (SummonerPlay s : summonerPlays) {
+//            System.out.printf("championName = %s,  championPlays = %d\n", s.getChampionName(), s.getTotalPlays());
+//        }
+//
+//    }
 
     @Test
     public void 조건으로_챔피언_플레이정보_가져오기() {
@@ -81,24 +81,24 @@ class SummonerPlayRepositoryTest {
             put("x4g2HkbMoWqidXd35K4e_3yFeGqyl4aeMM2bpsi3G3rjvMZqPV8c6geyWT_u8Mzr3IhcDOxm1DVN8", 13L);
         }};
 
-        List<SummonerPlay> byPuuidChampionIdPairs = summonerPlayRepository.findByPuuidChampionIdPairs(championPairs);
-
-        for (SummonerPlay byPuuidChampionIdPair : byPuuidChampionIdPairs) {
-            System.out.println("byPuuidChampionIdPair = " + byPuuidChampionIdPair);
-        }
+//        List<SummonerPlay> byPuuidChampionIdPairs = summonerPlayRepository.findByPuuidChampionIdPairs(championPairs);
+//
+//        for (SummonerPlay byPuuidChampionIdPair : byPuuidChampionIdPairs) {
+//            System.out.println("byPuuidChampionIdPair = " + byPuuidChampionIdPair);
+//        }
 
     }
 
     @Test
     public void 최대10개가져오기_테스트() {
-        List<SummonerPlay> summonerPlaysByPuuidAndLimit = summonerPlayRepository.findSummonerPlaysByPuuidAndLimit(
-            puuid1, 10);
+//        List<SummonerPlay> summonerPlaysByPuuidAndLimit = summonerPlayRepository.findSummonerPlaysByPuuidAndLimit(
+//            puuid1, 10);
 
-        for (SummonerPlay summonerPlay : summonerPlaysByPuuidAndLimit) {
-            System.out.println("summonerPlay = " + summonerPlay);
-        }
-
-        assertThat(summonerPlaysByPuuidAndLimit.size()).isLessThanOrEqualTo(10);
+//        for (SummonerPlay summonerPlay : summonerPlaysByPuuidAndLimit) {
+//            System.out.println("summonerPlay = " + summonerPlay);
+//        }
+//
+//        assertThat(summonerPlaysByPuuidAndLimit.size()).isLessThanOrEqualTo(10);
     }
 
 }

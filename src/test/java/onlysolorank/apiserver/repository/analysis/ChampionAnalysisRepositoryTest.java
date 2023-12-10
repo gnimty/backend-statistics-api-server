@@ -33,7 +33,7 @@ class ChampionAnalysisRepositoryTest {
     void 챔피언_티어_포지션으로_검색() {
         ChampionAnalysis byChampionIdAndPositionAndTier =
             championAnalysisRepository.findTop1ByChampionIdAndPositionAndTierOrderByVersionDesc(AATROX,
-                Position.TOP, Tier.diamond).get();
+                Position.TOP, Tier.diamond.getValue().toUpperCase()).get();
 
         System.out.println("byChampionIdAndPositionAndTier = " + byChampionIdAndPositionAndTier);
     }

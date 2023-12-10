@@ -1,8 +1,8 @@
 package onlysolorank.apiserver.repository.summoner;
 
-import java.util.List;
 import onlysolorank.apiserver.domain.Summoner;
-import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.summoner
@@ -20,8 +20,6 @@ import org.springframework.data.mongodb.repository.Query;
 
 public interface SummonerRepositoryCustom {
 
-    @Query(
-        value = "{mmr:{'$gte': ?0}}",
-        fields = "{history:0, revisionDate: 0, updatedAt: 0, }")
-    List<Summoner> findSummonersByMmrGreaterThanEqual(Integer mmr);
+    Page<Summoner> findSummonerPage(int page, int size, Sort sort);
+
 }

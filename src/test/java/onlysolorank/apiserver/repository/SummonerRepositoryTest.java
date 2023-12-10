@@ -36,14 +36,12 @@ class SummonerRepositoryTest {
     @Autowired
     private SummonerRepository summonerRepository;
 
-//    @Test
-//    public void getAllUserInternalNameTest() {
-//        List<Summoner> allSummoners = summonerRepository.findAll();
-//
-//        allSummoners.forEach(summoner -> {
-//            System.out.printf("%s | %s\n", summoner.getName(), summoner.getInternalName());
-//        });
-//    }
+    @Test
+    public void 소환사_count_테스트() {
+        long l = summonerRepository.countBy();
+
+        System.out.println("l = " + l);
+    }
 
     @Test
     public void getTop20UserTest() {

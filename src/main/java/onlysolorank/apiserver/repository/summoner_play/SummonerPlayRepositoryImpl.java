@@ -5,7 +5,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import onlysolorank.apiserver.domain.SummonerPlay;
+import onlysolorank.apiserver.domain.dto.QueueType;
+import onlysolorank.apiserver.domain.statistics.stat.DailyChampionStat;
+import onlysolorank.apiserver.domain.statistics.stat.MonthlyChampionStat;
+import onlysolorank.apiserver.domain.statistics.stat.WeeklyChampionStat;
+import onlysolorank.apiserver.domain.summoner_play.BaseSummonerPlay;
+import onlysolorank.apiserver.domain.summoner_play.SummonerPlay;
+import onlysolorank.apiserver.domain.summoner_play.SummonerPlayFlex;
+import onlysolorank.apiserver.domain.summoner_play.SummonerPlayTotal;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -49,70 +56,59 @@ public class SummonerPlayRepositoryImpl implements SummonerPlayRepositoryCustom 
     }
 
     @Override
-    public List<SummonerPlay> findByPuuidChampionIdPairs(Map<String, Long> pairs) {
+    public List<? extends BaseSummonerPlay> findByPuuidChampionIdPairs(Map<String, Long> pairs, QueueType queueType, String season) {
         List<Criteria> criteriaList = pairs.entrySet().stream()
             .map(pair -> {
                 String puuid = pair.getKey();
                 Long championId = pair.getValue();
                 return Criteria.where("puuid").is(puuid)
-                    .and("championId").is(championId);
+                    .and("championId").is(championId)
+                    .and("season").is(season);
             })
             .toList();
 
         Query query = new Query(new Criteria().orOperator(criteriaList));
 
-        return mongoTemplate.find(query, SummonerPlay.class);
+        return findByQueueType(query, queueType);
     }
 
-    @Override
-    public List<SummonerPlay> findSummonerPlaysByPuuidAndLimit(String puuid, int limit) {
-        Query query = new Query(Criteria.where("puuid").is(puuid))
-            .with(Sort.by(Sort.Order.desc("plays")))
-            .limit(10);
 
-        return mongoTemplate.find(query, SummonerPlay.class);
+    public List<? extends BaseSummonerPlay> findAllByQueueType(String puuid, String season, QueueType queueType){
+        Query query = new Query(Criteria.where("puuid").is(puuid)
+            .and("season").is(season))
+            .with(Sort.by(Sort.Order.desc("totalPlays")))
+            .with(Sort.by(Sort.Order.desc("winRate")))
+            .with(Sort.by(Sort.Order.desc("avgKda")));
+
+        return findByQueueType(query, queueType);
     }
 
-    @Override
-    public Map<String, List<Long>> findMostPlayedChampionsByPuuidsAndLimit(List<String> puuids,
-        int limit) {
+    public List<? extends BaseSummonerPlay> findAllByQueueType(String puuid, String season, QueueType queueType, Integer limit){
+        Query query = new Query(Criteria.where("puuid").is(puuid)
+            .and("season").is(season))
+            .with(Sort.by(Sort.Order.desc("totalPlays")))
+            .with(Sort.by(Sort.Order.desc("winRate")))
+            .with(Sort.by(Sort.Order.desc("avgKda")))
+            .limit(limit);
 
-        MatchOperation matchOperation = Aggregation.match(Criteria.where("puuid").in(puuids));
-
-        // Sort stage: totalPlays 필드를 내림차순으로 정렬합니다.
-        SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Order.desc("totalPlays")));
-
-        // Group stage: puuid로 그룹화하고 챔피언 ID를 배열로 수집합니다.
-        GroupOperation groupOperation = Aggregation.group("puuid")
-            .push("championId").as("championIds");
-
-        // Limit stage: 각 그룹에서 제한값 만큼의 챔피언 ID만 선택합니다.
-        LimitOperation limitOperation = Aggregation.limit(limit);
-
-        // Aggregation pipeline 정의
-        Aggregation aggregation = Aggregation.newAggregation(
-            matchOperation,
-            sortOperation,
-            groupOperation,
-            limitOperation
-        );
-
-        AggregationResults<ChampionIdResult> results = mongoTemplate.aggregate(aggregation,
-            "summoner_plays", ChampionIdResult.class);
-
-        // 결과를 Map으로 변환
-        Map<String, List<Long>> resultMap = results.getMappedResults()
-            .stream()
-            .collect(
-                Collectors.toMap(ChampionIdResult::getPuuid, ChampionIdResult::getChampionIds));
-
-        return resultMap;
+        return findByQueueType(query, queueType);
     }
 
     @Data
     public static class ChampionIdResult {
-
         private String puuid;
         private List<Long> championIds;
+    }
+
+    List<? extends BaseSummonerPlay> findByQueueType(Query query, QueueType queueType){
+        switch (queueType) {
+            case RANK_SOLO:
+                return mongoTemplate.find(query, SummonerPlay.class);
+            case RANK_FLEX:
+                return mongoTemplate.find(query, SummonerPlayFlex.class);
+            case ALL:
+                return mongoTemplate.find(query, SummonerPlayTotal.class);
+        }
+        return null;
     }
 }

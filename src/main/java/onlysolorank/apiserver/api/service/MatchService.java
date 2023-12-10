@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.service.dto.MatchDto;
 import onlysolorank.apiserver.domain.Match;
+import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.repository.match.MatchRepository;
 import org.springframework.stereotype.Service;
 

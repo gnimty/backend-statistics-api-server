@@ -202,7 +202,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
     List<ChampionPlayDto> findChampionPlayInfoByPuuidAndChampionId(String puuid, Long championId);
 
     // 속도 꽤 걸림
-    List<DistinctParticipantTeam> findTop20ByPuuidOrderByMatchId(String puuid);
+    List<DistinctParticipantTeam> findTop20ByPuuidAndQueueIdOrderByMatchIdDesc(String puuid, Integer queueId);
 
     List<ParticipantBriefDto> findBriefDtoByMatchId(String matchId);
 

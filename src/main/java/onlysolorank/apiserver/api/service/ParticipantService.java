@@ -11,6 +11,7 @@ import onlysolorank.apiserver.api.service.dto.MostChampionsDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
 import onlysolorank.apiserver.domain.Participant;
+import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.repository.participant.ParticipantRepository;
 import onlysolorank.apiserver.repository.participant.ParticipantRepository.DistinctParticipantTeam;
 import org.springframework.stereotype.Service;
@@ -76,9 +77,11 @@ public class ParticipantService {
     }
 
 
-    public List<RecentMemberDto> getDistinctTeamMembersExceptMe(String puuid) {
-        List<DistinctParticipantTeam> top20ByPuuidOrderByMatchId = participantRepository.findTop20ByPuuidOrderByMatchId(
-            puuid);
+    public List<RecentMemberDto> getDistinctTeamMembersByQueueTypeExceptMe(String puuid, QueueType queueType) {
+
+
+        List<DistinctParticipantTeam> top20ByPuuidOrderByMatchId = participantRepository.findTop20ByPuuidAndQueueIdOrderByMatchIdDesc(
+            puuid, queueType.getQueueId());
 
         Map<String, Map<Boolean, Long>> collect = participantRepository.findByDistinctParticipantTeamsExceptMe(
                 top20ByPuuidOrderByMatchId, puuid)
