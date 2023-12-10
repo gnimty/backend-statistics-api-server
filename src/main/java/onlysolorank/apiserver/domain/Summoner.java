@@ -35,31 +35,47 @@ public class Summoner {
     @Id
     private String id;
     private String puuid;
-    private Integer profileIconId;
-    private String queue;
-    private ZonedDateTime updatedAt;
-    private Integer summonerLevel;
-    private Integer tier;
-
-    private List<Position> mostLanes;
-    private List<Long> mostChampionIds;
-
-    @Field("id")
-    private String summonerId;
-
-    @Field("leaguePoints")
-    private Integer lp;
-    private Integer mmr;
     private String name;
-
-    @Field("wins")
-    private Integer totalWin;
-
-    @Field("losses")
-    private Integer totalDefeat;
-
     @Field("internal_name")
     private String internalName;
 
+    private String tagLine;
+    @Field("internal_tagname")
+    private String internalTagName;
+
+    @Field("id")
+    private String summonerId;
+    private Integer profileIconId;
+    private ZonedDateTime updatedAt;
+    private Integer summonerLevel;
+
+    private String queue;
+    private Integer tier;
+    @Field("leaguePoints")
+    private Integer lp;
+    private Integer mmr;
+    private List<Position> mostLanes;
+    private List<Long> mostChampionIds;
+    @Field("wins")
+    private Integer totalWin;
+    @Field("losses")
+    private Integer totalDefeat;
+
+    @Field("queue_flex")
+    private String queueFlex;
+    @Field("tier_flex")
+    private Integer tierFlex;
+    @Field("leaguePoints_flex")
+    private Integer lpFlex;
+    @Field("mmr_flex")
+    private Integer mmrFlex;
+    @Field("mostLanes_flex")
+    private List<Position> mostLanesFlex;
+    @Field("mostChampionIds_flex")
+    private List<Long> mostChampionIdsFlex;
+    @Field("wins_flex")
+    private Integer totalWinFlex;
+    @Field("losses_flex")
+    private Integer totalDefeatFlex;
 
 }

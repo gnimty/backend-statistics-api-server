@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.service.dto.MatchDto;
 import onlysolorank.apiserver.domain.Match;
+import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.repository.match.MatchRepository;
 import org.springframework.stereotype.Service;
 
@@ -31,15 +32,15 @@ public class MatchService {
 
     public List<MatchDto> getMatchListByMatchIdList(List<String> matchIds) {
         return matchRepository.findMatchesByMatchIdIn(matchIds).stream()
-                .map(match -> MatchDto.from(match))
-                .toList();
+            .map(match -> MatchDto.from(match))
+            .toList();
     }
 
     public Optional<MatchDto> getMatchById(String matchId) {
         Optional<Match> match = matchRepository.findMatchByMatchId(matchId);
-        if(match.isPresent()){
+        if (match.isPresent()) {
             return Optional.of(MatchDto.from(match.get()));
-        }else{
+        } else {
             return Optional.empty();
         }
     }

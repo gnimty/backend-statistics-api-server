@@ -3,6 +3,7 @@ package onlysolorank.apiserver.api.service.dto;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Summoner;
+import onlysolorank.apiserver.domain.dto.QueueType;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -23,38 +24,34 @@ public class SummonerDto {
 
     private String summonerName;
     private String internalName;
-    private String summonerId;
+    private String tagLine;
+    private String internalTagName;
     private String puuid;
+    private String summonerId;
     private Integer profileIconId;
     private Integer summonerLevel;
-    private SoloTierDto soloTierInfo;
-    private Integer totalWin;
-    private Integer totalDefeat;
-    private Integer totalPlays;
+
+    private SummonerTierDto soloTierInfo;
+    private SummonerTierDto flexTierInfo;
+
 
     public static SummonerDto from(Summoner summoner) {
-        Integer totalPlays = null;
-        Integer totalWin = summoner.getTotalWin();
-        Integer totalDefeat = summoner.getTotalDefeat();
 
-        SoloTierDto soloTier = SoloTierDto.from(summoner);
-
-        if (summoner.getTotalWin() != null && summoner.getTotalDefeat() != null) {
-            totalPlays = totalWin + totalDefeat;
-        }
+        SummonerTierDto soloTier = SummonerTierDto.from(summoner, QueueType.RANK_SOLO);
+        SummonerTierDto flexTier = SummonerTierDto.from(summoner, QueueType.RANK_FLEX);
 
         return SummonerDto.builder()
-                .summonerName(summoner.getName())
-                .internalName(summoner.getInternalName())
-                .summonerId(summoner.getSummonerId())
-                .puuid(summoner.getPuuid())
-                .profileIconId(summoner.getProfileIconId())
-                .summonerLevel(summoner.getSummonerLevel())
-                .soloTierInfo(soloTier)
-                .totalWin(totalWin)
-                .totalDefeat(totalDefeat)
-                .totalPlays(totalPlays)
-                .build();
+            .summonerName(summoner.getName())
+            .internalName(summoner.getInternalName())
+            .internalTagName(summoner.getInternalTagName())
+            .tagLine(summoner.getTagLine())
+            .summonerId(summoner.getSummonerId())
+            .puuid(summoner.getPuuid())
+            .profileIconId(summoner.getProfileIconId())
+            .summonerLevel(summoner.getSummonerLevel())
+            .soloTierInfo(soloTier)
+            .flexTierInfo(flexTier)
+            .build();
     }
 
 }

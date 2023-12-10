@@ -1,13 +1,15 @@
 package onlysolorank.apiserver.api.service.dto;
 
 import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
-import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
 
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.api.exception.CustomException;
+import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.QueueType;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -24,26 +26,39 @@ import onlysolorank.apiserver.domain.dto.Position;
 @Data
 public class SummonerRankDto {
 
-    private SummonerDto summoner;
+    private String puuid;
+    private String summonerName;
+    private String tagLine;
+    private String internalTagName;
+    private Integer summonerLevel;
+    private Integer profileIconId;
     private List<Long> mostPlayedChampionIds;
     private List<Position> mostLanes;
-    private Integer totalWin = 0;
-    private Integer totalDefeat = 0;
-    private Double winRate;
+
     private Integer rank;
+    private SummonerTierDto tierInfo;
 
     @Builder
-    public SummonerRankDto(Summoner summoner, Integer rank) {
-        this.summoner = SummonerDto.from(summoner);
-        if(summoner.getTotalWin()!=null){
-            this.totalWin = summoner.getTotalWin();
+    public SummonerRankDto(Summoner summoner, Integer rank, QueueType queueType) {
+        this.tierInfo = SummonerTierDto.from(summoner, queueType);
+        this.summonerLevel = summoner.getSummonerLevel();
+        this.profileIconId = summoner.getProfileIconId();
+
+        if(queueType==QueueType.RANK_SOLO){
+            this.mostPlayedChampionIds = summoner.getMostChampionIds();
+            this.mostLanes = summoner.getMostLanes();
+
+        }else if(queueType==QueueType.RANK_FLEX){
+            this.mostPlayedChampionIds = summoner.getMostChampionIdsFlex();
+            this.mostLanes = summoner.getMostLanesFlex();
+        }else{
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE, "소환사 랭크 정보 QueueType parameter는 RANK_SOLO 또는 RANK_FLEX의 queueType만 받습니다.");
         }
-        if(summoner.getTotalDefeat()!=null){
-            this.totalDefeat = summoner.getTotalDefeat();
-        }
-        this.winRate = divideAndReturnDouble(totalWin , (totalWin + totalDefeat), 3).get();
-        this.mostPlayedChampionIds = summoner.getMostChampionIds();
-        this.mostLanes = summoner.getMostLanes();
+
+        this.puuid = summoner.getPuuid();
+        this.summonerName = summoner.getName();
+        this.tagLine = summoner.getTagLine();
+        this.internalTagName = summoner.getInternalTagName();
         this.rank = rank;
     }
 }

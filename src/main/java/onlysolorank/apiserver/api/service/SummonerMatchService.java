@@ -1,9 +1,11 @@
 package onlysolorank.apiserver.api.service;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.domain.SummonerMatch;
+import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.repository.summoner_match.SummonerMatchRepository;
 import org.springframework.stereotype.Service;
 

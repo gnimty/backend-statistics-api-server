@@ -1,17 +1,14 @@
 package onlysolorank.apiserver.repository;
 
+import java.util.Optional;
 import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.repository.summoner.SummonerRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
-
-
-import java.util.List;
 
 
 /**
@@ -32,21 +29,22 @@ import java.util.List;
 @SpringBootTest
 class SummonerRepositoryTest {
 
+    private final String puuid = "DzbTX2IssL1RTF4niZAsB0qPiYhGTXVff1ggA4k_PjwdoWW2r0QaOmLVqlmcAqAhONmGu0YyJfsURA";
+
+    private final String tagName = "hideonbush#KR";
+
     @Autowired
     private SummonerRepository summonerRepository;
 
-    private final static Integer STD_MMR = 2400;
-    @Test
-    public void getAllUserInternalNameTest(){
-        List<Summoner> allSummoners = summonerRepository.findAll();
-
-        allSummoners.forEach(summoner -> {
-            System.out.printf("%s | %s\n", summoner.getName(), summoner.getInternalName());
-        });
-    }
+//    @Test
+//    public void 소환사_count_테스트() {
+//        long l = summonerRepository.countBy();
+//
+//        System.out.println("l = " + l);
+//    }
 
     @Test
-    public void getTop20UserTest(){
+    public void getTop20UserTest() {
         Page<Summoner> allSummoners = summonerRepository.findAll(PageRequest.of(0, 20));
 
         allSummoners.forEach(summoner -> {
@@ -55,14 +53,25 @@ class SummonerRepositoryTest {
         });
     }
 
-
     @Test
-    public void getSummonersByMmrGreaterThanEqual(){
-        List<Summoner> summoners = summonerRepository.findSummonersByMmrGreaterThanEqual(STD_MMR);
+    public void 특정_PUUID_소환사_정보_조회() {
+        Optional<Summoner> summoner = summonerRepository.findSummonerByPuuid(puuid);
 
-        summoners.forEach(summoner -> {
-            Assertions.assertThat(summoner.getMmr()).isGreaterThanOrEqualTo(STD_MMR);
-            System.out.println("mmr =  " + summoner.getMmr());
-        });
+        System.out.println("summonerInfo = " + summoner);
     }
+
+//    @Test
+//    public void 특정_tagName으로_상위_5명_조회(){
+//    }
+
+
+//    @Test
+//    public void getSummonersByMmrGreaterThanEqual() {
+//        List<Summoner> summoners = summonerRepository.findSummonersByMmrGreaterThanEqual(STD_MMR);
+//
+//        summoners.forEach(summoner -> {
+//            Assertions.assertThat(summoner.getMmr()).isGreaterThanOrEqualTo(STD_MMR);
+//            System.out.println("mmr =  " + summoner.getMmr());
+//        });
+//    }
 }

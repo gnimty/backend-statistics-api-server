@@ -20,8 +20,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface ChampionAnalysisRepository extends MongoRepository<ChampionAnalysis, String> {
 
     Optional<ChampionAnalysis> findTop1ByChampionIdAndPositionAndTierOrderByVersionDesc(
-        Long championId, Position position, Tier tier);
+        Long championId, Position position, String upperTier);
 
     Optional<ChampionAnalysis> findTop1ByChampionIdAndTierOrderByVersionDescPickRateDesc(
-        Long championId, Tier tier);
+        Long championId, String upperTier);
 }

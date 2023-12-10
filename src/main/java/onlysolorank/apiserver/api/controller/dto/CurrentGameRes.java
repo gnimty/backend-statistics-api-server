@@ -32,7 +32,7 @@ public class CurrentGameRes {
 
     @Builder
     public CurrentGameRes(Long gameLength, Long startTime, Integer queueId,
-                          List<CurrentGameParticipantDto> participants) {
+        List<CurrentGameParticipantDto> participants) {
         this.gameLength = gameLength;
 
         // epochMilliseconds to LocalDatetime

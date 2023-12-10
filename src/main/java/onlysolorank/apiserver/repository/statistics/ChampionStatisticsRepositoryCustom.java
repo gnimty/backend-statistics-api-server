@@ -2,7 +2,6 @@ package onlysolorank.apiserver.repository.statistics;
 
 import java.util.List;
 import java.util.Optional;
-
 import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.domain.dto.Position;
 import onlysolorank.apiserver.domain.dto.Tier;

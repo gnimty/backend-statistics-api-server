@@ -1,11 +1,10 @@
 package onlysolorank.apiserver.api.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.ChampionDto;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -21,6 +20,7 @@ import java.util.List;
 
 @Data
 public class ChampionRes {
+
     // 복수 챔피언
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<ChampionDto> champions;
@@ -29,26 +29,25 @@ public class ChampionRes {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ChampionDto champion;
 
-    private ChampionRes(List<ChampionDto> champions){
+    private ChampionRes(List<ChampionDto> champions) {
         this.champions = champions;
     }
 
-    private ChampionRes(ChampionDto champion){
+    private ChampionRes(ChampionDto champion) {
         this.champion = champion;
     }
 
 
     // 두 멤버 변수가 양립하는 경우는 없으므로 custom한 Builder 메소드로 분리한 후 생성자를 닫아버리기
     @Builder(builderMethodName = "multiBuilder")
-    public static ChampionRes createChampion(List<ChampionDto> champions){
+    public static ChampionRes createChampion(List<ChampionDto> champions) {
         return new ChampionRes(champions);
     }
 
     @Builder(builderMethodName = "singleBuilder")
-    public static ChampionRes createChampion(ChampionDto champion){
+    public static ChampionRes createChampion(ChampionDto champion) {
         return new ChampionRes(champion);
     }
-
 
 //    public ChampionRes(List<ChampionDto> champions, ChampionDto champion) {
 //        if (champions != null && champion != null) {

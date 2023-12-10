@@ -20,7 +20,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * 2023/09/06        solmin       TODO: Dto 따로 만들 예정 (현재 임시)
  */
 
-@Document(collection = "champion_statistics")
+@Document
 @Getter
 @AllArgsConstructor
 @ToString

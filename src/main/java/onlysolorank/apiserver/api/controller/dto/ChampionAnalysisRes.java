@@ -1,7 +1,6 @@
 package onlysolorank.apiserver.api.controller.dto;
 
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +32,7 @@ import onlysolorank.apiserver.domain.statistics.analysis.counter.BaseCounter;
 @AllArgsConstructor
 @Builder
 public class ChampionAnalysisRes {
+
     private Position position;
     private ChampionTierDto championTier;
     private List<BaseCounter> counterChampions;
@@ -51,20 +51,20 @@ public class ChampionAnalysisRes {
 
     // TODO 추후 공급되는 데이터 자체의 List 수를 제한할 예정
     public static ChampionAnalysisRes toRes(ChampionAnalysis analysis, List<BaseCounter> counters,
-                                            List<BaseCounter> easies, ChampionTierDto championTier) {
+        List<BaseCounter> easies, ChampionTierDto championTier) {
         return ChampionAnalysisRes.builder()
-                .counterChampions(counters)
-                .easyChampions(easies)
-                .spellBuilds(analysis.getSummonerSpell())
-                .perkBuilds(analysis.getPerks().subList(0, 3))
-                .statPerkBuilds(analysis.getStatPerks().subList(0, 2))
-                .initialItemBuilds(analysis.getItemStart().subList(0, 2))
-                .shoesBuilds(analysis.getItemBoots().subList(0, 2))
-                .itemBuilds(analysis.getItemRarity().subList(0, 4))
-                .skillBuilds(analysis.getSkillTree().subList(0, 1))
-                .position(analysis.getPosition())
-                .championTier(championTier)
-                .build();
+            .counterChampions(counters)
+            .easyChampions(easies)
+            .spellBuilds(analysis.getSummonerSpell())
+            .perkBuilds(analysis.getPerks().subList(0, 3))
+            .statPerkBuilds(analysis.getStatPerks().subList(0, 2))
+            .initialItemBuilds(analysis.getItemStart().subList(0, 2))
+            .shoesBuilds(analysis.getItemBoots().subList(0, 2))
+            .itemBuilds(analysis.getItemRarity().subList(0, 4))
+            .skillBuilds(analysis.getSkillTree().subList(0, 1))
+            .position(analysis.getPosition())
+            .championTier(championTier)
+            .build();
 
     }
 

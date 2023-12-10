@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 import onlysolorank.apiserver.api.service.dto.ChampionPlayDto;
-import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.api.service.dto.MostChampionsDto;
+import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.domain.Participant;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -81,7 +81,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "totalAssist: 1" +
             "}}"})
     List<ChampionPlayDto> findTopChampionStatsByPuuid(@Param("puuid") String puuid,
-                                                      @Param("limit") Integer limit);
+        @Param("limit") Integer limit);
 
 
     /**
@@ -103,7 +103,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
         "{$project:{_id:0,puuid:1,championIds:'$champions.championId'}}"
     })
     List<MostChampionsDto> findTopChampionsForEachSummoner(List<String> summonerIds,
-                                                           int limit);
+        int limit);
 
 
     @Aggregation(pipeline = {
@@ -153,7 +153,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
             "}}"
     })
     List<ChampionPlayDto> findTopChampionStatsByChampionNameAndPuuids(List<String> puuids,
-                                                                      String championName, Integer stdPlays);
+        String championName, Integer stdPlays);
 
     @Aggregation(pipeline = {
         "{$match:{puuid:  ?0,championId:  ?1} }",
@@ -202,7 +202,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
     List<ChampionPlayDto> findChampionPlayInfoByPuuidAndChampionId(String puuid, Long championId);
 
     // 속도 꽤 걸림
-    List<DistinctParticipantTeam> findTop20ByPuuidOrderByMatchId(String puuid);
+    List<DistinctParticipantTeam> findTop20ByPuuidAndQueueIdOrderByMatchIdDesc(String puuid, Integer queueId);
 
     List<ParticipantBriefDto> findBriefDtoByMatchId(String matchId);
 

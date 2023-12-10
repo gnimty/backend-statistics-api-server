@@ -23,6 +23,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class ParticipantBriefDto {
+
     @JsonIgnore
     private String matchId;
     private String puuid;
@@ -31,4 +32,6 @@ public class ParticipantBriefDto {
     private String championName;
     private Integer teamId;
     private String summonerName;
+    private String tagLine;
+    private String internalTagName;
 }

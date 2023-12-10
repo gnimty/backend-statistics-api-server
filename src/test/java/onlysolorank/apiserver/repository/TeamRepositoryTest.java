@@ -1,13 +1,12 @@
 package onlysolorank.apiserver.repository;
 
+import java.util.List;
 import onlysolorank.apiserver.domain.Team;
 import onlysolorank.apiserver.repository.team.TeamRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.repository
@@ -23,15 +22,14 @@ import java.util.List;
 @ActiveProfiles("test")
 @SpringBootTest
 class TeamRepositoryTest {
+
+    private final String matchId = "KR_6574632344";
     @Autowired
     private TeamRepository teamRepository;
 
-    private final String matchId = "KR_6574632344";
-
     @Test
-    public void getParticipantsInMatch(){
+    public void getParticipantsInMatch() {
         List<Team> results = teamRepository.findByMatchId(matchId);
-
 
         for (Team result : results) {
             System.out.println("result = " + result);

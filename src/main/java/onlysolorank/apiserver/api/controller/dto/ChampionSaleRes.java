@@ -1,11 +1,10 @@
 package onlysolorank.apiserver.api.controller.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.ChampionSaleDto;
-
-import java.util.List;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -22,5 +21,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ChampionSaleRes {
+
     private List<ChampionSaleDto> championSales;
 }

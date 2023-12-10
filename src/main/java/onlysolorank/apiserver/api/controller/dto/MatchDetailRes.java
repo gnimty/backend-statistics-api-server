@@ -9,7 +9,7 @@ import onlysolorank.apiserver.api.service.dto.MatchDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantDto;
 import onlysolorank.apiserver.api.service.dto.QueueDto;
 import onlysolorank.apiserver.api.service.dto.TeamDto;
-import onlysolorank.apiserver.domain.Match;
+import onlysolorank.apiserver.domain.dto.Tier;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -35,9 +35,13 @@ public class MatchDetailRes {
     private Long gameDuration;
     private List<ParticipantDto> participants;
     private List<TeamDto> teams;
+    private Tier averageTier;
 
     @Builder
     public MatchDetailRes(MatchDto match, List<ParticipantDto> participants, List<TeamDto> teams) {
+        if(match.getAverageTier()!=null){
+            this.averageTier = match.getAverageTier();
+        }
         this.matchId = match.getMatchId();
         this.gameVersion = match.getVersion();
         this.gameEndAt = match.getGameEndAt();

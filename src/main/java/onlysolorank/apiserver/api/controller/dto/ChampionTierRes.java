@@ -23,6 +23,7 @@ import onlysolorank.apiserver.domain.dto.Position;
 @Builder
 @AllArgsConstructor
 public class ChampionTierRes {
+
     private String version;
     private List<ChampionTierByPosition> results;
 
@@ -30,6 +31,7 @@ public class ChampionTierRes {
     @AllArgsConstructor
     @Builder
     public static class ChampionTierByPosition {
+
         private Position position;
         private List<ChampionTierDto> champions;
     }

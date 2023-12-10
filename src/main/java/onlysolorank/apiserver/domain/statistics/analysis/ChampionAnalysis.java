@@ -31,8 +31,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
  */
 
 @Document("detail")
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 @ToString
 public class ChampionAnalysis {
 
@@ -40,8 +40,8 @@ public class ChampionAnalysis {
     private String id;
 
     private Long championId;
-    @Transient
-    private String championName;
+//    @Transient
+//    private String championName;
 
     @Field("teamPosition")
     private Position position;

@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onlysolorank.apiserver.domain.SummonerPlay;
+import onlysolorank.apiserver.api.exception.CustomException;
+import onlysolorank.apiserver.api.exception.ErrorCode;
+import onlysolorank.apiserver.domain.summoner_play.BaseSummonerPlay;
+import onlysolorank.apiserver.domain.dto.QueueType;
+import onlysolorank.apiserver.repository.season.SeasonRepository;
 import onlysolorank.apiserver.repository.summoner_play.SummonerPlayRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,28 +30,29 @@ import org.springframework.stereotype.Service;
 public class SummonerPlayService {
 
     private final SummonerPlayRepository summonerPlayRepository;
+    private final SeasonRepository seasonRepository;
 
-    public List<SummonerPlay> getSummonerPlaysByPuuid(String puuid) {
-        return summonerPlayRepository.findSummonerPlaysByPuuid(puuid);
+    private final Integer LIMIT_ON_MATCH_HISTORY = 10;
+
+    public List<? extends BaseSummonerPlay> getSummonerPlaysByPuuid(String puuid, QueueType queueType, Boolean brief) {
+        String currentSeason = getCurrentSeasonName();
+
+        if (brief){
+            return summonerPlayRepository.findAllByQueueType(puuid, currentSeason, queueType, LIMIT_ON_MATCH_HISTORY);
+        }else{
+            return summonerPlayRepository.findAllByQueueType(puuid, currentSeason, queueType);
+        }
     }
 
-    public List<SummonerPlay> getSummonerPlaysLimit(String puuid, int limit) {
-        return summonerPlayRepository.findSummonerPlaysByPuuidAndLimit(puuid, limit);
+    public List<? extends BaseSummonerPlay> getSummonerPlaysByPairs(Map<String, Long> pairs, QueueType queueType) {
+        String currentSeason = getCurrentSeasonName();
+        return summonerPlayRepository.findByPuuidChampionIdPairs(pairs, queueType, currentSeason);
     }
 
-    public List<SummonerPlay> getSummonerPlaysByCondition(String championName, Integer limit) {
-        return summonerPlayRepository.findSpecialists(championName, limit);
+    private String getCurrentSeasonName() {
+        return seasonRepository.findTop1SeasonByOrderByStartAtDesc().orElseThrow(
+            ()-> new CustomException(ErrorCode.RESULT_NOT_FOUND, "시즌 정보가 존재하지 않습니다.")
+        ).getSeasonName();
     }
-
-    public List<SummonerPlay> getSummonerPlaysByPairs(Map<String, Long> pairs) {
-        return summonerPlayRepository.findByPuuidChampionIdPairs(pairs);
-    }
-
-    // 우선 놔두고 다음에 없애기: Summoner collection에 요약 정보가 들어감에 따라 필요 없어짐
-    public Map<String, List<Long>> findMostPlayedChampionsByPuuidsAndLimit(List<String> puuids,
-        int limit) {
-        return summonerPlayRepository.findMostPlayedChampionsByPuuidsAndLimit(puuids, limit);
-    }
-
 
 }

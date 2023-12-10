@@ -1,12 +1,11 @@
 package onlysolorank.apiserver.repository.statistics;
 
+import java.util.Optional;
 import onlysolorank.apiserver.domain.statistics.stat.ChampionStatistics;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.Optional;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.statistics
@@ -23,6 +22,7 @@ import java.util.Optional;
 @ActiveProfiles("test")
 @SpringBootTest
 class ChampionStatisticsRepositoryTest {
+
     @Autowired
     private ChampionStatisticsRepository championStatisticsRepository;
 //
@@ -30,7 +30,7 @@ class ChampionStatisticsRepositoryTest {
 //    private ChampionStatisticsRepositoryCustom championStatisticsRepositoryCustom;
 
     @Test
-    void 단일통계정보_조회(){
+    void 단일통계정보_조회() {
 
         Optional<ChampionStatistics> oneByChampionId = championStatisticsRepository.findOneByChampionId(112L);
 //

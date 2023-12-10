@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import onlysolorank.apiserver.api.service.dto.ChampionDto;
 import org.springframework.stereotype.Component;
 
@@ -22,22 +21,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ChampionCache {
+
     private Map<Long, String> krMap = new HashMap<>();
     private Map<Long, String> enMap = new HashMap<>();
 
-    public void initOnCrawl(List<ChampionDto> champions){
-        krMap = champions.stream().collect(Collectors.toMap(c->c.getChampionId(), c->c.getKrName()));
-        enMap = champions.stream().collect(Collectors.toMap(c->c.getChampionId(), c->c.getEnName()));
+    public void initOnCrawl(List<ChampionDto> champions) {
+        krMap = champions.stream().collect(Collectors.toMap(c -> c.getChampionId(), c -> c.getKrName()));
+        enMap = champions.stream().collect(Collectors.toMap(c -> c.getChampionId(), c -> c.getEnName()));
     }
 
-    public String resolve(Long championId){
+    public String resolve(Long championId) {
         return enMap.getOrDefault(championId, "None");
     }
 
-    public String resolve(Long championId, Boolean toEn){
-        if(toEn){
+    public String resolve(Long championId, Boolean toEn) {
+        if (toEn) {
             return enMap.getOrDefault(championId, "None");
-        } else{
+        } else {
             return krMap.getOrDefault(championId, "None");
         }
     }

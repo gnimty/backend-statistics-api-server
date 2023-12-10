@@ -22,4 +22,6 @@ public interface MatchRepository extends MongoRepository<Match, String>, MatchRe
     Optional<Match> findMatchByMatchId(String matchId);
 
     List<Match> findMatchesByMatchIdIn(List<String> matchIds);
+
+        List<Match> findMatchesByMatchIdInAndQueueId(List<String> matchIds, Integer queueId);
 }

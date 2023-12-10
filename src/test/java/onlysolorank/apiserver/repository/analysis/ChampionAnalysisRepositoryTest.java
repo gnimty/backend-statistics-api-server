@@ -1,7 +1,7 @@
 package onlysolorank.apiserver.repository.analysis;
 
-import onlysolorank.apiserver.api.controller.dto.PositionFilter;
-import onlysolorank.apiserver.api.controller.dto.TierFilter;
+import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +23,17 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @SpringBootTest
 class ChampionAnalysisRepositoryTest {
+
     @Autowired
     private ChampionAnalysisRepository championAnalysisRepository;
 
     private Long AATROX = 266L;
 
     @Test
-    void 챔피언_티어_포지션으로_검색(){
+    void 챔피언_티어_포지션으로_검색() {
         ChampionAnalysis byChampionIdAndPositionAndTier =
-            championAnalysisRepository.findTop1ByChampionIdAndPositionAndTierOrderByVersionDesc(AATROX, PositionFilter.TOP, TierFilter.DIAMOND).get();
+            championAnalysisRepository.findTop1ByChampionIdAndPositionAndTierOrderByVersionDesc(AATROX,
+                Position.TOP, Tier.diamond.getValue().toUpperCase()).get();
 
         System.out.println("byChampionIdAndPositionAndTier = " + byChampionIdAndPositionAndTier);
     }

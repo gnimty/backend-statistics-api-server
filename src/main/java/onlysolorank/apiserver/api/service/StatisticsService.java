@@ -12,8 +12,8 @@ import onlysolorank.apiserver.api.controller.dto.ChampionTierRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionTierRes.ChampionTierByPosition;
 import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.api.exception.CustomException;
-import onlysolorank.apiserver.api.service.dto.ChampionTotalStatDto;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
+import onlysolorank.apiserver.api.service.dto.ChampionTotalStatDto;
 import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.ChampionCache;
 import onlysolorank.apiserver.domain.dto.Position;
@@ -98,14 +98,14 @@ public class StatisticsService {
         // db.getCollection("champion_statistics_detail").find({"championId":517, "tier":"EMERALD"}).sort({"gameVersion_":-1, "pickRate":-1}).limit(1)
         if (position == Position.UNKNOWN) {
             optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndTierOrderByVersionDescPickRateDesc(
-                champion.getChampionId(), tier);
+                champion.getChampionId(), tier.name().toUpperCase());
         }
 
         // 2. position이 지정되어 있다면 해당 정보들로 바로 쿼리
         // db.getCollection("champion_statistics_detail").find({"championId":517, "tier":"EMERALD", "teamPosition":"JUNGLE"}).sort({"gameVersion_":-1}).limit(1)
         else {
             optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndPositionAndTierOrderByVersionDesc(
-                champion.getChampionId(), Position.valueOf(position.name()), tier);
+                champion.getChampionId(), Position.valueOf(position.name()), tier.name().toUpperCase());
         }
 
         if (!optionalAnalysis.isPresent()) {
@@ -115,7 +115,7 @@ public class StatisticsService {
 
         // 3. 추적한 position 정보로 counter champion, easy champion 얻기
         ChampionAnalysis analysis = optionalAnalysis.get();
-
+        position = analysis.getPosition();
         List<BaseCounter> counterChampions = championCounterRepository.findCounterChampions(
             champion.getChampionId(), analysis.getPosition(), true);
         List<BaseCounter> easyChampions = championCounterRepository.findCounterChampions(

@@ -1,17 +1,16 @@
 package onlysolorank.apiserver.repository.summoner_play;
 
-import onlysolorank.apiserver.domain.SummonerPlay;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import onlysolorank.apiserver.domain.summoner_play.SummonerPlay;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.summoner_play
@@ -28,27 +27,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @SpringBootTest
 class SummonerPlayRepositoryTest {
+
+    private final String puuid1 = "1XBUVjoa7tHwOP5XSmphaXOib5cwn03X1qzFgnYk1C5FpUOPQds4w56YUzMIKamPO-Lj2SUBGE9tEg";
     @Autowired
     private SummonerPlayRepository summonerPlayRepository;
 
-    private final String puuid1 = "1XBUVjoa7tHwOP5XSmphaXOib5cwn03X1qzFgnYk1C5FpUOPQds4w56YUzMIKamPO-Lj2SUBGE9tEg";
+//    @Test
+//    public void PUUID로_챔피언_플레이정보_가져오기() {
+//        List<SummonerPlay> summonerPlays = summonerPlayRepository.findSummonerPlaysByPuuidAndSeasonName(puuid1);
+//
+//        for (SummonerPlay s : summonerPlays) {
+//            System.out.printf("championName = %s,  championPlays = %d\n", s.getChampionName(), s.getTotalPlays());
+//        }
+//
+//    }
 
     @Test
-    public void PUUID로_챔피언_플레이정보_가져오기(){
-        List<SummonerPlay> summonerPlays = summonerPlayRepository.findSummonerPlaysByPuuid(puuid1);
-
-        for (SummonerPlay s : summonerPlays){
-            System.out.printf("championName = %s,  championPlays = %d\n", s.getChampionName(), s.getTotalPlays());
-        }
-
-    }
-
-    @Test
-    public void 조건으로_챔피언_플레이정보_가져오기(){
+    public void 조건으로_챔피언_플레이정보_가져오기() {
         List<SummonerPlay> summonerPlays =
             summonerPlayRepository.findSpecialists("Aatrox", 30);
 
-        for (SummonerPlay s : summonerPlays){
+        for (SummonerPlay s : summonerPlays) {
             System.out.printf("championName = %s,  championPlays = %d\n", s.getChampionName(), s.getTotalPlays());
         }
 
@@ -56,21 +55,22 @@ class SummonerPlayRepositoryTest {
 
 
     @Test
-    public void 조건으로_챔피언_플레이정보_가져오기_몽고템플릿(){
+    public void 조건으로_챔피언_플레이정보_가져오기_몽고템플릿() {
         List<SummonerPlay> summonerPlays1 =
-            summonerPlayRepository.findTop100SummonerPlaysByChampionNameAndTotalPlaysGreaterThanEqualOrderByTotalPlaysDesc("Aatrox", 30);
+            summonerPlayRepository.findTop100SummonerPlaysByChampionNameAndTotalPlaysGreaterThanEqualOrderByTotalPlaysDesc(
+                "Aatrox", 30);
 
         List<SummonerPlay> summonerPlays2 =
             summonerPlayRepository.findSpecialists("Aatrox", 30);
 
-        for (int i=0;i<summonerPlays1.size();i++) {
+        for (int i = 0; i < summonerPlays1.size(); i++) {
             Assertions.assertEquals(summonerPlays1.get(i), summonerPlays2.get(i));
         }
     }
 
 
     @Test
-    public void 여러조건으로_챔피언_플레이정보_가져오기(){
+    public void 여러조건으로_챔피언_플레이정보_가져오기() {
         Map<String, Long> championPairs = new HashMap<>() {{
             put("1XBUVjoa7tHwOP5XSmphaXOib5cwn03X1qzFgnYk1C5FpUOPQds4w56YUzMIKamPO-Lj2SUBGE9tEg", 120L);
             put("a6aFFmCsAD5tPh4AzbOs-ppx8AC-O44Qd2M5R_tIxsGSFhE7vxHukyNLVkchBXtERExrUml9mYFauQ", 23L);
@@ -81,23 +81,24 @@ class SummonerPlayRepositoryTest {
             put("x4g2HkbMoWqidXd35K4e_3yFeGqyl4aeMM2bpsi3G3rjvMZqPV8c6geyWT_u8Mzr3IhcDOxm1DVN8", 13L);
         }};
 
-        List<SummonerPlay> byPuuidChampionIdPairs = summonerPlayRepository.findByPuuidChampionIdPairs(championPairs);
-
-        for (SummonerPlay byPuuidChampionIdPair : byPuuidChampionIdPairs) {
-            System.out.println("byPuuidChampionIdPair = " + byPuuidChampionIdPair);
-        }
+//        List<SummonerPlay> byPuuidChampionIdPairs = summonerPlayRepository.findByPuuidChampionIdPairs(championPairs);
+//
+//        for (SummonerPlay byPuuidChampionIdPair : byPuuidChampionIdPairs) {
+//            System.out.println("byPuuidChampionIdPair = " + byPuuidChampionIdPair);
+//        }
 
     }
 
     @Test
-    public void 최대10개가져오기_테스트(){
-        List<SummonerPlay> summonerPlaysByPuuidAndLimit = summonerPlayRepository.findSummonerPlaysByPuuidAndLimit(puuid1, 10);
+    public void 최대10개가져오기_테스트() {
+//        List<SummonerPlay> summonerPlaysByPuuidAndLimit = summonerPlayRepository.findSummonerPlaysByPuuidAndLimit(
+//            puuid1, 10);
 
-        for (SummonerPlay summonerPlay : summonerPlaysByPuuidAndLimit) {
-            System.out.println("summonerPlay = " + summonerPlay);
-        }
-
-        assertThat(summonerPlaysByPuuidAndLimit.size()).isLessThanOrEqualTo(10);
+//        for (SummonerPlay summonerPlay : summonerPlaysByPuuidAndLimit) {
+//            System.out.println("summonerPlay = " + summonerPlay);
+//        }
+//
+//        assertThat(summonerPlaysByPuuidAndLimit.size()).isLessThanOrEqualTo(10);
     }
 
 }

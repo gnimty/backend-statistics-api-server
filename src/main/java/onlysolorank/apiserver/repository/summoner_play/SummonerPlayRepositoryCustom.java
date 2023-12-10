@@ -2,7 +2,9 @@ package onlysolorank.apiserver.repository.summoner_play;
 
 import java.util.List;
 import java.util.Map;
-import onlysolorank.apiserver.domain.SummonerPlay;
+import onlysolorank.apiserver.domain.dto.QueueType;
+import onlysolorank.apiserver.domain.summoner_play.BaseSummonerPlay;
+import onlysolorank.apiserver.domain.summoner_play.SummonerPlay;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.summoner_play
@@ -20,10 +22,7 @@ public interface SummonerPlayRepositoryCustom {
 
     List<SummonerPlay> findSpecialists(String championName, int totalPlays);
 
-    List<SummonerPlay> findByPuuidChampionIdPairs(Map<String, Long> pairs);
-
-    List<SummonerPlay> findSummonerPlaysByPuuidAndLimit(String puuid, int limit);
-
-    Map<String, List<Long>> findMostPlayedChampionsByPuuidsAndLimit(List<String> puuids, int limit);
-
+    List<? extends BaseSummonerPlay> findByPuuidChampionIdPairs(Map<String, Long> pairs, QueueType queueType, String season);
+    List<? extends BaseSummonerPlay> findAllByQueueType(String puuid, String season, QueueType queueType, Integer limit);
+    List<? extends BaseSummonerPlay> findAllByQueueType(String puuid, String season, QueueType queueType);
 }

@@ -32,7 +32,5 @@ public class SummonerMatchRes {
     @JsonInclude(Include.NON_NULL)
     private ZonedDateTime renewableAfter;
     private List<MatchBriefRes> matches;
-    @JsonInclude(Include.NON_NULL)
-    private List<SummonerPlayDto> mostPlayed;
 
 }
