@@ -17,6 +17,7 @@ import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+
 /**
  * packageName    : onlysolorank.apiserver.api.dto
  * fileName       : SoloTierDto
@@ -70,9 +71,9 @@ public class SummonerTierDto {
 
             wins = summoner.getTotalWin();
             defeats = summoner.getTotalDefeat();
+          
             mostChampionIds = summoner.getMostChampionIds();
             mostLanes = summoner.getMostLanes();
-
         } else if (queueType==QueueType.RANK_FLEX) {
             if (Objects.isNull(summoner.getQueueFlex())){
                 return null;
@@ -83,7 +84,6 @@ public class SummonerTierDto {
 
             mostChampionIds = summoner.getMostChampionIdsFlex();
             mostLanes = summoner.getMostLanesFlex();
-
         } else{
             return null;
         }
