@@ -50,6 +50,7 @@ public class SummonerTierDto {
     private Double winRate;
     private List<Long> mostChampionIds;
     private List<Position> mostLanes;
+    private Integer mmr;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ZonedDateTime updatedAt;
@@ -60,6 +61,7 @@ public class SummonerTierDto {
 
         Double winRate = null;
         Integer plays = null;
+        Integer mmr = null;
 
         List<Long> mostChampionIds = new ArrayList<>();
         List<Position> mostLanes = new ArrayList<>();
@@ -71,7 +73,8 @@ public class SummonerTierDto {
 
             wins = summoner.getTotalWin();
             defeats = summoner.getTotalDefeat();
-          
+            mmr = summoner.getMmr();
+
             mostChampionIds = summoner.getMostChampionIds();
             mostLanes = summoner.getMostLanes();
         } else if (queueType==QueueType.RANK_FLEX) {
@@ -81,6 +84,7 @@ public class SummonerTierDto {
 
             wins = summoner.getTotalWinFlex();
             defeats = summoner.getTotalDefeatFlex();
+            mmr = summoner.getMmrFlex();
 
             mostChampionIds = summoner.getMostChampionIdsFlex();
             mostLanes = summoner.getMostLanesFlex();
@@ -103,6 +107,7 @@ public class SummonerTierDto {
             .winRate(winRate)
             .mostChampionIds(mostChampionIds)
             .mostLanes(mostLanes)
+            .mmr(mmr)
             .build();
     }
 
