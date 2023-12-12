@@ -4,14 +4,18 @@ import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.domain.dto.History;
+import onlysolorank.apiserver.domain.dto.Position;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -43,6 +47,8 @@ public class SummonerTierDto {
     private Integer defeats;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double winRate;
+    private List<Long> mostChampionIds;
+    private List<Position> mostLanes;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ZonedDateTime updatedAt;
@@ -54,6 +60,9 @@ public class SummonerTierDto {
         Double winRate = null;
         Integer plays = null;
 
+        List<Long> mostChampionIds = new ArrayList<>();
+        List<Position> mostLanes = new ArrayList<>();
+
         if (queueType==QueueType.RANK_SOLO){
             if (Objects.isNull(summoner.getQueue())){
                 return null;
@@ -61,6 +70,9 @@ public class SummonerTierDto {
 
             wins = summoner.getTotalWin();
             defeats = summoner.getTotalDefeat();
+            mostChampionIds = summoner.getMostChampionIds();
+            mostLanes = summoner.getMostLanes();
+
         } else if (queueType==QueueType.RANK_FLEX) {
             if (Objects.isNull(summoner.getQueueFlex())){
                 return null;
@@ -68,6 +80,9 @@ public class SummonerTierDto {
 
             wins = summoner.getTotalWinFlex();
             defeats = summoner.getTotalDefeatFlex();
+
+            mostChampionIds = summoner.getMostChampionIdsFlex();
+            mostLanes = summoner.getMostLanesFlex();
 
         } else{
             return null;
@@ -86,6 +101,8 @@ public class SummonerTierDto {
             .wins(wins)
             .defeats(defeats)
             .winRate(winRate)
+            .mostChampionIds(mostChampionIds)
+            .mostLanes(mostLanes)
             .build();
     }
 
