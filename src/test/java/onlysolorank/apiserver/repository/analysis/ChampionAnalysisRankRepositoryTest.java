@@ -1,6 +1,8 @@
 package onlysolorank.apiserver.repository.analysis;
 
+import java.util.Optional;
 import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import org.junit.jupiter.api.Test;
@@ -22,19 +24,25 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class ChampionAnalysisRepositoryTest {
+class ChampionAnalysisRankRepositoryTest {
 
     @Autowired
     private ChampionAnalysisRepository championAnalysisRepository;
 
     private Long AATROX = 266L;
+    private Long ANIVIA = 34L;
 
     @Test
     void 챔피언_티어_포지션으로_검색() {
-        ChampionAnalysis byChampionIdAndPositionAndTier =
-            championAnalysisRepository.findTop1ByChampionIdAndPositionAndTierOrderByVersionDesc(AATROX,
-                Position.TOP, Tier.diamond.getValue().toUpperCase()).get();
+        Optional<ChampionAnalysis> byChampionIdAndPositionAndTier = championAnalysisRepository.findTop1ByChampionIdAndPositionAndTier(QueueType.RANK_SOLO, AATROX, Position.TOP, Tier.diamond.name().toUpperCase());
 
-        System.out.println("byChampionIdAndPositionAndTier = " + byChampionIdAndPositionAndTier);
+        System.out.println("byChampionIdAndPositionAndTier = " + byChampionIdAndPositionAndTier.get());
+    }
+
+    @Test
+    void 챔피언_티어_포지션_없이_검색() {
+        Optional<ChampionAnalysis> byChampionIdAndPositionAndTier = championAnalysisRepository.findTop1ByChampionIdAndTier(QueueType.RANK_SOLO, ANIVIA, Tier.diamond.name().toUpperCase());
+
+        System.out.println("byChampionIdAndPositionAndTier = " + byChampionIdAndPositionAndTier.get());
     }
 }

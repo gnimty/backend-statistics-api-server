@@ -1,8 +1,5 @@
 package onlysolorank.apiserver.repository.analysis;
 
-import java.util.Optional;
-import onlysolorank.apiserver.domain.dto.Position;
-import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -17,11 +14,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * -----------------------------------------------------------
  * 2023/10/02        solmin       최초 생성
  */
-public interface ChampionAnalysisRepository extends MongoRepository<ChampionAnalysis, String> {
+public interface ChampionAnalysisRepository extends MongoRepository<ChampionAnalysis, String>, ChampionAnalysisRepositoryCustom {
 
-    Optional<ChampionAnalysis> findTop1ByChampionIdAndPositionAndTierOrderByVersionDesc(
-        Long championId, Position position, String upperTier);
-
-    Optional<ChampionAnalysis> findTop1ByChampionIdAndTierOrderByVersionDescPickRateDesc(
-        Long championId, String upperTier);
+//    Optional<ChampionAnalysisRank> findTop1ByChampionIdAndPositionAndTierOrderByVersionDesc(
+//        Long championId, Position position, String upperTier);
+//
+//    Optional<ChampionAnalysisRank> findTop1ByChampionIdAndTierOrderByVersionDescPickRateDesc(
+//        Long championId, String upperTier);
 }

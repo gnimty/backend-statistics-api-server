@@ -23,9 +23,9 @@ public class BaseComponentStat {
     @Field("win_rate")
     private Double winRate;
 
-    @Field("select_ratio")
+    @Field("pick_rate")
     private Double pickRate;
 
-    @Field("total")
+    @Field("select_cnt")
     private Long plays;
 }

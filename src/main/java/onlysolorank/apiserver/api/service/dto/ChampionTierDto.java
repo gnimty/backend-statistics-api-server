@@ -1,7 +1,11 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.domain.statistics.analysis.BaseChampionStat;
+import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
 import onlysolorank.apiserver.domain.statistics.tier.BaseChampionTier;
 
 /**
@@ -17,6 +21,7 @@ import onlysolorank.apiserver.domain.statistics.tier.BaseChampionTier;
  */
 
 @Data
+@Builder
 public class ChampionTierDto {
 
     //    private Double adjustWinRate;
@@ -24,18 +29,32 @@ public class ChampionTierDto {
     private String championName;
     private Double winRate;
     private Double pickRate;
+    @JsonInclude(Include.NON_NULL)
     private Double banRate;
     private Long plays;
     private String tier;
 
-    @Builder
-    public ChampionTierDto(BaseChampionTier stat, String championName) {
-        this.winRate = stat.getWinRate();
-        this.pickRate = stat.getPickRate();
-        this.banRate = stat.getBanRate();
-        this.championName = championName;
-        this.plays = stat.getPlays();
-        this.tier = stat.getTier().getValue();
-        this.championId = stat.getChampionId();
+
+    public static ChampionTierDto fromBaseTier(BaseChampionStat stat, String championName) {
+        return ChampionTierDto.builder()
+            .championName(championName)
+            .winRate(stat.getWinRate())
+            .pickRate(stat.getPickRate())
+            .plays(stat.getPlays())
+            .tier(stat.getTier())
+            .championId(stat.getChampionId())
+            .build();
+    }
+
+    public static ChampionTierDto fromRankTier(ChampionStatsRank stat, String championName) {
+        return ChampionTierDto.builder()
+            .championName(championName)
+            .winRate(stat.getWinRate())
+            .pickRate(stat.getPickRate())
+            .banRate(stat.getBanRate())
+            .plays(stat.getPlays())
+            .tier(stat.getTier())
+            .championId(stat.getChampionId())
+            .build();
     }
 }

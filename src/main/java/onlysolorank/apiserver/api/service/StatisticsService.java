@@ -4,10 +4,12 @@ import static onlysolorank.apiserver.api.exception.ErrorCode.RESULT_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.controller.dto.ChampionAnalysisRes;
+import onlysolorank.apiserver.api.controller.dto.ChampionAramTierRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionTierRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionTierRes.ChampionTierByPosition;
 import onlysolorank.apiserver.api.controller.dto.Period;
@@ -17,10 +19,11 @@ import onlysolorank.apiserver.api.service.dto.ChampionTotalStatDto;
 import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.ChampionCache;
 import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
+import onlysolorank.apiserver.domain.statistics.analysis.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
-import onlysolorank.apiserver.domain.statistics.analysis.counter.BaseCounter;
-import onlysolorank.apiserver.domain.statistics.tier.BaseChampionTier;
+import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
 import onlysolorank.apiserver.repository.analysis.ChampionAnalysisRepository;
 import onlysolorank.apiserver.repository.champion.ChampionRepository;
 import onlysolorank.apiserver.repository.counter.ChampionCounterRepository;
@@ -53,31 +56,32 @@ public class StatisticsService {
     private final ChampionCache championCache;
     private final AssetService assetService;
 
-    public List<ChampionTotalStatDto> getAllChampionStats(Tier tier, Period period,
-        Position position) {
-        List<ChampionTotalStatDto> result = championStatisticsRepositoryCustom.findStats(period,
-                position, tier).stream()
-            .map(championStat -> ChampionTotalStatDto.builder()
-                .stat(championStat)
-                .championName(championCache.resolve(championStat.getChampionId()))
-                .build()).toList();
-        return result;
+    private static final QueueType QUEUE_TYPE_ON_DETAIL = QueueType.RANK_SOLO;
+
+    public Map<Long, String> getChampionMap() {
+        return championCache.enMap;
     }
 
-    public ChampionTierRes getChampionTierList(Boolean brief, Tier tier) {
+    public ChampionTierRes getChampionTierList(QueueType queueType, Boolean brief, Tier tier) {
         String version = assetService.getLatestVersionString();
+
+        Map<Long, String> championEnMap = getChampionMap();
 
         List<ChampionTierByPosition> results = new ArrayList<>();
 
         for (Position position : Position.getActualPosition()) {
+
+            List<ChampionStatsRank> championTierList = championAnalysisRepository.findChampionTierList(
+                queueType, position, brief, tier.name().toUpperCase());
+
+            List<ChampionTierDto> championTierDtoList = championTierList.stream().map(
+                        championTier -> ChampionTierDto.fromRankTier(championTier,
+                            championEnMap.getOrDefault(championTier.getChampionId(), null)))
+                    .toList();
+
             results.add(ChampionTierByPosition.builder()
                 .position(position)
-                .champions(championStatisticsRepositoryCustom.findTier(position, brief).stream()
-                    .map(b -> ChampionTierDto.builder()
-                        .stat(b)
-                        .championName(championCache.resolve(b.getChampionId()))
-                        .build()
-                    ).toList())
+                .champions(championTierDtoList)
                 .build());
         }
 
@@ -87,8 +91,27 @@ public class StatisticsService {
             .build();
     }
 
-    public ChampionAnalysisRes getChampionAnalysis(String championName, Position position,
-        Tier tier) {
+
+    public ChampionAramTierRes getChampionAramTierList(QueueType queueType, Boolean brief, Tier tier) {
+        String version = assetService.getLatestVersionString();
+
+        Map<Long, String> championEnMap = getChampionMap();
+
+        List<ChampionTierDto> results = championAnalysisRepository.findChampionAramTierList(
+            queueType, brief, tier.name().toUpperCase()).stream().map(
+                championTier -> ChampionTierDto.fromBaseTier(championTier,
+                    championEnMap.getOrDefault(championTier.getChampionId(), null)))
+            .toList();
+
+        return ChampionAramTierRes.builder()
+            .version(version)
+            .results(results)
+            .build();
+    }
+
+
+    public ChampionAnalysisRes getChampionAnalysis(String championName, Position position, Tier tier) {
+
         Champion champion = championRepository.findOneByEnName(championName).orElseThrow(
             () -> new CustomException(RESULT_NOT_FOUND, "champion 이름에 해당하는 챔피언 정보가 없습니다."));
 
@@ -97,14 +120,13 @@ public class StatisticsService {
         // 1. position==UNKNOWN일 경우 해당 티어대에서 가장 많이 플레이한 position 정보로 변경하기
         // db.getCollection("champion_statistics_detail").find({"championId":517, "tier":"EMERALD"}).sort({"gameVersion_":-1, "pickRate":-1}).limit(1)
         if (position == Position.UNKNOWN) {
-            optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndTierOrderByVersionDescPickRateDesc(
+            optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndTier(QUEUE_TYPE_ON_DETAIL,
                 champion.getChampionId(), tier.name().toUpperCase());
         }
 
         // 2. position이 지정되어 있다면 해당 정보들로 바로 쿼리
-        // db.getCollection("champion_statistics_detail").find({"championId":517, "tier":"EMERALD", "teamPosition":"JUNGLE"}).sort({"gameVersion_":-1}).limit(1)
         else {
-            optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndPositionAndTierOrderByVersionDesc(
+            optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndPositionAndTier(QUEUE_TYPE_ON_DETAIL,
                 champion.getChampionId(), Position.valueOf(position.name()), tier.name().toUpperCase());
         }
 
@@ -115,27 +137,23 @@ public class StatisticsService {
 
         // 3. 추적한 position 정보로 counter champion, easy champion 얻기
         ChampionAnalysis analysis = optionalAnalysis.get();
-        position = analysis.getPosition();
-        List<BaseCounter> counterChampions = championCounterRepository.findCounterChampions(
-            champion.getChampionId(), analysis.getPosition(), true);
-        List<BaseCounter> easyChampions = championCounterRepository.findCounterChampions(
-            champion.getChampionId(), analysis.getPosition(), false);
+//        List<BaseCounter> counterChampions = championCounterRepository.findCounterChampions(
+//            champion.getChampionId(), analysis.getPosition(), true);
+//        List<BaseCounter> easyChampions = championCounterRepository.findCounterChampions(
+//            champion.getChampionId(), analysis.getPosition(), false);
 
-        BaseChampionTier championTier = championStatisticsRepositoryCustom.findTier(position,
-                champion.getChampionId())
-            .orElseGet(null);
+//        BaseChampionTier championTier = championStatisticsRepositoryCustom.findTier(position,champion.getChampionId())
+//            .orElseGet(null);
 
-        if (championTier == null) {
-            return ChampionAnalysisRes.toRes(analysis, counterChampions, easyChampions, null);
-        } else {
-            ChampionTierDto championTierDto = ChampionTierDto.builder()
-                .stat(championTier)
-                .championName(championName)
-                .build();
+//        if (championTier == null) {
+//            return ChampionAnalysisRes.toRes(analysis, counterChampions, easyChampions, null);
+//        } else {
+//        }
 
-            return ChampionAnalysisRes.toRes(analysis, counterChampions, easyChampions,
-                championTierDto);
-        }
+
+        ChampionTierDto championTierDto = ChampionTierDto.fromRankTier(analysis, championName);
+
+        return ChampionAnalysisRes.toRes(analysis, championTierDto);
     }
 
 }
