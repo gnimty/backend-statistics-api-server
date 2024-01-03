@@ -61,10 +61,6 @@ public class SummonerTierDto {
 
         Double winRate = null;
         Integer plays = null;
-        Integer mmr = null;
-
-        List<Long> mostChampionIds = new ArrayList<>();
-        List<Position> mostLanes = new ArrayList<>();
 
         if (queueType==QueueType.RANK_SOLO){
             if (Objects.isNull(summoner.getQueue())){
@@ -73,10 +69,25 @@ public class SummonerTierDto {
 
             wins = summoner.getTotalWin();
             defeats = summoner.getTotalDefeat();
-            mmr = summoner.getMmr();
 
-            mostChampionIds = summoner.getMostChampionIds();
-            mostLanes = summoner.getMostLanes();
+            if (wins != null && defeats != null) {
+                plays = wins + defeats;
+                winRate = divideAndReturnDouble(wins, (wins + defeats), 3).get();
+            }
+
+            return SummonerTierDto.builder()
+                .tier(Tier.valueOf(summoner.getQueue()))
+                .division(summoner.getTier())
+                .lp(summoner.getLp())
+                .plays(plays)
+                .wins(wins)
+                .defeats(defeats)
+                .winRate(winRate)
+                .mostChampionIds(summoner.getMostChampionIds())
+                .mostLanes(summoner.getMostLanes())
+                .mmr(summoner.getMmr())
+                .build();
+
         } else if (queueType==QueueType.RANK_FLEX) {
             if (Objects.isNull(summoner.getQueueFlex())){
                 return null;
@@ -84,31 +95,31 @@ public class SummonerTierDto {
 
             wins = summoner.getTotalWinFlex();
             defeats = summoner.getTotalDefeatFlex();
-            mmr = summoner.getMmrFlex();
 
-            mostChampionIds = summoner.getMostChampionIdsFlex();
-            mostLanes = summoner.getMostLanesFlex();
+            if (wins != null && defeats != null) {
+                plays = wins + defeats;
+                winRate = divideAndReturnDouble(wins, (wins + defeats), 3).get();
+            }
+
+            return SummonerTierDto.builder()
+                .tier(Tier.valueOf(summoner.getQueueFlex()))
+                .division(summoner.getTierFlex())
+                .lp(summoner.getLpFlex())
+                .plays(plays)
+                .wins(wins)
+                .defeats(defeats)
+                .winRate(winRate)
+                .mostChampionIds(summoner.getMostChampionIdsFlex())
+                .mostLanes(summoner.getMostLanesFlex())
+                .mmr(summoner.getMmrFlex())
+                .build();
         } else{
             return null;
         }
 
-        if (wins != null && defeats != null) {
-            plays = wins + defeats;
-            winRate = divideAndReturnDouble(wins, (wins + defeats), 3).get();
-        }
 
-        return SummonerTierDto.builder()
-            .tier(Tier.valueOf(summoner.getQueue()))
-            .division(summoner.getTier())
-            .lp(summoner.getLp())
-            .plays(plays)
-            .wins(wins)
-            .defeats(defeats)
-            .winRate(winRate)
-            .mostChampionIds(mostChampionIds)
-            .mostLanes(mostLanes)
-            .mmr(mmr)
-            .build();
+
+
     }
 
     public static SummonerTierDto from(History history) {
