@@ -3,6 +3,7 @@ package onlysolorank.apiserver.domain.statistics.analysis.component;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * packageName    : onlysolorank.apiserver.domain.dto.component
@@ -20,5 +21,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class SpellComponentStat extends BaseComponentStat {
 
-    private List<Long> summonerSpell;
+    @Field("summoner1Id")
+    private Long spellD;
+
+    @Field("summoner2Id")
+    private Long spellF;
 }

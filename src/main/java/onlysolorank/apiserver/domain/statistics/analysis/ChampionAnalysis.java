@@ -1,22 +1,15 @@
 package onlysolorank.apiserver.domain.statistics.analysis;
 
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import onlysolorank.apiserver.domain.dto.Position;
-import onlysolorank.apiserver.domain.dto.Tier;
-import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBootsComponentStat;
-import onlysolorank.apiserver.domain.statistics.analysis.component.ItemRarityComponentStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBuildComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemStartComponentStat;
-import onlysolorank.apiserver.domain.statistics.analysis.component.PerkComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.SkillComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.SpellComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.StatPerkComponentStat;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * packageName    : onlysolorank.apiserver.domain
@@ -30,41 +23,35 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * 2023/09/30        solmin       최초 생성
  */
 
-@Document("detail")
+@Document
 @Getter
-@AllArgsConstructor
 @ToString
-public class ChampionAnalysis {
+public class ChampionAnalysis extends ChampionStatsRank {
 
-    @Id
-    private String id;
-
-    private Long championId;
-//    @Transient
-//    private String championName;
-
-    @Field("teamPosition")
-    private Position position;
-
-    @Field("gameVersion_")
-    private String version;
-
-    private Tier tier;
-
-    private Double winRate;
-    private Double pickRate;
-    private Double banRate;
-
-    @Field("total")
-    private Long plays;
 
     private List<StatPerkComponentStat> statPerks;
-    private List<PerkComponentStat> perks;
-
     private List<SpellComponentStat> summonerSpell;
+
+//    private List<PerkComponentStat> perks;
 
     private List<SkillComponentStat> skillTree;
     private List<ItemStartComponentStat> itemStart;
-    private List<ItemBootsComponentStat> itemBoots;
-    private List<ItemRarityComponentStat> itemRarity;
+    //    private List<ItemBootsComponentStat> itemBoots;
+    private List<ItemBuildComponentStat> itemBuild;
+
+    public ChampionAnalysis(String tier, Long championId, Position position, Double winRate,
+        Double pickRate, Double banRate, Long plays, Double score, List<StatPerkComponentStat> statPerks,
+        List<SpellComponentStat> summonerSpell, List<SkillComponentStat> skillTree,
+        List<ItemStartComponentStat> itemStart, List<ItemBuildComponentStat> itemBuild) {
+
+        super(tier, championId, winRate, pickRate, plays, score, position, banRate );
+        this.statPerks = statPerks;
+        this.summonerSpell = summonerSpell;
+        this.skillTree = skillTree;
+        this.itemStart = itemStart;
+        this.itemBuild = itemBuild;
+    }
+
+    //    @Field("gameVersion_")
+    //    private String version;
 }

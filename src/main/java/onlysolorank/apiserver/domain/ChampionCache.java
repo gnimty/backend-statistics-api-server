@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChampionCache {
 
-    private Map<Long, String> krMap = new HashMap<>();
-    private Map<Long, String> enMap = new HashMap<>();
+    public Map<Long, String> krMap = new HashMap<>();
+    public Map<Long, String> enMap = new HashMap<>();
 
     public void initOnCrawl(List<ChampionDto> champions) {
         krMap = champions.stream().collect(Collectors.toMap(c -> c.getChampionId(), c -> c.getKrName()));

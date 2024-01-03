@@ -3,6 +3,7 @@ package onlysolorank.apiserver.api.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.controller.dto.ChampionAnalysisRes;
+import onlysolorank.apiserver.api.controller.dto.ChampionAramTierRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionTierRes;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.StatisticsService;
@@ -48,12 +49,15 @@ public class ChampionController {
         @RequestParam(value = "brief", defaultValue = "false") Boolean brief,
         @RequestParam(value = "queue_type", defaultValue = "RANK_SOLO") QueueType queueType) {
 
+        if(queueType==QueueType.ALL){
+            queueType= QueueType.RANK_SOLO;
+        }
         switch (queueType) {
             case RANK_SOLO:
-                ChampionTierRes result = statisticsService.getChampionTierList(brief, tier);
-                return CommonResponse.success(result);
             case RANK_FLEX:
+                return CommonResponse.success(statisticsService.getChampionTierList(queueType, brief, tier));
             case ARAM:
+                return CommonResponse.success(statisticsService.getChampionAramTierList(queueType, brief, tier));
         }
 
         return null;

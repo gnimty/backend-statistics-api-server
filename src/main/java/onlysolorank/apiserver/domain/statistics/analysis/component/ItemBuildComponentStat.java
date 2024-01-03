@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class ItemRarityComponentStat extends BaseComponentStat {
+public class ItemBuildComponentStat extends BaseComponentStat {
 
-    private List<Long> itemRarity;
+    private List<Long> itemBuild;
 }

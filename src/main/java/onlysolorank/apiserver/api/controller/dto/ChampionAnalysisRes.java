@@ -8,7 +8,7 @@ import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
 import onlysolorank.apiserver.domain.dto.Position;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBootsComponentStat;
-import onlysolorank.apiserver.domain.statistics.analysis.component.ItemRarityComponentStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBuildComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemStartComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.PerkComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.SkillComponentStat;
@@ -45,22 +45,21 @@ public class ChampionAnalysisRes {
 
     private List<ItemStartComponentStat> initialItemBuilds;
     private List<ItemBootsComponentStat> shoesBuilds;
-    private List<ItemRarityComponentStat> itemBuilds;
+    private List<ItemBuildComponentStat> itemBuilds;
     private List<SkillComponentStat> skillBuilds;
 
 
     // TODO 추후 공급되는 데이터 자체의 List 수를 제한할 예정
-    public static ChampionAnalysisRes toRes(ChampionAnalysis analysis, List<BaseCounter> counters,
-        List<BaseCounter> easies, ChampionTierDto championTier) {
+    public static ChampionAnalysisRes toRes(ChampionAnalysis analysis, ChampionTierDto championTier) {
         return ChampionAnalysisRes.builder()
-            .counterChampions(counters)
-            .easyChampions(easies)
+//            .counterChampions(counters)
+//            .easyChampions(easies)
             .spellBuilds(analysis.getSummonerSpell())
-            .perkBuilds(analysis.getPerks().subList(0, 3))
+//            .perkBuilds(analysis.getPerks().subList(0, 3))
             .statPerkBuilds(analysis.getStatPerks().subList(0, 2))
             .initialItemBuilds(analysis.getItemStart().subList(0, 2))
-            .shoesBuilds(analysis.getItemBoots().subList(0, 2))
-            .itemBuilds(analysis.getItemRarity().subList(0, 4))
+//            .shoesBuilds(analysis.getItemBoots().subList(0, 2))
+            .itemBuilds(analysis.getItemBuild().subList(0, 4))
             .skillBuilds(analysis.getSkillTree().subList(0, 1))
             .position(analysis.getPosition())
             .championTier(championTier)
