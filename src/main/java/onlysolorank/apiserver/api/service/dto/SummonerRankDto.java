@@ -32,8 +32,6 @@ public class SummonerRankDto {
     private String internalTagName;
     private Integer summonerLevel;
     private Integer profileIconId;
-    private List<Long> mostPlayedChampionIds;
-    private List<Position> mostLanes;
 
     private Integer rank;
     private SummonerTierDto tierInfo;
@@ -43,17 +41,6 @@ public class SummonerRankDto {
         this.tierInfo = SummonerTierDto.from(summoner, queueType);
         this.summonerLevel = summoner.getSummonerLevel();
         this.profileIconId = summoner.getProfileIconId();
-
-        if(queueType==QueueType.RANK_SOLO){
-            this.mostPlayedChampionIds = summoner.getMostChampionIds();
-            this.mostLanes = summoner.getMostLanes();
-
-        }else if(queueType==QueueType.RANK_FLEX){
-            this.mostPlayedChampionIds = summoner.getMostChampionIdsFlex();
-            this.mostLanes = summoner.getMostLanesFlex();
-        }else{
-            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE, "소환사 랭크 정보 QueueType parameter는 RANK_SOLO 또는 RANK_FLEX의 queueType만 받습니다.");
-        }
 
         this.puuid = summoner.getPuuid();
         this.summonerName = summoner.getName();
