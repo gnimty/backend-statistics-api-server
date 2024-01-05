@@ -34,6 +34,7 @@ import onlysolorank.apiserver.domain.statistics.analysis.component.StatPerkCompo
 @Builder
 public class ChampionAnalysisRes {
     private Long championId;
+
     private Lane lane;
     private ChampionTierDto championTier;
     private List<CounterStat> counterChampions;

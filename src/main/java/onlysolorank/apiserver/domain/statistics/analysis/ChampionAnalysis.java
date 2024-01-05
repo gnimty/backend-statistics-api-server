@@ -45,7 +45,6 @@ public class ChampionAnalysis extends ChampionStatsRank {
     @Field("counter")
     private List<CounterStat> counters;
 
-
     public ChampionAnalysis(String tier, Long championId, Lane position, Double winRate,
         Double pickRate, Double banRate, Long plays, Double score, List<StatPerkComponentStat> statPerks,
         List<PerkComponentStat> perks, List<SpellComponentStat> summonerSpell, List<SkillComponentStat> skillTree,
