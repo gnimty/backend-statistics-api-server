@@ -23,11 +23,11 @@ import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.analysis.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
+import onlysolorank.apiserver.domain.statistics.analysis.ChampionPatch;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
 import onlysolorank.apiserver.repository.analysis.ChampionAnalysisRepository;
 import onlysolorank.apiserver.repository.champion.ChampionRepository;
-import onlysolorank.apiserver.repository.counter.ChampionCounterRepository;
-import onlysolorank.apiserver.repository.statistics.ChampionStatisticsRepositoryCustom;
+import onlysolorank.apiserver.repository.patch.ChampionPatchRepository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -49,12 +49,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StatisticsService {
 
-    private final ChampionStatisticsRepositoryCustom championStatisticsRepositoryCustom;
     private final ChampionAnalysisRepository championAnalysisRepository;
     private final ChampionRepository championRepository;
-    private final ChampionCounterRepository championCounterRepository;
     private final ChampionCache championCache;
     private final AssetService assetService;
+    private final ChampionPatchRepository championPatchRepository;
 
     private static final QueueType QUEUE_TYPE_ON_DETAIL = QueueType.RANK_SOLO;
 
@@ -137,8 +136,9 @@ public class StatisticsService {
 
         // 3. 추적한 position 정보로 counter champion, easy champion 얻기
         ChampionAnalysis analysis = optionalAnalysis.get();
-//        List<BaseCounter> counterChampions = championCounterRepository.findCounterChampions(
-//            champion.getChampionId(), analysis.getPosition(), true);
+
+        String version = assetService.getLatestVersionString();
+        List<ChampionPatch> patches = championPatchRepository.findByVersionLessThanEqualAndAndChampionId(version, analysis.getChampionId().toString());
 //        List<BaseCounter> easyChampions = championCounterRepository.findCounterChampions(
 //            champion.getChampionId(), analysis.getPosition(), false);
 
@@ -150,10 +150,9 @@ public class StatisticsService {
 //        } else {
 //        }
 
-
         ChampionTierDto championTierDto = ChampionTierDto.fromRankTier(analysis, championName);
 
-        return ChampionAnalysisRes.toRes(analysis, championTierDto);
+        return ChampionAnalysisRes.toRes(analysis, championTierDto, patches);
     }
 
 }

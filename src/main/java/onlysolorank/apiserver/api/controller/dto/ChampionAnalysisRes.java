@@ -7,6 +7,8 @@ import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
 import onlysolorank.apiserver.domain.dto.Position;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
+import onlysolorank.apiserver.domain.statistics.analysis.ChampionPatch;
+import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBootsComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBuildComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemStartComponentStat;
@@ -14,7 +16,6 @@ import onlysolorank.apiserver.domain.statistics.analysis.component.PerkComponent
 import onlysolorank.apiserver.domain.statistics.analysis.component.SkillComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.SpellComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.StatPerkComponentStat;
-import onlysolorank.apiserver.domain.statistics.analysis.counter.BaseCounter;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -32,11 +33,11 @@ import onlysolorank.apiserver.domain.statistics.analysis.counter.BaseCounter;
 @AllArgsConstructor
 @Builder
 public class ChampionAnalysisRes {
-
+    private Long championId;
     private Position position;
     private ChampionTierDto championTier;
-    private List<BaseCounter> counterChampions;
-    private List<BaseCounter> easyChampions;
+    private List<CounterStat> counterChampions;
+//    private List<BaseCounter> easyChampions;
 
     private List<SpellComponentStat> spellBuilds;
 
@@ -48,16 +49,19 @@ public class ChampionAnalysisRes {
     private List<ItemBuildComponentStat> itemBuilds;
     private List<SkillComponentStat> skillBuilds;
 
+    private List<ChampionPatch> patches;
 
     // TODO 추후 공급되는 데이터 자체의 List 수를 제한할 예정
-    public static ChampionAnalysisRes toRes(ChampionAnalysis analysis, ChampionTierDto championTier) {
+    public static ChampionAnalysisRes toRes(ChampionAnalysis analysis, ChampionTierDto championTier, List<ChampionPatch> patches) {
         return ChampionAnalysisRes.builder()
-//            .counterChampions(counters)
+            .championId(analysis.getChampionId())
+            .counterChampions(analysis.getCounters())
 //            .easyChampions(easies)
             .spellBuilds(analysis.getSummonerSpell())
-//            .perkBuilds(analysis.getPerks().subList(0, 3))
+            .perkBuilds(analysis.getPerks().subList(0, 3))
             .statPerkBuilds(analysis.getStatPerks().subList(0, 2))
             .initialItemBuilds(analysis.getItemStart().subList(0, 2))
+            .patches(patches)
 //            .shoesBuilds(analysis.getItemBoots().subList(0, 2))
             .itemBuilds(analysis.getItemBuild().subList(0, 4))
             .skillBuilds(analysis.getSkillTree().subList(0, 1))

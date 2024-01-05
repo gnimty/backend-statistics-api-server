@@ -8,8 +8,6 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import onlysolorank.apiserver.repository.analysis.ChampionAnalysisRepository;
-import onlysolorank.apiserver.repository.counter.ChampionCounterRepository;
-import onlysolorank.apiserver.repository.statistics.ChampionStatisticsRepositoryV2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -35,9 +33,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  */
 
 @Configuration
-@EnableMongoRepositories(basePackageClasses = {ChampionStatisticsRepositoryV2.class,
-    ChampionAnalysisRepository.class,
-    ChampionCounterRepository.class}, mongoTemplateRef = "secondaryMongoTemplate")
+@EnableMongoRepositories(basePackageClasses = {
+    ChampionAnalysisRepository.class}, mongoTemplateRef = "secondaryMongoTemplate")
 @EnableConfigurationProperties
 public class SecondaryConfig {
 
