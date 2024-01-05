@@ -2,6 +2,7 @@ package onlysolorank.apiserver.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import onlysolorank.apiserver.config.converter.LongToStringConverter;
 import onlysolorank.apiserver.config.converter.StringToPositionConverter;
 import onlysolorank.apiserver.config.converter.StringToTierConverter;
 import onlysolorank.apiserver.config.converter.StringToTierStatConverter;
@@ -36,6 +37,7 @@ public class MongoConfig {
         converters.add(new StringToTierConverter());
         converters.add(new StringToPositionConverter());
         converters.add(new StringToTierStatConverter());
+        converters.add(new LongToStringConverter());
         return new MongoCustomConversions(converters);
     }
 

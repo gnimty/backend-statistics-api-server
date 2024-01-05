@@ -14,8 +14,8 @@ import onlysolorank.apiserver.repository.crawl.VersionRepository;
 import onlysolorank.apiserver.repository.history.SummonerHistoryRepository;
 import onlysolorank.apiserver.repository.match.MatchRepository;
 import onlysolorank.apiserver.repository.participant.ParticipantRepository;
+import onlysolorank.apiserver.repository.patch.ChampionPatchRepository;
 import onlysolorank.apiserver.repository.season.SeasonRepository;
-import onlysolorank.apiserver.repository.statistics.ChampionStatisticsRepository;
 import onlysolorank.apiserver.repository.summoner.SummonerRepository;
 import onlysolorank.apiserver.repository.summoner_match.SummonerMatchRepository;
 import onlysolorank.apiserver.repository.summoner_play.SummonerPlayRepository;
@@ -49,7 +49,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(
     basePackageClasses = {
         SummonerRepository.class,
-        ChampionStatisticsRepository.class,
+//        ChampionStatisticsRepository.class,
         ChampionSaleRepository.class,
         SkinSaleRepository.class,
         VersionRepository.class,
@@ -60,7 +60,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
         ParticipantRepository.class,
         SummonerPlayRepository.class,
         SummonerHistoryRepository.class,
-        SeasonRepository.class
+        SeasonRepository.class,
+        ChampionPatchRepository.class
     },
     mongoTemplateRef = "primaryMongoTemplate")
 @EnableConfigurationProperties
