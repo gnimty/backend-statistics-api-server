@@ -12,16 +12,13 @@ import onlysolorank.apiserver.api.controller.dto.ChampionAnalysisRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionAramTierRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionTierRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionTierRes.ChampionTierByPosition;
-import onlysolorank.apiserver.api.controller.dto.Period;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
-import onlysolorank.apiserver.api.service.dto.ChampionTotalStatDto;
 import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.ChampionCache;
-import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
-import onlysolorank.apiserver.domain.statistics.analysis.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionPatch;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
@@ -68,7 +65,7 @@ public class StatisticsService {
 
         List<ChampionTierByPosition> results = new ArrayList<>();
 
-        for (Position position : Position.getActualPosition()) {
+        for (Lane position : Lane.getActualPosition()) {
 
             List<ChampionStatsRank> championTierList = championAnalysisRepository.findChampionTierList(
                 queueType, position, brief, tier.name().toUpperCase());
@@ -109,16 +106,16 @@ public class StatisticsService {
     }
 
 
-    public ChampionAnalysisRes getChampionAnalysis(String championName, Position position, Tier tier) {
+    public ChampionAnalysisRes getChampionAnalysis(String championName, Lane lane, Tier tier) {
 
         Champion champion = championRepository.findOneByEnName(championName).orElseThrow(
             () -> new CustomException(RESULT_NOT_FOUND, "champion 이름에 해당하는 챔피언 정보가 없습니다."));
 
         Optional<ChampionAnalysis> optionalAnalysis;
 
-        // 1. position==UNKNOWN일 경우 해당 티어대에서 가장 많이 플레이한 position 정보로 변경하기
+        // 1. lane==UNKNOWN일 경우 해당 티어대에서 가장 많이 플레이한 lane 정보로 변경하기
         // db.getCollection("champion_statistics_detail").find({"championId":517, "tier":"EMERALD"}).sort({"gameVersion_":-1, "pickRate":-1}).limit(1)
-        if (position == Position.UNKNOWN) {
+        if (lane == Lane.UNKNOWN) {
             optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndTier(QUEUE_TYPE_ON_DETAIL,
                 champion.getChampionId(), tier.name().toUpperCase());
         }
@@ -126,15 +123,15 @@ public class StatisticsService {
         // 2. position이 지정되어 있다면 해당 정보들로 바로 쿼리
         else {
             optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndPositionAndTier(QUEUE_TYPE_ON_DETAIL,
-                champion.getChampionId(), Position.valueOf(position.name()), tier.name().toUpperCase());
+                champion.getChampionId(), Lane.valueOf(lane.name()), tier.name().toUpperCase());
         }
 
         if (!optionalAnalysis.isPresent()) {
             throw new CustomException(RESULT_NOT_FOUND,
-                String.format("%s에 해당하는 챔피언 분석 정보가 존재하지 않습니다.", position.getValue()));
+                String.format("%s에 해당하는 챔피언 분석 정보가 존재하지 않습니다.", lane.getValue()));
         }
 
-        // 3. 추적한 position 정보로 counter champion, easy champion 얻기
+        // 3. 추적한 lane 정보로 counter champion, easy champion 얻기
         ChampionAnalysis analysis = optionalAnalysis.get();
 
         String version = assetService.getLatestVersionString();
@@ -142,7 +139,7 @@ public class StatisticsService {
 //        List<BaseCounter> easyChampions = championCounterRepository.findCounterChampions(
 //            champion.getChampionId(), analysis.getPosition(), false);
 
-//        BaseChampionTier championTier = championStatisticsRepositoryCustom.findTier(position,champion.getChampionId())
+//        BaseChampionTier championTier = championStatisticsRepositoryCustom.findTier(lane,champion.getChampionId())
 //            .orElseGet(null);
 
 //        if (championTier == null) {

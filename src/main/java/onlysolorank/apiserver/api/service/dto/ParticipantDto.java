@@ -6,7 +6,7 @@ import lombok.Data;
 import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.domain.dto.ItemBundle;
 import onlysolorank.apiserver.domain.dto.Perk;
-import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Lane;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -31,7 +31,7 @@ public class ParticipantDto {
     //    private Boolean isMe;
     private Boolean win;
     private Integer teamId;
-    private Position position;
+    private Lane lane;
     private Integer kill;
     private Integer death;
     private Integer assist;
@@ -102,9 +102,9 @@ public class ParticipantDto {
         this.skillBuilds = participant.getSkillBuild();
 
         try {
-            this.position = Position.valueOf(participant.getLane());
+            this.lane = Lane.valueOf(participant.getLane());
         } catch (IllegalArgumentException e) {
-            this.position = Position.UNKNOWN;
+            this.lane = Lane.UNKNOWN;
         }
 
         this.summonerName = summonerName;

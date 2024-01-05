@@ -3,11 +3,9 @@ package onlysolorank.apiserver.api.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.controller.dto.ChampionAnalysisRes;
-import onlysolorank.apiserver.api.controller.dto.ChampionAramTierRes;
-import onlysolorank.apiserver.api.controller.dto.ChampionTierRes;
 import onlysolorank.apiserver.api.response.CommonResponse;
 import onlysolorank.apiserver.api.service.StatisticsService;
-import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
 import org.springframework.validation.annotation.Validated;
@@ -66,10 +64,10 @@ public class ChampionController {
     @GetMapping("/stats/detail/{champion_name}")
     public CommonResponse<ChampionAnalysisRes> getSpecificChampionDetail(
         @PathVariable("champion_name") String championName,
-        @RequestParam(value = "position", defaultValue = "UNKNOWN") Position position,
+        @RequestParam(value = "lane", defaultValue = "UNKNOWN") Lane lane,
         @RequestParam(value = "tier", defaultValue = "emerald") Tier tier) {
 
-        ChampionAnalysisRes result = statisticsService.getChampionAnalysis(championName, position, tier);
+        ChampionAnalysisRes result = statisticsService.getChampionAnalysis(championName, lane, tier);
 
         return CommonResponse.success(result);
     }

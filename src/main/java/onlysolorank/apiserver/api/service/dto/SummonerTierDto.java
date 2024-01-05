@@ -4,7 +4,6 @@ import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
@@ -12,10 +11,9 @@ import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.domain.dto.History;
-import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 
 /**
@@ -49,7 +47,7 @@ public class SummonerTierDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double winRate;
     private List<Long> mostChampionIds;
-    private List<Position> mostLanes;
+    private List<Lane> mostLanes;
     private Integer mmr;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

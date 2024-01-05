@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
-import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Lane;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -54,7 +54,7 @@ public class Summoner {
     @Field("leaguePoints")
     private Integer lp;
     private Integer mmr;
-    private List<Position> mostLanes;
+    private List<Lane> mostLanes;
     private List<Long> mostChampionIds;
     @Field("wins")
     private Integer totalWin;
@@ -70,7 +70,7 @@ public class Summoner {
     @Field("mmr_flex")
     private Integer mmrFlex;
     @Field("mostLanes_flex")
-    private List<Position> mostLanesFlex;
+    private List<Lane> mostLanesFlex;
     @Field("mostChampionIds_flex")
     private List<Long> mostChampionIdsFlex;
     @Field("wins_flex")

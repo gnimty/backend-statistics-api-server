@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
-import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionPatch;
 import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStat;
@@ -34,7 +34,7 @@ import onlysolorank.apiserver.domain.statistics.analysis.component.StatPerkCompo
 @Builder
 public class ChampionAnalysisRes {
     private Long championId;
-    private Position position;
+    private Lane lane;
     private ChampionTierDto championTier;
     private List<CounterStat> counterChampions;
 //    private List<BaseCounter> easyChampions;
@@ -65,7 +65,7 @@ public class ChampionAnalysisRes {
 //            .shoesBuilds(analysis.getItemBoots().subList(0, 2))
             .itemBuilds(analysis.getItemBuild().subList(0, 4))
             .skillBuilds(analysis.getSkillTree().subList(0, 1))
-            .position(analysis.getPosition())
+            .lane(analysis.getPosition())
             .championTier(championTier)
             .build();
 

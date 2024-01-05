@@ -3,7 +3,7 @@ package onlysolorank.apiserver.repository.analysis;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.statistics.analysis.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
@@ -54,7 +54,7 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
 
     @Override
     public Optional<ChampionAnalysis> findTop1ByChampionIdAndPositionAndTier(QueueType queueType, Long championId,
-        Position position, String upperTier) {
+        Lane position, String upperTier) {
 
         Query query = new Query(Criteria.where("championId").is(championId).and("teamPosition").is(position));
 
@@ -78,7 +78,7 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
     }
 
     @Override
-    public List<ChampionStatsRank> findChampionTierList(QueueType queueType, Position position, Boolean brief, String upperTier) {
+    public List<ChampionStatsRank> findChampionTierList(QueueType queueType, Lane position, Boolean brief, String upperTier) {
         Query query = new Query(Criteria.where("teamPosition").is(position))
             .with(Sort.by(Sort.Order.desc("score")));
 
