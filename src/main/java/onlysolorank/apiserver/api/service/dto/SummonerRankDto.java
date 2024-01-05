@@ -1,14 +1,8 @@
 package onlysolorank.apiserver.api.service.dto;
 
-import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
-
-import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.api.exception.CustomException;
-import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.domain.Summoner;
-import onlysolorank.apiserver.domain.dto.Position;
 import onlysolorank.apiserver.domain.dto.QueueType;
 
 /**

@@ -12,7 +12,7 @@ package onlysolorank.apiserver.domain.dto;
  * 2023/07/31        solmin       최초 생성
  */
 
-public enum Position {
+public enum Lane {
     TOP("탑"),
     JUNGLE("정글"),
     MIDDLE("미드"),
@@ -23,16 +23,16 @@ public enum Position {
 
     private final String value;
 
-    Position(String value) {
+    Lane(String value) {
         this.value = value;
     }
 
-    public static Position defaultValue() {
+    public static Lane defaultValue() {
         return UNKNOWN;
     }
 
-    public static Position[] getActualPosition() {
-        Position[] targets = {TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY};
+    public static Lane[] getActualPosition() {
+        Lane[] targets = {TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY};
         return targets;
     }
 

@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
-import onlysolorank.apiserver.domain.dto.Position;
-import onlysolorank.apiserver.domain.statistics.analysis.BaseChampionStat;
+import onlysolorank.apiserver.domain.dto.Lane;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -33,7 +32,7 @@ public class ChampionTierRes {
     @Builder
     public static class ChampionTierByPosition {
 
-        private Position position;
+        private Lane position;
         private List<ChampionTierDto> champions;
     }
 }

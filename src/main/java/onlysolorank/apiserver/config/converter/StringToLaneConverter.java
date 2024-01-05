@@ -1,6 +1,6 @@
 package onlysolorank.apiserver.config.converter;
 
-import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Lane;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.stereotype.Component;
@@ -19,18 +19,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ReadingConverter
-public class StringToPositionConverter implements Converter<String, Position> {
+public class StringToLaneConverter implements Converter<String, Lane> {
 
     @Override
-    public Position convert(String source) {
+    public Lane convert(String source) {
         try {
             if (source == null) {
                 throw new IllegalArgumentException();
             }
 
-            return Position.valueOf(source);
+            return Lane.valueOf(source);
         } catch (IllegalArgumentException e) {
-            return Position.UNKNOWN;
+            return Lane.UNKNOWN;
         }
     }
 }

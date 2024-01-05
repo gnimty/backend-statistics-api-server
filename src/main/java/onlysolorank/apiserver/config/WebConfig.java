@@ -2,7 +2,7 @@ package onlysolorank.apiserver.config;
 
 import onlysolorank.apiserver.config.converter.StringToBooleanConverter;
 import onlysolorank.apiserver.config.converter.StringToPeriodConverter;
-import onlysolorank.apiserver.config.converter.StringToPositionConverter;
+import onlysolorank.apiserver.config.converter.StringToLaneConverter;
 import onlysolorank.apiserver.config.converter.StringToQueueTypeConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToPeriodConverter());
-        registry.addConverter(new StringToPositionConverter());
+        registry.addConverter(new StringToLaneConverter());
         registry.addConverter(new StringToBooleanConverter());
         registry.addConverter(new StringToQueueTypeConverter());
     }

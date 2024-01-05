@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
-import onlysolorank.apiserver.domain.dto.Position;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto

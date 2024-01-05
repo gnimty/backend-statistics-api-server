@@ -1,9 +1,7 @@
 package onlysolorank.apiserver.domain.statistics.analysis;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import onlysolorank.apiserver.domain.dto.Position;
-import org.springframework.data.annotation.Id;
+import onlysolorank.apiserver.domain.dto.Lane;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -24,13 +22,13 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class ChampionStatsRank extends BaseChampionStat {
 
     @Field("teamPosition")
-    private Position position;
+    private Lane position;
 
     @Field("ban_rate")
     private Double banRate;
 
     public ChampionStatsRank(String tier, Long championId, Double winRate, Double pickRate, Long plays,
-        Double score, Position position, Double banRate) {
+        Double score, Lane position, Double banRate) {
         super(tier, championId, winRate, pickRate, plays, score);
         this.position = position;
         this.banRate = banRate;

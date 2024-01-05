@@ -1,7 +1,7 @@
 package onlysolorank.apiserver.repository.analysis;
 
 import java.util.Optional;
-import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
@@ -34,7 +34,7 @@ class ChampionAnalysisRankRepositoryTest {
 
     @Test
     void 챔피언_티어_포지션으로_검색() {
-        Optional<ChampionAnalysis> byChampionIdAndPositionAndTier = championAnalysisRepository.findTop1ByChampionIdAndPositionAndTier(QueueType.RANK_SOLO, AATROX, Position.TOP, Tier.diamond.name().toUpperCase());
+        Optional<ChampionAnalysis> byChampionIdAndPositionAndTier = championAnalysisRepository.findTop1ByChampionIdAndPositionAndTier(QueueType.RANK_SOLO, AATROX, Lane.TOP, Tier.diamond.name().toUpperCase());
 
         System.out.println("byChampionIdAndPositionAndTier = " + byChampionIdAndPositionAndTier.get());
     }

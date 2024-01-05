@@ -2,9 +2,6 @@ package onlysolorank.apiserver.domain.statistics.analysis;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import onlysolorank.apiserver.domain.dto.Position;
-import onlysolorank.apiserver.domain.dto.Tier;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 

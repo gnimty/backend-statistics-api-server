@@ -3,7 +3,7 @@ package onlysolorank.apiserver.domain.statistics.analysis;
 import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
-import onlysolorank.apiserver.domain.dto.Position;
+import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBuildComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemStartComponentStat;
@@ -45,8 +45,7 @@ public class ChampionAnalysis extends ChampionStatsRank {
     @Field("counter")
     private List<CounterStat> counters;
 
-
-    public ChampionAnalysis(String tier, Long championId, Position position, Double winRate,
+    public ChampionAnalysis(String tier, Long championId, Lane position, Double winRate,
         Double pickRate, Double banRate, Long plays, Double score, List<StatPerkComponentStat> statPerks,
         List<PerkComponentStat> perks, List<SpellComponentStat> summonerSpell, List<SkillComponentStat> skillTree,
         List<ItemStartComponentStat> itemStart, List<ItemBuildComponentStat> itemBuild, List<CounterStat> counters) {
