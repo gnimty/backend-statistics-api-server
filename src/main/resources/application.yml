@@ -10,7 +10,32 @@ spring:
 #  password: ${MONGO_PASSWORD}
 #  timeZone: Asia/Seoul
 #  uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}?timezone=Asia/Seoul
+mongodb:
+  primary:
+    host: ${MONGO_HOST}
+    port: ${MONGO_PORT}
+    database: ${MONGO_RIOTDATA_DB}
+    username: ${MONGO_USERNAME}
+    password: ${MONGO_PASSWORD}
+    timeZone: Asia/Seoul
+    uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_RIOTDATA_DB}?timezone=Asia/Seoul
+  secondary:
+    host: ${MONGO_HOST}
+    port: ${MONGO_PORT}
+    database: ${MONGO_STATISTICS_DB}
+    username: ${MONGO_USERNAME}
+    password: ${MONGO_PASSWORD}
+    timeZone: Asia/Seoul
+    uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_STATISTICS_DB}?timezone=Asia/Seoul
 
+
+springdoc:
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    path: '/statistics/swagger-ui.html'
+    enabled: true
 
 logging:
   # MongoRepository logger setting

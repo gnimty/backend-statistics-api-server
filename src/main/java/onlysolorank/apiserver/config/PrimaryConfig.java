@@ -21,6 +21,7 @@ import onlysolorank.apiserver.repository.summoner_match.SummonerMatchRepository;
 import onlysolorank.apiserver.repository.summoner_play.SummonerPlayRepository;
 import onlysolorank.apiserver.repository.team.TeamRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -67,6 +68,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableConfigurationProperties
 public class PrimaryConfig {
 
+    @Value("${spring.config.activate.on-profile}")
+    private String profile;
+
     @Bean("primaryProperties")
     @Qualifier("primaryProperties")
     @ConfigurationProperties(prefix = "mongodb.primary")
@@ -80,7 +84,9 @@ public class PrimaryConfig {
     @Qualifier("primaryMongoClient")
     public MongoClient mongoClient(
         @Qualifier("primaryProperties") MongoProperties mongoProperties) {
-
+        if (profile.equals("local")){
+            return MongoClients.create(mongoProperties.getUri());
+        }
         MongoCredential credential = MongoCredential
             .createCredential(mongoProperties.getUsername(),
                 mongoProperties.getAuthenticationDatabase(), mongoProperties.getPassword());

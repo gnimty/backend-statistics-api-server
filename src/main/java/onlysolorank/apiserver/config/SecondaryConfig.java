@@ -9,6 +9,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import onlysolorank.apiserver.repository.analysis.ChampionAnalysisRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -38,6 +39,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableConfigurationProperties
 public class SecondaryConfig {
 
+    @Value("${spring.config.activate.on-profile}")
+    private String profile;
     @Bean(name = "secondaryProperties")
     @ConfigurationProperties(prefix = "mongodb.secondary")
     @Qualifier("secondaryProperties")
@@ -49,7 +52,9 @@ public class SecondaryConfig {
     @Qualifier("secondaryMongoClient")
     public MongoClient mongoClient(
         @Qualifier("secondaryProperties") MongoProperties mongoProperties) {
-
+        if (profile.equals("local")){
+            return MongoClients.create(mongoProperties.getUri());
+        }
         MongoCredential credential = MongoCredential
             .createCredential(mongoProperties.getUsername(),
                 mongoProperties.getAuthenticationDatabase(), mongoProperties.getPassword());
