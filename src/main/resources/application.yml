@@ -2,6 +2,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+
 #mongodb:
 #  host: ${MONGO_HOST}
 #  port: ${MONGO_PORT}
@@ -33,6 +34,7 @@ springdoc:
   api-docs:
     groups:
       enabled: true
+    path: '/statistics/v3/api-docs'
   swagger-ui:
     path: '/statistics/swagger-ui.html'
     enabled: true
