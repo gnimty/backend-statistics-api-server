@@ -18,7 +18,7 @@ import lombok.Getter;
 @Getter
 public enum QueueType {
     RANK_SOLO("개인/2인 랭크 게임", "소환사의 협곡", 420 ),
-    BLIND("일반 게임", "소환사의 협곡", 430),
+    BLIND("일반 게임", "소환사의 협곡", 490),
     RANK_FLEX("자유 랭크 게임", "소환사의 협곡", 440),
     ARAM("칼바람 나락", "칼바람 나락", 450),
     ALL("상관없음", "상관없음", null );

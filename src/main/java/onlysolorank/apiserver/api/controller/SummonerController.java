@@ -1,5 +1,11 @@
 package onlysolorank.apiserver.api.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,6 +13,8 @@ import java.util.Optional;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onlysolorank.apiserver.api.constant.ApiDescription;
+import onlysolorank.apiserver.api.constant.ApiSummary;
 import onlysolorank.apiserver.api.controller.dto.AutoCompleteRes;
 import onlysolorank.apiserver.api.controller.dto.CurrentGameRes;
 import onlysolorank.apiserver.api.controller.dto.KeywordReq;
@@ -58,12 +66,17 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Validated
 @RequestMapping("/statistics/summoners")
+@Tag(name = "/statistics/summoners", description = "소환사 관련 정보 조회")
 public class SummonerController {
 
     private final SummonerService summonerService;
 
 
     @GetMapping("/autocomplete")
+    @Operation(summary = ApiSummary.GET_AUTOCOMPLETE, description = ApiDescription.GET_AUTOCOMPLETE)
+    @Parameter(in = ParameterIn.QUERY, name = "keyword", description = "소환사 이름 검색어,"
+            + "[소환사이름]-[태그라인] 형식",
+            required = true, example = "hideonbush-kr1")
     public CommonResponse<AutoCompleteRes> getAutoCompleteResults(
         @ModelAttribute @Valid KeywordReq keywordReq) {
 
@@ -78,6 +91,9 @@ public class SummonerController {
     }
 
     @GetMapping("/{summoner_tag_name}")
+    @Operation(summary = ApiSummary.GET_SUMMONER, description = ApiDescription.GET_SUMMONER)
+    @Parameter(in = ParameterIn.PATH, name = "summoner_tag_name", description = "조회할 소환사 태그네임",
+        required = true, example = "김솔민-top")
     public CommonResponse<SummonerDto> getSummoner(
         @PathVariable("summoner_tag_name") String summonerTagName) {
 
@@ -88,7 +104,17 @@ public class SummonerController {
 
 
     @GetMapping("/matches/{summoner_tag_name}")
-    public CommonResponse<SummonerMatchRes> getSummonerMatchInfoBySummonerName(
+    @Operation(summary = ApiSummary.GET_SUMMONER_MATCH_INFO, description = ApiDescription.GET_SUMMONER_MATCH_INFO)
+    @Parameters({
+        @Parameter(in = ParameterIn.PATH, name = "summoner_tag_name", description = "조회할 소환사 태그네임",
+            required = true, example = "김솔민-top"),
+        @Parameter(in = ParameterIn.QUERY, name = "ended", description = "특정 게임 이전에 진행한 게임을 조회할 때 사용하는 ID 필터로, "
+            + "해당 필드를 사용하면 소환사 정보를 제외한 매치 리스트만 넘겨짐",
+            required = true, example = "KR_6841389632"),
+        @Parameter(in = ParameterIn.QUERY, name = "queue_type", description = "검색할 큐 타입 정보",
+            example = "ALL"),
+    })
+    public CommonResponse<SummonerMatchRes> getSummonerMatchInfo(
         @PathVariable("summoner_tag_name") String summonerTagName,
         @RequestParam("ended") Optional<String> lastMatchId,
         @RequestParam(value = "queue_type", defaultValue = "ALL") QueueType queueType) {
@@ -107,20 +133,26 @@ public class SummonerController {
     }
 
     @GetMapping("/matches/id/{match_id}")
-    public CommonResponse<MatchDetailRes> getMatchDetailByMatchId(
+    @Operation(summary = ApiSummary.GET_MATCH_DETAIL, description = ApiDescription.GET_MATCH_DETAIL)
+    @Parameter(in = ParameterIn.PATH, name = "match_id", description = "조회할 전적 ID",
+        required = true, example = "KR_6841389632")
+    public CommonResponse<MatchDetailRes> getMatchDetail(
         @PathVariable("match_id") String matchId) {
         return CommonResponse.success(summonerService.getMatchDetail(matchId));
     }
 
 
-    /**
-     * Gets all champion play info by puuid.
-     *
-     * @param summonerName the summoner name
-     * @return the all champion play info by puuid
-     */
     @GetMapping("/champion/{summoner_tag_name}")
-    public CommonResponse<SummonerPlayRes> getAllChampionPlayInfoBySummonerName(
+    @Operation(summary = ApiSummary.GET_CHAMPION_PLAYS, description = ApiDescription.GET_CHAMPION_PLAYS)
+    @Parameters({
+        @Parameter(in = ParameterIn.PATH, name = "summoner_tag_name", description = "조회할 소환사 태그네임",
+            required = true, example = "김솔민-top"),
+        @Parameter(in = ParameterIn.QUERY, name = "brief", description = "true로 지정하면 최대 10개의 챔피언 플레이 정보 호출",
+            example = "true"),
+        @Parameter(in = ParameterIn.QUERY, name = "queue_type", description = "검색할 큐 타입 정보",
+            example = "ALL"),
+    })
+    public CommonResponse<SummonerPlayRes> getChampionPlays(
         @PathVariable("summoner_tag_name") String summonerTagName,
         @RequestParam(value = "queue_type", defaultValue = "ALL") QueueType queueType,
         @RequestParam(value = "brief", defaultValue = "false") Boolean brief) {
@@ -139,38 +171,33 @@ public class SummonerController {
             .build());
     }
 
-//    /**
-//     * Gets summoner history.
-//     *
-//     * @param summonerName the summoner name
-//     * @return the summoner history
-//     */
-    // deprecated
-//    @GetMapping("/tier/{summoner_name}")
-//    public CommonResponse<SummonerHistoryRes> getSummonerHistory(
-//        @PathVariable("summoner_name") String summonerName) {
-//        List<SummonerTierDto> results = summonerService.getSummonerHistory(summonerName);
-//
-//        return CommonResponse.success(SummonerHistoryRes.builder()
-//            .histories(results)
-//            .build());
-//    }
-
     @PostMapping("/{puuid}")
+    @Operation(summary = ApiSummary.REFRESH_SUMMONER, description = ApiDescription.REFRESH_SUMMONER)
+    @Parameter(in = ParameterIn.PATH, name = "puuid", description = "갱신할 소환사 PUUID",
+        required = true, example = "rVQ34xrycFeCv2kU8Vjt4rjyaNTGFvaV84Rk5kPvP0-MBg0z8IeQ0UNy6dW0uANYY03hLi5H06AbCQ")
     public CommonResponse refreshSummoner(@PathVariable("puuid") String puuid) {
         summonerService.refreshSummoner(puuid);
 
         return CommonResponse.success("소환사 정보를 성공적으로 갱신했습니다.", HttpStatus.OK);
     }
-
     @GetMapping("/ingame/{summoner_tag_name}")
+    @Operation(summary = ApiSummary.GET_CURRENT_GAME, description = ApiDescription.GET_CURRENT_GAME)
+    @Parameter(in = ParameterIn.PATH, name = "summoner_tag_name", description = "조회할 소환사 태그네임",
+        required = true, example = "김솔민-top")
     public CommonResponse<CurrentGameRes> getCurrentGame(@PathVariable("summoner_tag_name") String summonerTagName) {
         return CommonResponse.success(summonerService.getCurrentGame(summonerTagName));
     }
 
 
     @GetMapping("/together/{summoner_tag_name}")
-    public CommonResponse<RecentMemberRes> getRecentMembers(
+    @Operation(hidden = true)
+    @Parameters({
+        @Parameter(in = ParameterIn.PATH, name = "summoner_tag_name", description = "조회할 소환사 태그네임",
+            required = true, example = "김솔민-top"),
+        @Parameter(in = ParameterIn.QUERY, name = "queue_type", description = "검색할 큐 타입 정보",
+            example = "ALL"),
+    })
+    public CommonResponse<RecentMemberRes> getRecentSummoners(
         @PathVariable("summoner_tag_name") String summonerTagName,
         @RequestParam(value = "queue_type", defaultValue = "RANK_SOLO") QueueType queueType) {
 

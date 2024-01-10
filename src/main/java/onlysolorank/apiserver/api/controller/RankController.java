@@ -1,5 +1,12 @@
 package onlysolorank.apiserver.api.controller;
 
+import static onlysolorank.apiserver.api.constant.ApiSummary.GET_CHAMPION_STATS;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +15,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onlysolorank.apiserver.api.constant.ApiDescription;
+import onlysolorank.apiserver.api.constant.ApiSummary;
 import onlysolorank.apiserver.api.controller.dto.ChampionSpecialistRes;
 import onlysolorank.apiserver.api.controller.dto.SummonerRankPageRes;
 import onlysolorank.apiserver.api.exception.CustomException;
@@ -46,6 +55,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Validated
 @RequestMapping("/statistics/rank")
+@Tag(name = "/statistics/rank", description = "소환사 점수별 또는 챔피언 플레이별 랭킹 정보 조회 컨트롤러")
 public class RankController {
 
     private final static Integer STD_MMR = 2400;
@@ -58,6 +68,15 @@ public class RankController {
      * @return the summoner rank
      */
     @GetMapping("/tier")
+    @Operation(summary = ApiSummary.GET_SUMMONER_RANK, description = ApiDescription.GET_SUMMONER_RANK)
+    @Parameters({
+        @Parameter(in = ParameterIn.QUERY, name = "page", description = "1부터 시작하는 페이지 번호로 1페이지당 최대 100명의 소환사 랭킹정보 노출",
+            required = false, example = "1"),
+        @Parameter(in = ParameterIn.QUERY, name = "size", description = "한 번에 가져올 페이지 사이즈로 1부터 100까지 지정 가능"
+            , required = false, example = "30"),
+        @Parameter(in = ParameterIn.QUERY, name = "queue_type", description = "검색할 큐 타입 정보로, RANK_SOLO 또는 RANK_FLEX만 지정 가능",
+            required = false, example = "RANK_SOLO"),
+    })
     public CommonResponse<SummonerRankPageRes> getSummonerRank(
         @RequestParam(value = "page", defaultValue = "1")
         @Positive(message = "page는 1보다 큰 값이어야 합니다.") Integer page,
@@ -78,7 +97,8 @@ public class RankController {
     }
 
     @GetMapping("/champion/{champion_name}")
-    public CommonResponse getSpecialistsByChampionName(
+    @Operation(summary = ApiSummary.GET_SPECIALISTS, description = ApiDescription.GET_SPECIALISTS, deprecated = true)
+    public CommonResponse getSpecialists(
         @RequestParam(value = "queue", defaultValue = "master") String queue,
         @PathVariable("champion_name") String championName) {
 

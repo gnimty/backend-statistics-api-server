@@ -3,6 +3,8 @@ package onlysolorank.apiserver.api.response;
 import static onlysolorank.apiserver.api.handler.GlobalExceptionHandler.CustomFieldError;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -65,8 +67,8 @@ public class CommonResponse<T> {
     }
 
     @Data
-    private static class ApiStatus {
-
+    @Schema(hidden = true)
+    public static class ApiStatus {
         private String message;
         private int code;
         @JsonInclude(JsonInclude.Include.NON_NULL)
