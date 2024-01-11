@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.Summoner;
@@ -22,16 +23,36 @@ import onlysolorank.apiserver.domain.dto.QueueType;
 @Builder
 public class SummonerDto {
 
+    @Schema(example = "Hide on bush", description = "소환사명")
     private String summonerName;
+
+    @Schema(example = "hideonbush", description = "소환사명의 모든 공백 제거 및 lowerCase로 적용한 문자열")
     private String internalName;
+
+    @Schema(example = "KR1", description = "소환사 태그라인")
     private String tagLine;
+
+    @Schema(example = "hideonbush#kr1", description = "internalName + '#' + 태그라인 lowerCase로 적용한 문자열")
     private String internalTagName;
+
+    @Schema(
+        example = "8jSvjaQOO931Iap8kPjFciD5ep55NuFX7eh1KHpe0rCPQyQmkHwN7T3jOVgtPLS73gmDpnuy8PwHRw",
+        description = "소환사 puuid")
     private String puuid;
+
+    @Schema(example = "2E9PHLIRTUzNE8JIotKPuxWcjCS8TwexrazzQ6w7vghMXA", description = "소환사 id")
     private String summonerId;
+
+    @Schema(example = "6", description = "소환사 프로필 아이콘 id")
     private Integer profileIconId;
+
+    @Schema(example = "260", description = "소환사 레벨")
     private Integer summonerLevel;
 
+    @Schema(description = "솔로랭크 티어 정보")
     private SummonerTierDto soloTierInfo;
+
+    @Schema(description = "솔로랭크 티어 정보")
     private SummonerTierDto flexTierInfo;
 
 

@@ -39,16 +39,17 @@ public class GlobalExceptionHandler {
 
     // 공통 Exception
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<CommonResponse> CommonExceptionHandler(Exception ex,
-        BindingResult bindingResult) {
-        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR),
+    public ResponseEntity<CommonResponse> CommonExceptionHandler(Exception ex) {
+
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(CommonResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage()),
             HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ConversionFailedException.class)
     public ResponseEntity<CommonResponse> ConversionFailedExceptionHandler(
         ConversionFailedException ex) {
-        log.info(ex.getMessage());
+        log.error(ex.getMessage());
         return new ResponseEntity<>(CommonResponse.fail(ErrorCode.INVALID_INPUT_VALUE,
             ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
@@ -56,7 +57,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<CommonResponse> CustomExceptionHandler(CustomException ex) {
-
+        log.error(ex.getMessage());
         return new ResponseEntity<>(CommonResponse.fail(ex.getErrorCode(), ex.getMessage()),
             ex.getErrorCode().getStatus());
     }
@@ -64,23 +65,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<CommonResponse> IllegalArgumentExceptionHandler(
         IllegalArgumentException ex) {
-        log.info(ex.getMessage());
+        log.error(ex.getMessage());
         ErrorCode ec = ErrorCode.INVALID_INPUT_VALUE;
-        return new ResponseEntity<>(CommonResponse.fail(ec), ec.getStatus());
+        return new ResponseEntity<>(CommonResponse.fail(ec, ex.getMessage()), ec.getStatus());
     }
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<CommonResponse> BindExceptionHandler(BindException ex,
         BindingResult result) {
         // BindingResult에서 하나만 가져오기
-        FieldError err = result.getFieldErrors().stream().findFirst().get();
+        log.error("BindExceptionHandler 동작");
+        log.error(ex.getMessage());
 
-//        List<ValidateError> validateErrors = result.getFieldErrors().stream()
-//            .map(e -> ValidateError.builder()
-//                .field(e.getField())
-//                .message(e.getDefaultMessage())
-//                .build()
-//            ).collect(Collectors.toList());
+        FieldError err = result.getFieldErrors().stream().findFirst().get();
 
         return new ResponseEntity<>(CommonResponse.fail(ErrorCode.CONSTRAINT_VIOLATION,
             CustomFieldError.builder()

@@ -1,23 +1,23 @@
 package onlysolorank.apiserver.api.controller;
 
+import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalTagName;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.constant.ApiDescription;
 import onlysolorank.apiserver.api.constant.ApiSummary;
 import onlysolorank.apiserver.api.controller.dto.AutoCompleteRes;
 import onlysolorank.apiserver.api.controller.dto.CurrentGameRes;
-import onlysolorank.apiserver.api.controller.dto.KeywordReq;
 import onlysolorank.apiserver.api.controller.dto.MatchDetailRes;
 import onlysolorank.apiserver.api.controller.dto.RecentMemberRes;
 import onlysolorank.apiserver.api.controller.dto.SummonerMatchRes;
@@ -30,10 +30,10 @@ import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
 import onlysolorank.apiserver.domain.dto.QueueType;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,12 +75,15 @@ public class SummonerController {
     @GetMapping("/autocomplete")
     @Operation(summary = ApiSummary.GET_AUTOCOMPLETE, description = ApiDescription.GET_AUTOCOMPLETE)
     @Parameter(in = ParameterIn.QUERY, name = "keyword", description = "소환사 이름 검색어,"
-            + "[소환사이름]-[태그라인] 형식",
-            required = true, example = "hideonbush-kr1")
+            + "[소환사이름]#[태그라인] 형식", required = true, example = "hideonbush#kr1")
     public CommonResponse<AutoCompleteRes> getAutoCompleteResults(
-        @ModelAttribute @Valid KeywordReq keywordReq) {
+        @RequestParam @NotBlank(message = "keyword는 internalTagName 기준으로 1글자 이상 입력해야 합니다.") String keyword) {
 
-        String internalTagName = keywordReq.keyword();
+        String internalTagName = keywordToInternalTagName(keyword, false);
+
+        if(StringUtils.isBlank(internalTagName)){
+            throw new IllegalArgumentException("keyword가 올바르지 않습니다.");
+        }
 
         List<SummonerDto> results = summonerService.getTop5SummonersByInternalTagName(internalTagName);
 
@@ -92,12 +95,13 @@ public class SummonerController {
 
     @GetMapping("/{summoner_tag_name}")
     @Operation(summary = ApiSummary.GET_SUMMONER, description = ApiDescription.GET_SUMMONER)
-    @Parameter(in = ParameterIn.PATH, name = "summoner_tag_name", description = "조회할 소환사 태그네임",
+    @Parameter(in = ParameterIn.PATH, name = "summoner_tag_name", description = "조회할 소환사 태그네임, [소환사명]-[태그라인]",
         required = true, example = "김솔민-top")
     public CommonResponse<SummonerDto> getSummoner(
         @PathVariable("summoner_tag_name") String summonerTagName) {
 
-        SummonerDto result = SummonerDto.from(summonerService.getSummonerBySummonerTagName(summonerTagName));
+        String internalTagName = keywordToInternalTagName(summonerTagName, true);
+        SummonerDto result = SummonerDto.from(summonerService.getSummonerByInternalTagName(internalTagName));
 
         return CommonResponse.success(result);
     }
@@ -110,7 +114,7 @@ public class SummonerController {
             required = true, example = "김솔민-top"),
         @Parameter(in = ParameterIn.QUERY, name = "ended", description = "특정 게임 이전에 진행한 게임을 조회할 때 사용하는 ID 필터로, "
             + "해당 필드를 사용하면 소환사 정보를 제외한 매치 리스트만 넘겨짐",
-            required = true, example = "KR_6841389632"),
+            example = "KR_6841389632"),
         @Parameter(in = ParameterIn.QUERY, name = "queue_type", description = "검색할 큐 타입 정보",
             example = "ALL"),
     })
@@ -119,13 +123,15 @@ public class SummonerController {
         @RequestParam("ended") Optional<String> lastMatchId,
         @RequestParam(value = "queue_type", defaultValue = "ALL") QueueType queueType) {
 
+        String internalTagName = keywordToInternalTagName(summonerTagName, true);
+
         SummonerMatchRes result;
 
         if (lastMatchId.isEmpty() || lastMatchId.get().isBlank()) {
-            result = summonerService.getSummonerMatchInfoBySummonerName(summonerTagName, queueType);
+            result = summonerService.getSummonerMatchInfoBySummonerName(internalTagName, queueType);
         } else {
             result = SummonerMatchRes.builder()
-                .matches(summonerService.get20MatchesByOptionalLastMatchId(summonerTagName, lastMatchId.get(), queueType))
+                .matches(summonerService.get20MatchesByOptionalLastMatchId(internalTagName, lastMatchId.get(), queueType))
                 .build();
         }
 
@@ -157,6 +163,8 @@ public class SummonerController {
         @RequestParam(value = "queue_type", defaultValue = "ALL") QueueType queueType,
         @RequestParam(value = "brief", defaultValue = "false") Boolean brief) {
 
+        String internalTagName = keywordToInternalTagName(summonerTagName, true);
+
         List<QueueType> available = new ArrayList<>(Arrays.asList(QueueType.ALL, QueueType.RANK_SOLO, QueueType.RANK_FLEX));
 
         if (!available.contains(queueType) ){
@@ -185,7 +193,9 @@ public class SummonerController {
     @Parameter(in = ParameterIn.PATH, name = "summoner_tag_name", description = "조회할 소환사 태그네임",
         required = true, example = "김솔민-top")
     public CommonResponse<CurrentGameRes> getCurrentGame(@PathVariable("summoner_tag_name") String summonerTagName) {
-        return CommonResponse.success(summonerService.getCurrentGame(summonerTagName));
+
+        String internalTagName = keywordToInternalTagName(summonerTagName, true);
+        return CommonResponse.success(summonerService.getCurrentGame(internalTagName));
     }
 
 

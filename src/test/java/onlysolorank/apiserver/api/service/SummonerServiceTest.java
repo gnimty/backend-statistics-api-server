@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import javax.validation.ConstraintViolationException;
-import onlysolorank.apiserver.api.controller.dto.KeywordReq;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import org.junit.jupiter.api.Test;

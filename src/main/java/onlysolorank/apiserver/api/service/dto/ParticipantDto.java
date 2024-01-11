@@ -1,5 +1,8 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import static onlysolorank.apiserver.utils.CustomFunctions.doubleValueToHalfUp;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +10,7 @@ import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.domain.dto.ItemBundle;
 import onlysolorank.apiserver.domain.dto.Perk;
 import onlysolorank.apiserver.domain.dto.Lane;
+import onlysolorank.apiserver.domain.dto.Tier;
 
 /**
  * packageName    : onlysolorank.apiserver.api.dto
@@ -23,19 +27,29 @@ import onlysolorank.apiserver.domain.dto.Lane;
 
 @Data
 public class ParticipantDto {
-
+    @Schema(description = "참여자 ID, 1~10")
     private Integer participantId;
-    private SummonerTierDto soloTier;
+    @Schema(description = "챔피언 ID")
     private Integer championId;
+    @Schema(description = "챔피언 영문이름")
     private String championName;
-    //    private Boolean isMe;
+    @Schema(example = "challenger", description = "소환사 티어 대분류 (플레이 시점)")
+    private Tier tier;
+    @Schema(example = "1", description = "소환사 티어 소분류, 1~4 (플레이 시점)")
+    private Integer division;
+    @Schema(example = "56", description = "랭크 포인트 (플레이 시점)")
+    private Integer lp;
     private Boolean win;
+    @Schema(example = "100", description = "팀 아이디 - 100:Blue, 200:200")
     private Integer teamId;
+    @Schema(description = "플레이한 라인 정보")
     private Lane lane;
     private Integer kill;
     private Integer death;
     private Integer assist;
+    @Schema(example = "0.75", description = "KDA, 소수점 둘째 자리까지 표기")
     private Double kda;
+    @Schema(example = "0.75", description = "킬 관여율, 소수점 둘째 자리까지 표기")
     private Double killParticipation;
     private Integer goldEarned;
     private Long totalDamageTaken;
@@ -53,7 +67,9 @@ public class ParticipantDto {
     private Integer spellFId;
     private Perk perks;
     private List<Integer> items;
+    @Schema(description = "장신구 아이템 ID")
     private Integer accessory;
+    @Schema(description = "시간별로 구매한 아이템")
     private List<ItemBundle> itemBuilds;
     private List<Integer> skillBuilds;
     private String summonerName;
@@ -63,7 +79,13 @@ public class ParticipantDto {
     @Builder
     public ParticipantDto(Participant participant, String summonerName, String tagLine, String internalTagName) {
         this.participantId = participant.getParticipantId();
-        this.soloTier = Participant.toSoloTierDto(participant);
+
+        if (participant.getQueue() != null && participant.getTier() != null && participant.getLeaguePoints() != null) {
+            this.tier = Tier.valueOf(participant.getQueue());
+            this.division = Integer.parseInt(participant.getTier());
+            this.lp = participant.getLeaguePoints();
+        }
+
         this.championId = participant.getChampionId();
         this.championName = participant.getChampionName();
         this.win = participant.getWin();
@@ -72,7 +94,7 @@ public class ParticipantDto {
         this.death = participant.getDeaths();
         this.assist = participant.getAssists();
         this.kda = participant.getKda();
-        this.killParticipation = participant.getKillParticipation();
+        this.killParticipation = doubleValueToHalfUp(participant.getKillParticipation(), 2);
         this.goldEarned = participant.getGoldEarned();
         this.totalDamageTaken = participant.getTotalDamageTaken();
         this.totalDamageDealtToChampions = participant.getTotalDamageDealtToChampions();

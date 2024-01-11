@@ -3,6 +3,7 @@ package onlysolorank.apiserver.api.service.dto;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import onlysolorank.apiserver.domain.Match;
 import onlysolorank.apiserver.domain.dto.Tier;
 
@@ -18,7 +19,7 @@ import onlysolorank.apiserver.domain.dto.Tier;
  * 11/7/23        solmin       최초 생성
  */
 
-@Data
+@Getter
 @Builder
 public class MatchDto {
 
@@ -53,6 +54,5 @@ public class MatchDto {
             .queueId(match.getQueueId())
             .earlyEnded(match.getEarlyEnded())
             .build();
-
     }
 }

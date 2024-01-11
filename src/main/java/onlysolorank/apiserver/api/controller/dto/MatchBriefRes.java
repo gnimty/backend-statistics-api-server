@@ -8,7 +8,6 @@ import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.MatchDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantDto;
-import onlysolorank.apiserver.api.service.dto.QueueDto;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -24,29 +23,10 @@ import onlysolorank.apiserver.api.service.dto.QueueDto;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class MatchBriefRes {
 
-    private String matchId;
-    private String gameVersion;
-    private LocalDateTime gameEndAt;
-    private Long gameDuration;
-    private Boolean gameEndedInEarlySurrender;
-    private QueueDto queueInfo;
-    private Boolean win;
+    private MatchDto matchInfo;
     private ParticipantDto participant;
     private List<ParticipantBriefDto> allParticipants;
-
-    @Builder
-    public MatchBriefRes(MatchDto match, ParticipantDto participant,
-        List<ParticipantBriefDto> allParticipants) {
-        this.matchId = match.getMatchId();
-        this.gameVersion = match.getVersion();
-        this.gameEndAt = match.getGameEndAt();
-        this.queueInfo = QueueDto.builder().queueId(match.getQueueId()).build();
-        this.gameEndedInEarlySurrender = match.getEarlyEnded();
-        this.gameDuration = match.getGameDuration();
-        this.participant = participant;
-        this.win = participant.getWin();
-        this.allParticipants = allParticipants;
-    }
 }
