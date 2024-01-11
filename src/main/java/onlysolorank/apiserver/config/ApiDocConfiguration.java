@@ -22,8 +22,8 @@ public class ApiDocConfiguration {
 	}
 
 	public void setServerUrls() {
-		localServer.setUrl("https://gnimty.kro.kr/statistics");
-		productionServer.setUrl("http://localhost:8080/statistics");
+		localServer.setUrl("https://gnimty.kro.kr");
+		productionServer.setUrl("http://localhost:8080");
 	}
 
 	@Bean
