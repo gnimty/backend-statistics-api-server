@@ -45,7 +45,7 @@ public class Participant {
     /* null로 받아 왔을 때 예외 처리 후 enum 변환할 것 */
     private String queue;
     private String tier;
-    private String leaguePoints;
+    private Integer leaguePoints;
     private String lane;
     /* -------------------------------------- */
 
@@ -77,18 +77,5 @@ public class Participant {
     private Integer gameDuration;
     private Map<Integer, List<Integer>> itemBuild;
     private List<Integer> skillBuild;
-
-    public static SummonerTierDto toSoloTierDto(Participant participant) {
-        // queue, tier, leaguepoints가 하나라도 null이면 soloTier를 null로
-        if (participant.getQueue() == null || participant.getTier() == null || participant.getLeaguePoints() == null) {
-            return null;
-        }
-
-        return SummonerTierDto.builder()
-            .tier(Tier.valueOf(participant.getQueue()))
-            .division(Integer.parseInt(participant.getTier()))
-            .lp(Integer.parseInt(participant.getLeaguePoints()))
-            .build();
-    }
 
 }

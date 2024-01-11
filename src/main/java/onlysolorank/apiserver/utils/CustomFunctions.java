@@ -2,6 +2,7 @@ package onlysolorank.apiserver.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -41,9 +42,15 @@ public class CustomFunctions {
             .toLowerCase();
     }
 
-    public static String keywordToInternalTagName(String keyword) {
+    public static String keywordToInternalTagName(String keyword, Boolean byPathVariable) {
         // 1.'-'을 기준으로 internalName, tagLine으로 분리
-        String[] split = keyword.split("-");
+        String[] split;
+
+        if(byPathVariable){
+            split = keyword.split("-");
+        }else{
+            split = keyword.split("#");
+        }
 
         split[0] = keywordToInternalName(split[0]);
 
@@ -56,6 +63,8 @@ public class CustomFunctions {
     }
 
 
+
+
     /**
      * 반올림할 Double 값과 반올림할 자릿수를 넘겨 주어 그 값을 받음
      *
@@ -64,6 +73,9 @@ public class CustomFunctions {
      * @return the double
      */
     public static Double doubleValueToHalfUp(Double value, int scale) {
+        if (Objects.isNull(value)){
+            return null;
+        }
         return new BigDecimal(value).setScale(scale, RoundingMode.HALF_UP).doubleValue();
     }
 

@@ -32,4 +32,15 @@ public class SummonerMatchService {
         return summonerMatchRepository.findSummonerMatchByPuuid(puuid);
     }
 
+    public List<String> getSummonerMatchIdsBySummonerPuuidAndQueueType(String puuid, QueueType queueType) {
+
+        Optional<SummonerMatch> result = getSummonerMatchBySummonerPuuid(puuid);
+        if(!result.isPresent()){
+            return List.of();
+        }
+
+        return result.get().getByQueueType(queueType);
+    }
+
+
 }

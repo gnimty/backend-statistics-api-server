@@ -84,7 +84,7 @@ public class AssetController {
     public CommonResponse<ChampionRes> getAllChampion() {
         List<ChampionDto> results = assetService.getAllChampions();
 
-        return CommonResponse.success(ChampionRes.multiBuilder()
+        return CommonResponse.success(ChampionRes.builder()
             .champions(results)
             .build());
     }
@@ -92,13 +92,10 @@ public class AssetController {
     @Operation(summary = ApiSummary.GET_CHAMPION, description = ApiDescription.GET_CHAMPION)
     @Parameter(in = ParameterIn.PATH, name = "champion_id", description = "조회할 champion ID", required = true, example = "266")
     @GetMapping("/champion/{champion_id}")
-    public CommonResponse<ChampionRes> getChampion(@PathVariable("champion_id") Long championId) {
+    public CommonResponse<ChampionDto> getChampion(@PathVariable("champion_id") Long championId) {
         ChampionDto result = assetService.getChampion(championId);
 
-        return CommonResponse.success(ChampionRes.singleBuilder()
-            .champion(result)
-            .build()
-        );
+        return CommonResponse.success(result);
     }
 
     @Operation(summary = ApiSummary.GET_ROTATIONS, description = ApiDescription.GET_ROTATIONS)
@@ -106,7 +103,7 @@ public class AssetController {
     public CommonResponse<ChampionRes> getRotations() {
         List<ChampionDto> results = assetService.getRotationChampions();
 
-        return CommonResponse.success(ChampionRes.multiBuilder()
+        return CommonResponse.success(ChampionRes.builder()
             .champions(results)
             .build());
     }

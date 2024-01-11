@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.api.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.dto.QueueType;
@@ -20,6 +21,7 @@ import onlysolorank.apiserver.domain.dto.QueueType;
 @Data
 public class QueueDto {
 
+    @Schema(example = "420", description = "큐 ID")
     private Integer queueId;
     private String name;
     private String map;

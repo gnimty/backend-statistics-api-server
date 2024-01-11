@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.summoner_play.BaseSummonerPlay;
@@ -31,6 +32,7 @@ public class SummonerPlayDto {
     private Double winRate;
     private Integer totalWin;
     private Integer totalDefeat;
+    @Schema(description = "평균 데스가 0인 경우 true, 이 경우 avgKda가 null로 표기")
     private boolean isPerfect;
     private Long championId;
     private String championName;

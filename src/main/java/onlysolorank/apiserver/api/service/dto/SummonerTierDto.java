@@ -3,12 +3,14 @@ package onlysolorank.apiserver.api.service.dto;
 import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.domain.dto.History;
 import onlysolorank.apiserver.domain.dto.Lane;
@@ -35,23 +37,35 @@ import onlysolorank.apiserver.domain.dto.Tier;
 @Builder
 public class SummonerTierDto {
 
+    @Schema(example = "challenger", description = "소환사 티어 대분류")
     private Tier tier;
-    private Integer division;
-    private Integer lp;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer plays;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer wins;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer defeats;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Double winRate;
-    private List<Long> mostChampionIds;
-    private List<Lane> mostLanes;
-    private Integer mmr;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private ZonedDateTime updatedAt;
+    @Schema(example = "1", description = "소환사 티어 소분류, 1~4")
+    private Integer division;
+
+    @Schema(example = "56", description = "랭크 포인트")
+    private Integer lp;
+
+    @Schema(example = "100", description = "랭크 게임 플레이 횟수")
+    private Integer plays;
+
+    @Schema(example = "78", description = "랭크 게임 승리 횟수")
+    private Integer wins;
+
+    @Schema(example = "22", description = "랭크 게임 패배 횟수")
+    private Integer defeats;
+
+    @Schema(example = "0.78", description = "랭크 게임 승률, 소수점 둘째 자리까지 표기")
+    private Double winRate;
+
+    @Schema(example = "[3,266,4]", description = "최근 20게임동안 자주 플레이한 챔피언 id")
+    private List<Long> mostChampionIds;
+
+    @Schema(example = "[TOP, MIDDLE]", description = "최근 20게임동안 자주 플레이한 라인")
+    private List<Lane> mostLanes;
+
+    @Schema(example = "3821", description = "소환사 티어 환산 수치")
+    private Integer mmr;
 
     public static SummonerTierDto from(Summoner summoner, QueueType queueType) {
         Integer wins;
@@ -114,10 +128,6 @@ public class SummonerTierDto {
         } else{
             return null;
         }
-
-
-
-
     }
 
     public static SummonerTierDto from(History history) {
@@ -125,8 +135,21 @@ public class SummonerTierDto {
             .tier(Tier.valueOf(history.getQueue()))
             .division(history.getTier())
             .lp(history.getLeaguePoints())
-            .updatedAt(history.getUpdatedAt())
+//            .updatedAt(history.getUpdatedAt())
             .build();
     }
+
+//    public static SummonerTierDto from(Participant participant) {
+//        // queue, tier, leaguepoints가 하나라도 null이면 soloTier를 null로
+//        if (participant.getQueue() == null || participant.getTier() == null || participant.getLeaguePoints() == null) {
+//            return null;
+//        }
+//
+//        return SummonerTierDto.builder()
+//            .tier(Tier.valueOf(participant.getQueue()))
+//            .division(Integer.parseInt(participant.getTier()))
+//            .lp(Integer.parseInt(participant.getLeaguePoints()))
+//            .build();
+//    }
 
 }

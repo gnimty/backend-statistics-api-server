@@ -55,7 +55,6 @@ import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.repository.summoner.SummonerRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -109,21 +108,16 @@ public class SummonerService {
     private String RIOT_API_KEY;
 
 
-    public SummonerMatchRes getSummonerMatchInfoBySummonerName(String summonerTagName, QueueType queueType) {
+    public SummonerMatchRes getSummonerMatchInfoBySummonerName(String internalTagName, QueueType queueType) {
         // 1. 본인 소환사 정보 가져오기
-        Summoner summoner = getSummonerBySummonerTagName(summonerTagName);
+        Summoner summoner = getSummonerByInternalTagName(internalTagName);
 
         // 2.MatchId 및 MatchDto List 가져오기
-        List<MatchBriefRes> matches = new ArrayList<>();
-        Optional<SummonerMatch> summonerMatch = summonerMatchService.getSummonerMatchBySummonerPuuid(
-            summoner.getPuuid());
+        List<String> matchIds = summonerMatchService.getSummonerMatchIdsBySummonerPuuidAndQueueType(
+            summoner.getPuuid(), queueType).stream()
+            .limit(20).toList();
 
-        if (summonerMatch.isPresent()) {
-            List<String> matchIds = summonerMatch.get().getByQueueType(queueType).stream()
-                .limit(30).toList();
-
-            matches = getMatchBriefDtoList(matchIds, summoner.getPuuid());
-        }
+        List<MatchBriefRes> matches = getMatchBriefDtoList(matchIds, summoner.getPuuid());
 
         // renewableAfter 가져오기 : updated 시점으로부터 2분 이후의 시간을 리턴
         ZonedDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES);
@@ -136,28 +130,20 @@ public class SummonerService {
     }
 
     public List<MatchBriefRes> get20MatchesByOptionalLastMatchId(
-        String summonerTagName,
+        String internalTagName,
         @Pattern(regexp = "^KR_\\d{10}$", message = "올바른 matchId 패턴이 아닙니다.") String lastMatchId,
         QueueType queueType) {
 
         // TODO lastMatchId 검증 필요
-        Summoner summoner = getSummonerBySummonerTagName(summonerTagName);
+        Summoner summoner = getSummonerByInternalTagName(internalTagName);
 
         // MatchId 및 MatchDto List 가져오기
-        List<MatchBriefRes> matchDtoList = new ArrayList<>();
-        Optional<SummonerMatch> summonerMatch = summonerMatchService.getSummonerMatchBySummonerPuuid(
-            summoner.getPuuid());
+        List<String> matchIds = summonerMatchService.getSummonerMatchIdsBySummonerPuuidAndQueueType(
+                summoner.getPuuid(), queueType).stream()
+            .filter(matchId -> matchId.compareTo(lastMatchId) < 0)
+            .limit(20).toList();
 
-
-
-        if (summonerMatch.isPresent()) {
-            List<String> matchIds = summonerMatch.get().getSoloMatchIds().stream()
-                // 특정 아이디 값이 최초로 작은 시점을 찾기
-                .filter(matchId -> matchId.compareTo(lastMatchId) < 0)
-                .limit(20).toList();
-
-            matchDtoList = getMatchBriefDtoList(matchIds, summoner.getPuuid());
-        }
+        List<MatchBriefRes> matchDtoList = getMatchBriefDtoList(matchIds, summoner.getPuuid());
 
         return matchDtoList;
     }
@@ -218,7 +204,7 @@ public class SummonerService {
                         .tagLine(targetSummoner.getTagLine())
                         .internalTagName(targetSummoner.getInternalTagName())
                         .build() : null)
-                    .match(match)
+                    .matchInfo(match)
                     .allParticipants(allParticipantsMap.get(matchId))
                     .build();
 
@@ -273,7 +259,7 @@ public class SummonerService {
 
 
     public List<SummonerPlayDto> getChampionPlayInfo(String summonerTagName, QueueType queueType, Boolean brief) {
-        Summoner summoner = getSummonerBySummonerTagName(summonerTagName);
+        Summoner summoner = getSummonerByInternalTagName(summonerTagName);
 
         List<? extends BaseSummonerPlay> result = summonerPlayService.getSummonerPlaysByPuuid(summoner.getPuuid(), queueType, brief);
 
@@ -284,7 +270,7 @@ public class SummonerService {
 
     // TODO 추후 시간대 체크해야 함
     public List<SummonerTierDto> getSummonerHistory(String summonerName) {
-        Summoner summoner = getSummonerBySummonerTagName(summonerName);
+        Summoner summoner = getSummonerByInternalTagName(summonerName);
 
         SummonerHistory history = summonerHistoryService.getSummonerHistoryByPuuid(
             summoner.getPuuid());
@@ -392,9 +378,9 @@ public class SummonerService {
     }
 
 
-    public CurrentGameRes getCurrentGame(String summonerTagName) {
+    public CurrentGameRes getCurrentGame(String internalTagName) {
 
-        Summoner summoner = getSummonerBySummonerTagName(summonerTagName);
+        Summoner summoner = getSummonerByInternalTagName(internalTagName);
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -481,8 +467,8 @@ public class SummonerService {
 
     }
 
-    public List<RecentMemberDto> getRecentMemberInfo(String summonerTagName, QueueType queueType) {
-        Summoner summoner = getSummonerBySummonerTagName(summonerTagName);
+    public List<RecentMemberDto> getRecentMemberInfo(String internalTagName, QueueType queueType) {
+        Summoner summoner = getSummonerByInternalTagName(internalTagName);
 
         List<RecentMemberDto> result = participantService.getDistinctTeamMembersByQueueTypeExceptMe(
             summoner.getPuuid(), queueType);
@@ -495,11 +481,10 @@ public class SummonerService {
     /**
      * 소환사이름을 받아서 internalTagName으로 변환 후 DB 조회하여 소환사정보 리턴
      *
-     * @param summonerTagName 소환사이름
+     * @param internalTagName 소환사이름
      * @return Summoner
      */
-    public Summoner getSummonerBySummonerTagName(String summonerTagName) {
-        String internalTagName = keywordToInternalTagName(summonerTagName);
+    public Summoner getSummonerByInternalTagName(String internalTagName) {
         return summonerRepository.findSummonerByInternalTagName(internalTagName)
             .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND,
                 "summoner tagname에 해당하는 소환사 데이터가 존재하지 않습니다."));

@@ -70,7 +70,7 @@ public class ApiDescription {
     public static final String GET_AUTOCOMPLETE = """
         메인 화면 검색 엔진에서 소환사 이름을 입력하면 서버에 저장된 소환사의 이름과 패턴이 일치하는 소환사 정보를 사전 순으로 최대 5명까지 보여줍니다.
                 
-        keyword 검색어는 [summonerName]-[tagLine] 형태 또는 [summonerName]의 형식을 따라야 하며
+        keyword 검색어는 [summonerName]#[tagLine] 형태 또는 [summonerName]의 형식을 따라야 하며
         [summonerName]#[tagLine or 공백]을 summonerTagName으로 지칭합니다.
                 
         또한 소환사명의 영어, 한글, 숫자를 제외한 모든 문자를 제거하여 얻은 문자열인 internalName과, tagLine을 lstrip() 및 lowerCase()로 적용한 internalTagLine을 
@@ -85,6 +85,8 @@ public class ApiDescription {
         반대로 tagName은 맨 처음 공백 외의 공백을 무시하지 않습니다.
                 
         keyword는 영어, 한글, 숫자를 제외한 문자를 모두 제거한 글자 수 기준으로 1자 이상 전송해야 합니다.
+        
+        cf) Path variable로 internalTagName을 받을 시 '#' 문자열을 정상적으로 받아올 수 없어 '-' 구분자 사용
         """;
     public static final String GET_SUMMONER = """
         summoner_tag_name을 변환한 internalTagName과 정확히 일치하는 단일 소환사 정보를 보내 줍니다.
