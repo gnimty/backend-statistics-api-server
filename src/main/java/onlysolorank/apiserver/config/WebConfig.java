@@ -6,6 +6,7 @@ import onlysolorank.apiserver.config.converter.StringToLaneConverter;
 import onlysolorank.apiserver.config.converter.StringToQueueTypeConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -29,5 +30,14 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new StringToLaneConverter());
         registry.addConverter(new StringToBooleanConverter());
         registry.addConverter(new StringToQueueTypeConverter());
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+            .allowedOrigins("http://localhost:3000", "https://localhost:3000")
+            .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
+            .allowCredentials(true)
+            .allowedHeaders("*");
     }
 }
