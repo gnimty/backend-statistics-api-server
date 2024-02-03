@@ -39,8 +39,8 @@ public class MatchDetailRes {
 
     @Builder
     public MatchDetailRes(MatchDto match, List<ParticipantDto> participants, List<TeamDto> teams) {
-        if(match.getAverageTier()!=null){
-            this.averageTier = match.getAverageTier();
+        if(match.getAvgTier()!=null){
+            this.averageTier = match.getAvgTier();
         }
         this.matchId = match.getMatchId();
         this.gameVersion = match.getVersion();
