@@ -5,11 +5,14 @@ import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.domain.dto.History;
@@ -34,6 +37,7 @@ import onlysolorank.apiserver.domain.dto.Tier;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class SummonerTierDto {
 
@@ -59,10 +63,10 @@ public class SummonerTierDto {
     private Double winRate;
 
     @Schema(example = "[3,266,4]", description = "최근 20게임동안 자주 플레이한 챔피언 id")
-    private List<Long> mostChampionIds;
+    private List<Long> mostChampionIds = new ArrayList<>();
 
     @Schema(example = "[TOP, MIDDLE]", description = "최근 20게임동안 자주 플레이한 라인")
-    private List<Lane> mostLanes;
+    private List<Lane> mostLanes = new ArrayList<>();;
 
     @Schema(example = "3821", description = "소환사 티어 환산 수치")
     private Integer mmr;
@@ -73,6 +77,11 @@ public class SummonerTierDto {
 
         Double winRate = null;
         Integer plays = null;
+
+        List<Long> mostChampionIdsFlex = Optional.ofNullable(summoner.getMostChampionIdsFlex())
+            .orElse(new ArrayList<>());
+
+        List<Lane> mostLanes = Optional.ofNullable(summoner.getMostLanes()).orElse(new ArrayList<>());
 
         if (queueType==QueueType.RANK_SOLO){
             if (Objects.isNull(summoner.getQueue())){
@@ -95,8 +104,8 @@ public class SummonerTierDto {
                 .wins(wins)
                 .defeats(defeats)
                 .winRate(winRate)
-                .mostChampionIds(summoner.getMostChampionIds())
-                .mostLanes(summoner.getMostLanes())
+                .mostChampionIds(mostChampionIdsFlex)
+                .mostLanes(mostLanes)
                 .mmr(summoner.getMmr())
                 .build();
 
@@ -121,8 +130,8 @@ public class SummonerTierDto {
                 .wins(wins)
                 .defeats(defeats)
                 .winRate(winRate)
-                .mostChampionIds(summoner.getMostChampionIdsFlex())
-                .mostLanes(summoner.getMostLanesFlex())
+                .mostChampionIds(mostChampionIdsFlex)
+                .mostLanes(mostLanes)
                 .mmr(summoner.getMmrFlex())
                 .build();
         } else{

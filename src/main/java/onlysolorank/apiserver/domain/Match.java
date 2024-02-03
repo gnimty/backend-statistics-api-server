@@ -29,7 +29,11 @@ public class Match {
     private String id;
 
     @Field("avg_tier")
-    private Tier averageTier;
+    private Tier avgTier;
+
+    @Field("avg_division")
+    private Integer avgDivision;
+
     private String matchId;
     private String version;
     private LocalDateTime gameStartAt;
