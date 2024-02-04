@@ -33,6 +33,7 @@ import onlysolorank.apiserver.api.exception.ErrorCode;
 import onlysolorank.apiserver.api.service.dto.ChampionDto;
 import onlysolorank.apiserver.api.service.dto.CurrentGameParticipantDto;
 import onlysolorank.apiserver.api.service.dto.MatchDto;
+import onlysolorank.apiserver.api.service.dto.MatchSummaryDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantBriefDto;
 import onlysolorank.apiserver.api.service.dto.ParticipantDto;
 import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
@@ -119,6 +120,8 @@ public class SummonerService {
 
         List<MatchBriefRes> matches = getMatchBriefDtoList(matchIds, summoner.getPuuid());
 
+        MatchSummaryDto matchSummary = MatchSummaryDto.from(matches.subList(0, Math.min(20, matches.size())));
+
         // renewableAfter 가져오기 : updated 시점으로부터 2분 이후의 시간을 리턴
         ZonedDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES);
 
@@ -126,6 +129,7 @@ public class SummonerService {
             .summoner(SummonerDto.from(summoner))
             .renewableAfter(renewableAfter)
             .matches(matches)
+            .matchSummary(matchSummary)
             .build();
     }
 
@@ -144,6 +148,8 @@ public class SummonerService {
             .limit(20).toList();
 
         List<MatchBriefRes> matchDtoList = getMatchBriefDtoList(matchIds, summoner.getPuuid());
+
+
 
         return matchDtoList;
     }
