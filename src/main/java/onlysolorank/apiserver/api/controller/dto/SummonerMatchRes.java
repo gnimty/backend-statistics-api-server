@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.api.service.dto.MatchSummaryDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
 
@@ -32,5 +33,6 @@ public class SummonerMatchRes {
     @JsonInclude(Include.NON_NULL)
     private ZonedDateTime renewableAfter;
     private List<MatchBriefRes> matches;
+    private MatchSummaryDto matchSummary;
 
 }
