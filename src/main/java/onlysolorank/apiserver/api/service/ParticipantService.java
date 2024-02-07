@@ -1,5 +1,6 @@
 package onlysolorank.apiserver.api.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,10 @@ public class ParticipantService {
 
         List<DistinctParticipantTeam> top20ByPuuidOrderByMatchId = participantRepository.findTop20ByPuuidAndQueueIdOrderByMatchIdDesc(
             puuid, queueType.getQueueId());
+
+        if (top20ByPuuidOrderByMatchId.isEmpty()){
+            return null;
+        }
 
         Map<String, Map<Boolean, Long>> collect = participantRepository.findByDistinctParticipantTeamsExceptMe(
                 top20ByPuuidOrderByMatchId, puuid)

@@ -200,7 +200,6 @@ public class SummonerController {
 
 
     @GetMapping("/together/{summoner_tag_name}")
-    @Operation(hidden = true)
     @Parameters({
         @Parameter(in = ParameterIn.PATH, name = "summoner_tag_name", description = "조회할 소환사 태그네임",
             required = true, example = "김솔민-top"),
@@ -213,11 +212,13 @@ public class SummonerController {
 
         List<QueueType> available = new ArrayList<>(Arrays.asList(QueueType.RANK_SOLO, QueueType.RANK_FLEX));
 
+        String internalTagName = keywordToInternalTagName(summonerTagName, true);
+
         if (!available.contains(queueType) ){
             throw new CustomException(ErrorCode.INVALID_INPUT_VALUE, "queue_type은 RANK_SOLO, RANK_FLEX 중 하나여야 합니다.");
         }
 
-        List<RecentMemberDto> results = summonerService.getRecentMemberInfo(summonerTagName, queueType);
+        List<RecentMemberDto> results = summonerService.getRecentMemberInfo(internalTagName, queueType);
 
         return CommonResponse.success(RecentMemberRes.builder()
             .recentMembers(results)
