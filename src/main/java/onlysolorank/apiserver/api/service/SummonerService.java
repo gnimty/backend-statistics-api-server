@@ -476,8 +476,9 @@ public class SummonerService {
     public List<RecentMemberDto> getRecentMemberInfo(String internalTagName, QueueType queueType) {
         Summoner summoner = getSummonerByInternalTagName(internalTagName);
 
-        List<RecentMemberDto> result = participantService.getDistinctTeamMembersByQueueTypeExceptMe(
-            summoner.getPuuid(), queueType);
+        List<RecentMemberDto> result = Optional.ofNullable(participantService.getDistinctTeamMembersByQueueTypeExceptMe(
+            summoner.getPuuid(), queueType)).orElse(new ArrayList<>());
+
         return result;
     }
 

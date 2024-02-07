@@ -1,6 +1,8 @@
 package onlysolorank.apiserver.api.controller.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
@@ -21,12 +23,13 @@ import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
 public class RecentMemberRes {
 
     List<RecentMemberDto> recentMembers;
-    private Integer count;
+    private Integer count = 0;
 
     @Builder
     public RecentMemberRes(List<RecentMemberDto> recentMembers) {
-        this.recentMembers = recentMembers;
+        this.recentMembers = Optional.ofNullable(recentMembers).orElse(new ArrayList<>());
         this.count = recentMembers.size();
+
     }
 
 }
