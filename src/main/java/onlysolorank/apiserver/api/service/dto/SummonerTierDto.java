@@ -66,7 +66,7 @@ public class SummonerTierDto {
     private List<Long> mostChampionIds = new ArrayList<>();
 
     @Schema(example = "[TOP, MIDDLE]", description = "최근 20게임동안 자주 플레이한 라인")
-    private List<Lane> mostLanes = new ArrayList<>();;
+    private List<Lane> mostLanes = new ArrayList<>();
 
     @Schema(example = "3821", description = "소환사 티어 환산 수치")
     private Integer mmr;
@@ -78,10 +78,14 @@ public class SummonerTierDto {
         Double winRate = null;
         Integer plays = null;
 
+        List<Long> mostChampionIds = Optional.ofNullable(summoner.getMostChampionIds())
+            .orElse(new ArrayList<>());
+
         List<Long> mostChampionIdsFlex = Optional.ofNullable(summoner.getMostChampionIdsFlex())
             .orElse(new ArrayList<>());
 
         List<Lane> mostLanes = Optional.ofNullable(summoner.getMostLanes()).orElse(new ArrayList<>());
+        List<Lane> mostLanesFlex = Optional.ofNullable(summoner.getMostLanesFlex()).orElse(new ArrayList<>());
 
         if (queueType==QueueType.RANK_SOLO){
             if (Objects.isNull(summoner.getQueue())){
@@ -104,7 +108,7 @@ public class SummonerTierDto {
                 .wins(wins)
                 .defeats(defeats)
                 .winRate(winRate)
-                .mostChampionIds(mostChampionIdsFlex)
+                .mostChampionIds(mostChampionIds)
                 .mostLanes(mostLanes)
                 .mmr(summoner.getMmr())
                 .build();
@@ -131,7 +135,7 @@ public class SummonerTierDto {
                 .defeats(defeats)
                 .winRate(winRate)
                 .mostChampionIds(mostChampionIdsFlex)
-                .mostLanes(mostLanes)
+                .mostLanes(mostLanesFlex)
                 .mmr(summoner.getMmrFlex())
                 .build();
         } else{
