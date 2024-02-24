@@ -22,5 +22,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @ToString
 public class SummonerPlay extends BaseSummonerPlay{
-
+    private Integer mmr;
 }

@@ -45,12 +45,16 @@ public class SummonerPlayRepositoryImpl implements SummonerPlayRepositoryCustom 
     @Qualifier("primaryMongoTemplate")
     private final MongoTemplate mongoTemplate;
 
+    private final int STD_PLAYS = 50;
+    private final int STD_MMR = 2600;
+
     @Override
-    public List<SummonerPlay> findSpecialists(String championName, int totalPlays) {
-        Query query = new Query(Criteria.where("championName").is(championName)
-            .and("totalPlays").gte(totalPlays))
+    public List<SummonerPlay> findSpecialists(Long championId) {
+        Query query = new Query(Criteria.where("championId").is(championId)
+            .and("totalPlays").gte(STD_PLAYS)
+            .and("mmr").gte(STD_MMR))
             .with(Sort.by(Sort.Order.desc("totalPlays")))
-            .limit(100);
+            .limit(5);
 
         return mongoTemplate.find(query, SummonerPlay.class);
     }

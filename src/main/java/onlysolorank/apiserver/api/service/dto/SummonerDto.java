@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -52,8 +54,12 @@ public class SummonerDto {
     @Schema(description = "솔로랭크 티어 정보")
     private SummonerTierDto soloTierInfo;
 
-    @Schema(description = "솔로랭크 티어 정보")
+    @Schema(description = "자유랭크 티어 정보")
     private SummonerTierDto flexTierInfo;
+
+    @Schema(description = "솔로랭크 순위정보로, 마스터 이상 유저에 한해서만 해당 필드가 노출됩니다.")
+    @JsonInclude(Include.NON_NULL)
+    private Integer rank;
 
 
     public static SummonerDto from(Summoner summoner) {

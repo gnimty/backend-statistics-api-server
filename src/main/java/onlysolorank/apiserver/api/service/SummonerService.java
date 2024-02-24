@@ -91,8 +91,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Validated
 public class SummonerService {
 
-    //    private static final int SPECIALIST_CNT_LIMIT = 100;
-    private static final int SPECIALIST_PLAYS_CNT_LIMIT = 50; // 장인 랭킹 기준 플레이 수
     private final SummonerRepository summonerRepository;
     private final SummonerMatchService summonerMatchService;
     private final MatchService matchService;
@@ -482,6 +480,10 @@ public class SummonerService {
         return result;
     }
 
+    public Integer getSummonerRanks(Integer mmr){
+        return 1+summonerRepository.countByMmrGreaterThan(mmr);
+    }
+
 
     /* --------------------------- Repository 직접 접근 메소드 --------------------------- */
 
@@ -501,6 +503,10 @@ public class SummonerService {
         return summonerRepository.findSummonerByPuuid(puuid)
             .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND,
                 "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다."));
+    }
+
+    public List<Summoner> getSummonersByPuuidIn(List<String> puuids){
+        return summonerRepository.findSummonersByPuuidIn(puuids);
     }
 
     private List<Summoner> getSummonersByMmrGreaterThanEqual(Tier stdTier) {

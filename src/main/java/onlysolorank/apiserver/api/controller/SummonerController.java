@@ -30,6 +30,7 @@ import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
 import onlysolorank.apiserver.domain.dto.QueueType;
+import onlysolorank.apiserver.domain.dto.Tier;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -71,7 +72,6 @@ public class SummonerController {
 
     private final SummonerService summonerService;
 
-
     @GetMapping("/autocomplete")
     @Operation(summary = ApiSummary.GET_AUTOCOMPLETE, description = ApiDescription.GET_AUTOCOMPLETE)
     @Parameter(in = ParameterIn.QUERY, name = "keyword", description = "소환사 이름 검색어,"
@@ -102,6 +102,12 @@ public class SummonerController {
 
         String internalTagName = keywordToInternalTagName(summonerTagName, true);
         SummonerDto result = SummonerDto.from(summonerService.getSummonerByInternalTagName(internalTagName));
+
+        // 마스터 티어 이상의 유저라면 랭크 정보 추가
+        if (result.getSoloTierInfo()!=null & result.getSoloTierInfo().getTier().getBasisMMR()>= Tier.master.getBasisMMR()){
+            Integer rank = summonerService.getSummonerRanks(result.getSoloTierInfo().getMmr());
+            result.setRank(rank);
+        }
 
         return CommonResponse.success(result);
     }
