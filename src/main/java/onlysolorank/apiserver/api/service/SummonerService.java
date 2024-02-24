@@ -91,8 +91,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Validated
 public class SummonerService {
 
-    //    private static final int SPECIALIST_CNT_LIMIT = 100;
-    private static final int SPECIALIST_PLAYS_CNT_LIMIT = 50; // 장인 랭킹 기준 플레이 수
     private final SummonerRepository summonerRepository;
     private final SummonerMatchService summonerMatchService;
     private final MatchService matchService;
@@ -480,6 +478,10 @@ public class SummonerService {
             summoner.getPuuid(), queueType)).orElse(new ArrayList<>());
 
         return result;
+    }
+
+    public Integer getSummonerRanks(Integer mmr){
+        return 1+summonerRepository.countByMmrGreaterThan(mmr);
     }
 
 

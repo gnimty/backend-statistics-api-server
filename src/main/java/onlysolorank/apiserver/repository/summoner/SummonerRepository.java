@@ -44,6 +44,6 @@ public interface SummonerRepository extends MongoRepository<Summoner, String>,
     List<SummonerNameDto> findSummonerNameDtosByPuuidIn(List<String> puuids);
 
 //    Page<Summoner> findAll(Pageable pageable);
-
+    Integer countByMmrGreaterThan(Integer mmr);
 
 }

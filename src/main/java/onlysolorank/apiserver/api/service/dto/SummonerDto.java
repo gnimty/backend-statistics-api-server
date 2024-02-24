@@ -1,5 +1,7 @@
 package onlysolorank.apiserver.api.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -54,6 +56,9 @@ public class SummonerDto {
 
     @Schema(description = "솔로랭크 티어 정보")
     private SummonerTierDto flexTierInfo;
+
+    @JsonInclude(Include.NON_NULL)
+    private Integer rank;
 
 
     public static SummonerDto from(Summoner summoner) {
