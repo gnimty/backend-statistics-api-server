@@ -503,6 +503,10 @@ public class SummonerService {
                 "서버 내부에 해당 puuid를 가진 소환사 데이터가 존재하지 않습니다."));
     }
 
+    public List<Summoner> getSummonersByPuuidIn(List<String> puuids){
+        return summonerRepository.findSummonersByPuuidIn(puuids);
+    }
+
     private List<Summoner> getSummonersByMmrGreaterThanEqual(Tier stdTier) {
         Integer mmr = stdTier.getBasisMMR();
         return summonerRepository.findSummonersByMmrGreaterThanEqual(mmr);

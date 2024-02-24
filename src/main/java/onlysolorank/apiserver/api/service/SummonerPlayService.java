@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.exception.ErrorCode;
+import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.summoner_play.BaseSummonerPlay;
 import onlysolorank.apiserver.domain.dto.QueueType;
+import onlysolorank.apiserver.domain.summoner_play.SummonerPlay;
 import onlysolorank.apiserver.repository.season.SeasonRepository;
 import onlysolorank.apiserver.repository.summoner_play.SummonerPlayRepository;
 import org.springframework.stereotype.Service;
@@ -55,4 +57,7 @@ public class SummonerPlayService {
         ).getSeasonName();
     }
 
+    public List<SummonerPlay> getSpecialists(Long championId){
+        return summonerPlayRepository.findSpecialists(championId);
+    }
 }

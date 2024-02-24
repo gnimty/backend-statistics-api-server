@@ -20,7 +20,7 @@ import onlysolorank.apiserver.domain.summoner_play.SummonerPlay;
  */
 public interface SummonerPlayRepositoryCustom {
 
-    List<SummonerPlay> findSpecialists(String championName, int totalPlays);
+    List<SummonerPlay> findSpecialists(Long championId);
 
     List<? extends BaseSummonerPlay> findByPuuidChampionIdPairs(Map<String, Long> pairs, QueueType queueType, String season);
     List<? extends BaseSummonerPlay> findAllByQueueType(String puuid, String season, QueueType queueType, Integer limit);

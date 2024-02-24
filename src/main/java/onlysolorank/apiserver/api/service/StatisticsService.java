@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onlysolorank.apiserver.api.controller.dto.ChampionAnalysisRes;
@@ -14,14 +17,19 @@ import onlysolorank.apiserver.api.controller.dto.ChampionTierRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionTierRes.ChampionTierByPosition;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
+import onlysolorank.apiserver.api.service.dto.SummonerDto;
+import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
+import onlysolorank.apiserver.api.service.dto.SummonerPlayWithSummonerDto;
 import onlysolorank.apiserver.domain.Champion;
 import onlysolorank.apiserver.domain.ChampionCache;
+import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionPatch;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
+import onlysolorank.apiserver.domain.summoner_play.SummonerPlay;
 import onlysolorank.apiserver.repository.analysis.ChampionAnalysisRepository;
 import onlysolorank.apiserver.repository.champion.ChampionRepository;
 import onlysolorank.apiserver.repository.patch.ChampionPatchRepository;
@@ -51,6 +59,8 @@ public class StatisticsService {
     private final ChampionCache championCache;
     private final AssetService assetService;
     private final ChampionPatchRepository championPatchRepository;
+    private final SummonerPlayService summonerPlayService;
+    private final SummonerService summonerService;
 
     private static final QueueType QUEUE_TYPE_ON_DETAIL = QueueType.RANK_SOLO;
 
@@ -149,7 +159,25 @@ public class StatisticsService {
 
         ChampionTierDto championTierDto = ChampionTierDto.fromRankTier(analysis, championName);
 
-        return ChampionAnalysisRes.toRes(analysis, championTierDto, patches);
+        // 장인 랭킹
+        List<SummonerPlay> specialists = summonerPlayService.getSpecialists(champion.getChampionId());
+
+        Map<String, SummonerDto> summonerMap = summonerService.getSummonersByPuuidIn(
+                specialists.stream().map(s -> s.getPuuid()).toList()).stream()
+            .collect(Collectors.toMap(Summoner::getPuuid, s -> SummonerDto.from(s)));
+
+        AtomicInteger startRank = new AtomicInteger(0);
+
+        //  DTO 엮기
+        List<SummonerPlayWithSummonerDto> specialistsResult = specialists.stream()
+            .map(s->SummonerPlayWithSummonerDto.builder()
+                .summonerPlay(SummonerPlayDto.from(s))
+                .summoner(summonerMap.get(s.getPuuid()))
+                .rank(startRank.incrementAndGet())
+                .build())
+            .toList();
+
+        return ChampionAnalysisRes.toRes(analysis, championTierDto, patches, specialistsResult);
     }
 
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
+import onlysolorank.apiserver.api.service.dto.SummonerPlayWithSummonerDto;
 import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionPatch;
@@ -52,8 +53,14 @@ public class ChampionAnalysisRes {
 
     private List<ChampionPatch> patches;
 
+    private List<SummonerPlayWithSummonerDto> specialists;
     // TODO 추후 공급되는 데이터 자체의 List 수를 제한할 예정
-    public static ChampionAnalysisRes toRes(ChampionAnalysis analysis, ChampionTierDto championTier, List<ChampionPatch> patches) {
+    public static ChampionAnalysisRes toRes(
+        ChampionAnalysis analysis,
+        ChampionTierDto championTier,
+        List<ChampionPatch> patches,
+        List<SummonerPlayWithSummonerDto> specialists) {
+
         return ChampionAnalysisRes.builder()
             .championId(analysis.getChampionId())
             .counterChampions(analysis.getCounters())
@@ -68,6 +75,7 @@ public class ChampionAnalysisRes {
             .skillBuilds(analysis.getSkillTree().subList(0, 1))
             .lane(analysis.getPosition())
             .championTier(championTier)
+            .specialists(specialists)
             .build();
 
     }
