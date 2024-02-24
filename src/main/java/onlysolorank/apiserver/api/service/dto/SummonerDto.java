@@ -54,9 +54,10 @@ public class SummonerDto {
     @Schema(description = "솔로랭크 티어 정보")
     private SummonerTierDto soloTierInfo;
 
-    @Schema(description = "솔로랭크 티어 정보")
+    @Schema(description = "자유랭크 티어 정보")
     private SummonerTierDto flexTierInfo;
 
+    @Schema(description = "솔로랭크 순위정보로, 마스터 이상 유저에 한해서만 해당 필드가 노출됩니다.")
     @JsonInclude(Include.NON_NULL)
     private Integer rank;
 
