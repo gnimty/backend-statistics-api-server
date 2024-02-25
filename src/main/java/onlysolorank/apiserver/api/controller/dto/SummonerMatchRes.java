@@ -2,6 +2,7 @@ package onlysolorank.apiserver.api.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ public class SummonerMatchRes {
     @JsonInclude(Include.NON_NULL)
     private SummonerDto summoner;
     @JsonInclude(Include.NON_NULL)
-    private ZonedDateTime renewableAfter;
+    private LocalDateTime renewableAfter;
     private List<MatchBriefRes> matches;
     private MatchSummaryDto matchSummary;
 
