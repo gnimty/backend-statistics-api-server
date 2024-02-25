@@ -83,7 +83,7 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
             .with(Sort.by(Sort.Order.desc("score")));
 
         if(brief){
-            query = query.limit(10);
+            query = query.limit(5);
         }
 
         return mongoTemplate.find(query, ChampionStatsRank.class,
@@ -96,7 +96,7 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
             .with(Sort.by(Sort.Order.desc("score")));
 
         if(brief){
-            query = query.limit(10);
+            query = query.limit(5);
         }
 
         return mongoTemplate.find(query, BaseChampionStat.class, resolveTargetCollection(queueType, upperTier));
