@@ -120,9 +120,7 @@ public class SummonerService {
 
         MatchSummaryDto matchSummary = MatchSummaryDto.from(matches.subList(0, Math.min(20, matches.size())));
 
-        // renewableAfter 가져오기 : updated 시점으로부터 2분 이후의 시간을 리턴
-        LocalDateTime renewableAfter = summoner.getUpdatedAt()
-            .plus(2, ChronoUnit.MINUTES).toLocalDateTime();
+        LocalDateTime renewableAfter = summoner.getUpdatedAt().toLocalDateTime();
 //            .minus(9, ChronoUnit.HOURS);
 
 
