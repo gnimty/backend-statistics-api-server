@@ -29,6 +29,7 @@ import onlysolorank.apiserver.api.service.SummonerService;
 import onlysolorank.apiserver.api.service.dto.RecentMemberDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
+import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
 import org.apache.commons.lang3.StringUtils;
@@ -101,7 +102,9 @@ public class SummonerController {
         @PathVariable("summoner_tag_name") String summonerTagName) {
 
         String internalTagName = keywordToInternalTagName(summonerTagName, true);
-        SummonerDto result = SummonerDto.from(summonerService.getSummonerByInternalTagName(internalTagName));
+
+        Summoner summoner = summonerService.getSummonerByInternalTagName(internalTagName);
+        SummonerDto result = SummonerDto.from(summoner);
 
         return CommonResponse.success(result);
     }
