@@ -51,7 +51,7 @@ public class Perk {
 
         PerkDetail subStyle = new PerkDetail(
             "subStyle",
-            perks.getPerkStyle().intValue(),
+            perks.getPerkSubStyle().intValue(),
             subPerkIds.stream().map(ps -> new Selection(ps.intValue(), null, null, null)).toList());
         StatPerk statPerks = StatPerk.builder().defense(defense).flex(flex).offense(offense)
             .build();
