@@ -132,7 +132,6 @@ public class SummonerService {
         // 결과 출력
         System.out.println("Formatted DateTime: " + formattedDateTime);
 
-
         SummonerDto summonerInfo = SummonerDto.from(summoner);
 
 
