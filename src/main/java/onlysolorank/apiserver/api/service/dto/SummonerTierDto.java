@@ -3,6 +3,7 @@ package onlysolorank.apiserver.api.service.dto;
 import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -70,6 +71,10 @@ public class SummonerTierDto {
 
     @Schema(example = "3821", description = "소환사 티어 환산 수치")
     private Integer mmr;
+
+    @Schema(description = "솔로랭크 순위정보로, 마스터 이상 유저에 한해서만 해당 필드가 노출됩니다.")
+    @JsonInclude(Include.NON_NULL)
+    private Integer rank;
 
     public static SummonerTierDto from(Summoner summoner, QueueType queueType) {
         Integer wins;

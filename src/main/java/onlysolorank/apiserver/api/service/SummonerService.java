@@ -123,8 +123,26 @@ public class SummonerService {
         // renewableAfter 가져오기 : updated 시점으로부터 2분 이후의 시간을 리턴
         ZonedDateTime renewableAfter = summoner.getUpdatedAt().plus(2, ChronoUnit.MINUTES);
 
+        SummonerDto summonerInfo = SummonerDto.from(summoner);
+
+
+        // 마스터 티어 이상의 유저라면 랭크 정보 추가
+
+        if (Objects.nonNull(summonerInfo.getSoloTierInfo()) && summonerInfo.getSoloTierInfo().getTier().getBasisMMR()>= Tier.master.getBasisMMR()){
+            Integer rank = getSummonerRanks(summonerInfo.getSoloTierInfo().getMmr(), QueueType.RANK_SOLO);
+            summonerInfo.getSoloTierInfo().setRank(rank);
+        }
+
+        if (Objects.nonNull(summonerInfo.getFlexTierInfo()) && summonerInfo.getFlexTierInfo().getTier().getBasisMMR()>= Tier.master.getBasisMMR()){
+            Integer rank = getSummonerRanks(summonerInfo.getFlexTierInfo().getMmr(), QueueType.RANK_FLEX);
+            summonerInfo.getFlexTierInfo().setRank(rank);
+        }
+
+
+
+
         return SummonerMatchRes.builder()
-            .summoner(SummonerDto.from(summoner))
+            .summoner(summonerInfo)
             .renewableAfter(renewableAfter)
             .matches(matches)
             .matchSummary(matchSummary)
@@ -480,7 +498,11 @@ public class SummonerService {
         return result;
     }
 
-    public Integer getSummonerRanks(Integer mmr){
+    public Integer getSummonerRanks(Integer mmr, QueueType queueType){
+        if(queueType==QueueType.RANK_FLEX){
+            return 1+summonerRepository.countByMmrFlexGreaterThan(mmr);
+        }
+
         return 1+summonerRepository.countByMmrGreaterThan(mmr);
     }
 

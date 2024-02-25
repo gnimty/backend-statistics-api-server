@@ -135,11 +135,13 @@ public class SummonerController {
 
         if (lastMatchId.isEmpty() || lastMatchId.get().isBlank()) {
             result = summonerService.getSummonerMatchInfoBySummonerName(internalTagName, queueType);
+
         } else {
             result = SummonerMatchRes.builder()
                 .matches(summonerService.get20MatchesByOptionalLastMatchId(internalTagName, lastMatchId.get(), queueType))
                 .build();
         }
+
 
         return CommonResponse.success(result);
     }
