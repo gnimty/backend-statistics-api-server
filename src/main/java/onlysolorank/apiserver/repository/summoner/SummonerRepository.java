@@ -46,4 +46,6 @@ public interface SummonerRepository extends MongoRepository<Summoner, String>,
 //    Page<Summoner> findAll(Pageable pageable);
     Integer countByMmrGreaterThan(Integer mmr);
 
+    Integer countByMmrFlexGreaterThan(Integer mmrFlex);
+
 }

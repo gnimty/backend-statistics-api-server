@@ -103,12 +103,6 @@ public class SummonerController {
         String internalTagName = keywordToInternalTagName(summonerTagName, true);
         SummonerDto result = SummonerDto.from(summonerService.getSummonerByInternalTagName(internalTagName));
 
-        // 마스터 티어 이상의 유저라면 랭크 정보 추가
-        if (result.getSoloTierInfo()!=null & result.getSoloTierInfo().getTier().getBasisMMR()>= Tier.master.getBasisMMR()){
-            Integer rank = summonerService.getSummonerRanks(result.getSoloTierInfo().getMmr());
-            result.setRank(rank);
-        }
-
         return CommonResponse.success(result);
     }
 
@@ -135,11 +129,13 @@ public class SummonerController {
 
         if (lastMatchId.isEmpty() || lastMatchId.get().isBlank()) {
             result = summonerService.getSummonerMatchInfoBySummonerName(internalTagName, queueType);
+
         } else {
             result = SummonerMatchRes.builder()
                 .matches(summonerService.get20MatchesByOptionalLastMatchId(internalTagName, lastMatchId.get(), queueType))
                 .build();
         }
+
 
         return CommonResponse.success(result);
     }
