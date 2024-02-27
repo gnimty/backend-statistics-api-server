@@ -31,7 +31,7 @@ public enum Lane {
         return UNKNOWN;
     }
 
-    public static Lane[] getActualPosition() {
+    public static Lane[] getActualLane() {
         Lane[] targets = {TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY};
         return targets;
     }

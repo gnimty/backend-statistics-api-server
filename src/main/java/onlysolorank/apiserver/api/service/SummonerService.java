@@ -121,17 +121,14 @@ public class SummonerService {
         MatchSummaryDto matchSummary = MatchSummaryDto.from(matches.subList(0, Math.min(20, matches.size())));
 
         LocalDateTime renewableAfter = summoner.getUpdatedAt().toLocalDateTime();
-//            .minus(9, ChronoUnit.HOURS);
 
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = renewableAfter.format(formatter);
-
-        // 결과 출력
-        System.out.println("Formatted DateTime: " + formattedDateTime);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        String formattedDateTime = renewableAfter.format(formatter);
+//
+//        // 결과 출력
+//        System.out.println("Formatted DateTime: " + formattedDateTime);
 
         SummonerDto summonerInfo = SummonerDto.from(summoner);
-
 
         // 마스터 티어 이상의 유저라면 랭크 정보 추가
 
@@ -464,12 +461,15 @@ public class SummonerService {
                 SummonerPlayDto summonerPlayDto = null;
                 Summoner targetSummoner = summonerMap.get(p.getSummonerId());
 
-                if (targetSummoner != null) {
-                    BaseSummonerPlay summonerPlay = collect.get(targetSummoner.getPuuid());
-                    if (summonerPlay != null) {
-                        summonerPlayDto = SummonerPlayDto.from(summonerPlay);
-                    }
+                if (targetSummoner == null) {
+                    return null;
                 }
+
+                BaseSummonerPlay summonerPlay = collect.get(targetSummoner.getPuuid());
+                if (summonerPlay != null) {
+                    summonerPlayDto = SummonerPlayDto.from(summonerPlay);
+                }
+
 
                 ChampionDto champion = assetService.getChampion(p.getChampionId());
 
