@@ -4,7 +4,9 @@ import static java.util.stream.Collectors.groupingBy;
 import static onlysolorank.apiserver.utils.CustomFunctions.divideAndReturnDouble;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import onlysolorank.apiserver.api.controller.dto.MatchBriefRes;
+import onlysolorank.apiserver.domain.dto.Lane;
 
 
 @Getter
@@ -25,7 +28,7 @@ public class MatchSummaryDto {
     private Double avgKda;
     private Boolean isPerfect;
     private List<ChampionSummaryDto> championSummary;
-
+    private Map<Lane, Integer> laneSummary;
     public static MatchSummaryDto from(List<MatchBriefRes> matchDtoList){
         Integer totalKills = 0;
         Integer totalDeaths = 0;
@@ -38,8 +41,23 @@ public class MatchSummaryDto {
         Boolean isTotalPerfect= false;
 
         List<ChampionSummaryDto> championSummary = new ArrayList<>();
+
+        Map<Lane, Integer> laneSummary = new HashMap<>();
+        for(Lane l : Lane.getActualLane()){
+            laneSummary.put(l, 0);
+        }
+
         List<ParticipantDto> participants = matchDtoList.stream()
             .map(MatchBriefRes::getParticipant).toList();
+
+        for(ParticipantDto p : participants){
+            Lane targetLane = p.getLane();
+
+            if(laneSummary.containsKey(targetLane)){
+                laneSummary.put(targetLane, laneSummary.get(targetLane)+1);
+            }
+        }
+
 
         Map<Integer, List<ParticipantDto>> participantMap = participants.stream()
             .collect(groupingBy(ParticipantDto::getChampionId));
@@ -73,6 +91,7 @@ public class MatchSummaryDto {
             }
 
             championSummary.add(ChampionSummaryDto.builder()
+                .championId(entry.getKey())
                 .avgKda(avgKdaByChampion)
                 .plays(plays)
                 .wins(wins)
@@ -111,6 +130,7 @@ public class MatchSummaryDto {
             .plays(totalPlays)
             .isPerfect(isTotalPerfect)
             .winRate(totalWinRate)
+            .laneSummary(laneSummary)
             .build();
     }
 
@@ -119,6 +139,7 @@ public class MatchSummaryDto {
     @Builder
     @AllArgsConstructor
     public static class ChampionSummaryDto {
+        private Integer championId;
         private Integer plays;
         private Integer wins;
         private Integer defeats;
