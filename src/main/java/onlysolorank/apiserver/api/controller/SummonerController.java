@@ -177,7 +177,7 @@ public class SummonerController {
         }
 
         List<SummonerPlayDto> results = summonerService.getChampionPlayInfo(
-            summonerTagName, queueType, brief);
+            internalTagName, queueType, brief);
 
         return CommonResponse.success(SummonerPlayRes.builder()
             .summonerPlays(results)

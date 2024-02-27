@@ -1,6 +1,7 @@
 package onlysolorank.apiserver.api.service;
 
 import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalTagName;
+import static onlysolorank.apiserver.utils.CustomFunctions.splitInternalName;
 
 import java.net.URI;
 import java.time.Duration;
@@ -403,6 +404,25 @@ public class SummonerService {
         }
     }
 
+    public boolean lookupSummoner(String gameName, String tagLine){
+        URI uri = UriComponentsBuilder
+            .fromUriString(String.format("http://%s:%s", BATCH_HOST, BATCH_PORT))
+            .path(String.format("/lookup/summoner/%s/%s",gameName, tagLine ))
+            .encode()
+            .build()
+            .toUri();
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<RefreshRes> responseEntity = restTemplate.postForEntity(uri, null,
+            RefreshRes.class);
+
+        // 4. 결과 코드로 바로 return
+        if (responseEntity.getStatusCode() != HttpStatus.CREATED) {
+            return false;
+        }
+
+        return true;
+    }
 
     public CurrentGameRes getCurrentGame(String internalTagName) {
 
@@ -523,9 +543,22 @@ public class SummonerService {
      * @return Summoner
      */
     public Summoner getSummonerByInternalTagName(String internalTagName) {
-        return summonerRepository.findSummonerByInternalTagName(internalTagName)
-            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND,
-                "summoner tagname에 해당하는 소환사 데이터가 존재하지 않습니다."));
+        Optional<Summoner> foundSummoner = summonerRepository.findSummonerByInternalTagName(
+            internalTagName);
+
+        if (foundSummoner.isPresent()){
+            return foundSummoner.get();
+        }else{
+            String[] split = splitInternalName(internalTagName);
+
+            if(split.length==2){
+                lookupSummoner(split[0], split[1]);
+            }
+            return summonerRepository.findSummonerByInternalTagName(internalTagName)
+                .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND,
+                    "summoner tagname에 해당하는 소환사 데이터가 존재하지 않습니다."));
+        }
+
     }
 
     private Summoner getSummonerByPuuid(String puuid) {
