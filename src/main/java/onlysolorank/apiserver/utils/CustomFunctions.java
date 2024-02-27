@@ -62,8 +62,9 @@ public class CustomFunctions {
         }
     }
 
-
-
+    public static String[] splitInternalName(String internalName){
+        return internalName.split("#");
+    }
 
     /**
      * 반올림할 Double 값과 반올림할 자릿수를 넘겨 주어 그 값을 받음
