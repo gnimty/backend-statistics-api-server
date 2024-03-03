@@ -45,7 +45,7 @@ public class MatchDetailRes {
         this.matchId = match.getMatchId();
         this.gameVersion = match.getVersion();
         this.gameEndAt = match.getGameEndAt();
-        this.queueInfo = QueueDto.builder().queueId(match.getQueueId()).build();
+        this.queueInfo = match.getQueueInfo();
         this.gameEndedInEarlySurrender = match.getEarlyEnded();
         this.gameDuration = match.getGameDuration();
         this.participants = participants;

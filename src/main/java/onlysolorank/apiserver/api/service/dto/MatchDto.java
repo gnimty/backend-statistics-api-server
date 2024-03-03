@@ -27,7 +27,7 @@ public class MatchDto {
     private LocalDateTime gameStartAt;
     private LocalDateTime gameEndAt;
     private Long gameDuration;
-    private Integer queueId;
+    private QueueDto queueInfo;
     private Boolean earlyEnded;
     private Tier avgTier;
     private Integer avgDivision;
@@ -40,7 +40,7 @@ public class MatchDto {
                 .gameStartAt(match.getGameStartAt())
                 .gameEndAt(match.getGameEndAt())
                 .gameDuration(match.getGameDuration())
-                .queueId(match.getQueueId())
+                .queueInfo(QueueDto.builder().queueId(match.getQueueId()).build())
                 .earlyEnded(match.getEarlyEnded())
                 .avgTier(match.getAvgTier())
                 .avgDivision(match.getAvgDivision())
@@ -52,7 +52,7 @@ public class MatchDto {
             .gameStartAt(match.getGameStartAt())
             .gameEndAt(match.getGameEndAt())
             .gameDuration(match.getGameDuration())
-            .queueId(match.getQueueId())
+            .queueInfo(QueueDto.builder().queueId(match.getQueueId()).build())
             .earlyEnded(match.getEarlyEnded())
             .build();
     }
