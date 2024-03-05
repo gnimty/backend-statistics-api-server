@@ -490,7 +490,6 @@ public class SummonerService {
                     summonerPlayDto = SummonerPlayDto.from(summonerPlay);
                 }
 
-
                 ChampionDto champion = assetService.getChampion(p.getChampionId());
 
                 return CurrentGameParticipantDto.builder()
