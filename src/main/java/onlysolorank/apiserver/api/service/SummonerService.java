@@ -404,7 +404,7 @@ public class SummonerService {
         }
     }
 
-    public boolean lookupSummoner(String gameName, String tagLine){
+    public void lookupSummoner(String gameName, String tagLine){
         URI uri = UriComponentsBuilder
             .fromUriString(String.format("http://%s:%s", BATCH_HOST, BATCH_PORT))
             .path(String.format("/lookup/summoner/%s/%s",gameName, tagLine ))
@@ -413,15 +413,15 @@ public class SummonerService {
             .toUri();
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<RefreshRes> responseEntity = restTemplate.postForEntity(uri, null,
-            RefreshRes.class);
 
-        // 4. 결과 코드로 바로 return
-        if (responseEntity.getStatusCode() != HttpStatus.CREATED) {
-            return false;
+        try{
+            restTemplate.postForEntity(uri, null, RefreshRes.class);
+        }catch (HttpClientErrorException.NotFound notFoundException) {
+//            throw new CustomException(ErrorCode.RESULT_NOT_FOUND, "현재 소환사가 게임 중이 아닙니다.");
+        } catch (HttpClientErrorException.TooManyRequests tooManyRequestsException) {
+//            throw new CustomException(ErrorCode.TOO_MANY_REQUESTS);
         }
 
-        return true;
     }
 
     public CurrentGameRes getCurrentGame(String internalTagName) {
