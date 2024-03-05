@@ -502,7 +502,6 @@ public class SummonerService {
 
             return CurrentGameRes.builder()
                 .participants(participants)
-                .gameLength(result.getGameLength())
                 .queueId(result.getGameQueueConfigId().intValue())
                 .startTime(result.getGameStartTime())
                 .build();

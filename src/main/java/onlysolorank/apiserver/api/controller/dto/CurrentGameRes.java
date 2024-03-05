@@ -31,12 +31,18 @@ public class CurrentGameRes {
 
 
     @Builder
-    public CurrentGameRes(Long gameLength, Long startTime, Integer queueId,
+    public CurrentGameRes(Long startTime, Integer queueId,
         List<CurrentGameParticipantDto> participants) {
-        this.gameLength = gameLength;
+        // 현재시간 - startTime
+
+        Long now = Instant.now().toEpochMilli();
+
+
+        this.gameLength = (now - startTime)/1000;
 
         // epochMilliseconds to LocalDatetime
         Instant instant = Instant.ofEpochMilli(startTime);
+
         this.gameStartTime = instant.atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
         this.queueInfo = QueueDto.builder().queueId(queueId).build();
         this.participants = participants;
