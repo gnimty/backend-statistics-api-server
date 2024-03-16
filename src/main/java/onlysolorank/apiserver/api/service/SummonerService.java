@@ -110,7 +110,7 @@ public class SummonerService {
 
     public SummonerMatchRes getSummonerMatchInfoBySummonerName(String internalTagName, QueueType queueType) {
         // 1. 본인 소환사 정보 가져오기
-        Summoner summoner = getSummonerByInternalTagName(internalTagName);
+        Summoner summoner = getSummonerByInternalTagName(internalTagName, true);
 
         // 2.MatchId 및 MatchDto List 가져오기
         List<String> matchIds = summonerMatchService.getSummonerMatchIdsBySummonerPuuidAndQueueType(
@@ -160,7 +160,7 @@ public class SummonerService {
         QueueType queueType) {
 
         // TODO lastMatchId 검증 필요
-        Summoner summoner = getSummonerByInternalTagName(internalTagName);
+        Summoner summoner = getSummonerByInternalTagName(internalTagName, true);
 
         // MatchId 및 MatchDto List 가져오기
         List<String> matchIds = summonerMatchService.getSummonerMatchIdsBySummonerPuuidAndQueueType(
