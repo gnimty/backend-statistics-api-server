@@ -29,6 +29,8 @@ public interface SummonerRepository extends MongoRepository<Summoner, String>,
     // 소환사의 internalName과 패턴이 일치하는 (키워드로 시작하는) 소환사 정보를 사전 순으로 최대 5명까지 조회
     List<Summoner> findTop5ByInternalTagNameStartsWithOrderByInternalTagNameAscMmrDesc(String internalTagName);
 
+    Optional<Summoner> findFirstByInternalTagNameStartsWithOrderByInternalTagNameAscMmrDesc(String internalTagName);
+
     Optional<Summoner> findSummonerByInternalTagName(String internalTagName);
 
     Optional<Summoner> findSummonerByPuuid(String puuid);

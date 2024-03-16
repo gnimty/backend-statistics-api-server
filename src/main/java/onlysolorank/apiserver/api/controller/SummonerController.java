@@ -103,7 +103,7 @@ public class SummonerController {
 
         String internalTagName = keywordToInternalTagName(summonerTagName, true);
 
-        Summoner summoner = summonerService.getSummonerByInternalTagName(internalTagName);
+        Summoner summoner = summonerService.getSummonerByInternalTagName(internalTagName, true);
         SummonerDto result = SummonerDto.from(summoner);
 
         return CommonResponse.success(result);
