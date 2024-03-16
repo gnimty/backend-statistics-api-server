@@ -540,7 +540,12 @@ public class SummonerService {
      * @param internalTagName 소환사이름
      * @return Summoner
      */
+
     public Summoner getSummonerByInternalTagName(String internalTagName) {
+        return getSummonerByInternalTagName(internalTagName, false);
+    }
+
+    public Summoner getSummonerByInternalTagName(String internalTagName, Boolean autocomplete) {
         Optional<Summoner> foundSummoner = summonerRepository.findSummonerByInternalTagName(
             internalTagName);
 
@@ -548,6 +553,12 @@ public class SummonerService {
             return foundSummoner.get();
         }else{
             String[] split = splitInternalName(internalTagName);
+
+            if (autocomplete && split.length==1){
+                return getFirstSummonerMatchedByInternalTagName(internalTagName)
+                    .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND,
+                        "summoner tagname에 해당하는 소환사 데이터가 존재하지 않습니다."));
+            }
 
             if(split.length==2){
                 lookupSummoner(split[0], split[1]);
@@ -583,6 +594,11 @@ public class SummonerService {
         return summonerRepository.findTop5ByInternalTagNameStartsWithOrderByInternalTagNameAscMmrDesc(internalTagName)
             .stream().map(summoner -> SummonerDto.from(summoner))
             .toList();
+    }
+
+    public Optional<Summoner> getFirstSummonerMatchedByInternalTagName(String internalTagName){
+        return summonerRepository.findFirstByInternalTagNameStartsWithOrderByInternalTagNameAscMmrDesc(internalTagName);
+
     }
 
     @Data

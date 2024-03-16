@@ -39,12 +39,12 @@ public class ChampionAnalysisRes {
     private Lane lane;
     private ChampionTierDto championTier;
     private List<CounterStat> counterChampions;
-//    private List<BaseCounter> easyChampions;
+    private List<CounterStat> easyChampions;
 
     private List<SpellComponentStat> spellBuilds;
 
     private List<PerkComponentStat> perkBuilds;
-    private List<StatPerkComponentStat> statPerkBuilds;
+//    private List<StatPerkComponentStat> statPerkBuilds;
 
     private List<ItemStartComponentStat> initialItemBuilds;
     private List<ItemBootsComponentStat> shoesBuilds;
@@ -64,15 +64,14 @@ public class ChampionAnalysisRes {
         return ChampionAnalysisRes.builder()
             .championId(analysis.getChampionId())
             .counterChampions(analysis.getCounters())
-//            .easyChampions(easies)
+            .easyChampions(analysis.getEasy())
             .spellBuilds(analysis.getSummonerSpell())
-            .perkBuilds(analysis.getPerks().subList(0, 3))
-            .statPerkBuilds(analysis.getStatPerks().subList(0, 2))
-            .initialItemBuilds(analysis.getItemStart().subList(0, 2))
+            .perkBuilds(analysis.getPerks().subList(0, Math.min(analysis.getPerks().size(), 3)))
+            .initialItemBuilds(analysis.getItemStart().subList(0, Math.min(analysis.getItemStart().size(), 2)))
             .patches(patches)
-//            .shoesBuilds(analysis.getItemBoots().subList(0, 2))
-            .itemBuilds(analysis.getItemBuild().subList(0, 4))
-            .skillBuilds(analysis.getSkillTree().subList(0, 1))
+            .shoesBuilds(analysis.getItemBoots().subList(0, Math.min(analysis.getItemBoots().size(), 2)))
+            .itemBuilds(analysis.getItemBuild().subList(0, Math.min(analysis.getItemBuild().size(), 4)))
+            .skillBuilds(analysis.getSkillTree().subList(0, Math.min(analysis.getSkillTree().size(), 1)))
             .lane(analysis.getPosition())
             .championTier(championTier)
             .specialists(specialists)
