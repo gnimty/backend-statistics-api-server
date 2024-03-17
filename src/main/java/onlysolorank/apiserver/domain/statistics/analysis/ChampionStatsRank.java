@@ -1,7 +1,9 @@
 package onlysolorank.apiserver.domain.statistics.analysis;
 
+import java.util.List;
 import lombok.Getter;
 import onlysolorank.apiserver.domain.dto.Lane;
+import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStat;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -28,8 +30,8 @@ public class ChampionStatsRank extends BaseChampionStat {
     private Double banRate;
 
     public ChampionStatsRank(String tier, Long championId, Double winRate, Double pickRate, Long plays,
-        Double score, Lane position, Double banRate) {
-        super(tier, championId, winRate, pickRate, plays, score);
+        Double score, Lane position, Double banRate, List<CounterStat> counters) {
+        super(tier, championId, winRate, pickRate, plays, score, counters);
         this.position = position;
         this.banRate = banRate;
 

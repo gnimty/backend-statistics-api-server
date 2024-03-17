@@ -2,10 +2,12 @@ package onlysolorank.apiserver.api.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.statistics.analysis.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
+import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStat;
 import onlysolorank.apiserver.domain.statistics.tier.BaseChampionTier;
 
 /**
@@ -33,6 +35,7 @@ public class ChampionTierDto {
     private Double banRate;
     private Long plays;
     private String tier;
+    private List<CounterStat> counters;
 
 
     public static ChampionTierDto fromBaseTier(BaseChampionStat stat, String championName) {
@@ -43,6 +46,7 @@ public class ChampionTierDto {
             .plays(stat.getPlays())
             .tier(stat.getTier())
             .championId(stat.getChampionId())
+            .counters(stat.getCounters())
             .build();
     }
 
@@ -54,6 +58,7 @@ public class ChampionTierDto {
             .banRate(stat.getBanRate())
             .plays(stat.getPlays())
             .tier(stat.getTier())
+            .counters(stat.getCounters())
             .championId(stat.getChampionId())
             .build();
     }
