@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +118,11 @@ public class SummonerService {
             summoner.getPuuid(), queueType).stream()
             .limit(20).toList();
 
-        List<MatchBriefRes> matches = getMatchBriefDtoList(matchIds, summoner.getPuuid());
+        List<MatchBriefRes> matches = getMatchBriefDtoList(matchIds, summoner.getPuuid())
+            .stream()
+            .sorted(Comparator.comparing(m ->m.getMatchInfo().getGameStartAt(), Comparator.reverseOrder()))
+            .toList();
+
 
         MatchSummaryDto matchSummary = MatchSummaryDto.from(matches.subList(0, Math.min(20, matches.size())));
 
