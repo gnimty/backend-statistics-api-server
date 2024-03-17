@@ -71,7 +71,7 @@ public class ChampionController {
             required = false, example = "true"),
         @Parameter(in = ParameterIn.QUERY, name = "queue_type", description = "검색하려는 큐 정보",
             schema = @Schema(type = "string",
-                allowableValues = {"RANK_SOLO", "RANK_FLEX"}),
+                allowableValues = {"RANK_SOLO", "RANK_FLEX", "ARAM"}),
             required = false, example = "RANK_SOLO")
     })
     public CommonResponse getChampionStats(

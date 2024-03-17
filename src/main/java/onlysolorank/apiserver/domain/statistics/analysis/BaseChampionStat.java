@@ -1,7 +1,9 @@
 package onlysolorank.apiserver.domain.statistics.analysis;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStat;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -39,4 +41,6 @@ public class BaseChampionStat {
 
     private Double score;
 
+    @Field("counter")
+    private List<CounterStat> counters;
 }

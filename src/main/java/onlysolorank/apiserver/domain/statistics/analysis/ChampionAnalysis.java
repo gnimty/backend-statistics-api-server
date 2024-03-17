@@ -44,15 +44,13 @@ public class ChampionAnalysis extends ChampionStatsRank {
     private List<ItemBootsComponentStat> itemBoots;
     private List<ItemBuildComponentStat> itemBuild;
 
-    @Field("counter")
-    private List<CounterStat> counters;
 
     @Field("easy")
     private List<CounterStat> easy;
 
     public ChampionAnalysis(String tier, Long championId, Double winRate, Double pickRate, Long plays, Double score,
-        Lane position, Double banRate) {
-        super(tier, championId, winRate, pickRate, plays, score, position, banRate);
+        Lane position, Double banRate, List<CounterStat> counters) {
+        super(tier, championId, winRate, pickRate, plays, score, position, banRate, counters);
     }
 
 //    public ChampionAnalysis(String tier, Long championId, Lane position, Double winRate,
