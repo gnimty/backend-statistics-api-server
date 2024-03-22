@@ -32,7 +32,7 @@ public class PerkComponentStat extends BaseComponentStat {
 
     @Schema(example = "8400", description = "보조룬 스타일 ID (지배, 정밀, ... )")
     @Field("subStyle")
-    private Long subStyle;
+    private Long subStyleId;
 
     @Schema(description = "주룬 세부 픽")
     private List<Long> primaryStyles;
