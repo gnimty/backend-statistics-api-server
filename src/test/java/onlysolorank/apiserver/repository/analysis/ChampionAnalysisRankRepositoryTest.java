@@ -34,14 +34,14 @@ class ChampionAnalysisRankRepositoryTest {
 
     @Test
     void 챔피언_티어_포지션으로_검색() {
-        Optional<ChampionAnalysis> byChampionIdAndPositionAndTier = championAnalysisRepository.findTop1ByChampionIdAndPositionAndTier(QueueType.RANK_SOLO, AATROX, Lane.TOP, Tier.diamond.name().toUpperCase());
+        Optional<ChampionAnalysis> byChampionIdAndPositionAndTier = championAnalysisRepository.findTop1ByChampionIdAndPositionAndTier(QueueType.RANK_SOLO, AATROX, Lane.TOP, Tier.diamond);
 
         System.out.println("byChampionIdAndPositionAndTier = " + byChampionIdAndPositionAndTier.get());
     }
 
     @Test
     void 챔피언_티어_포지션_없이_검색() {
-        Optional<ChampionAnalysis> byChampionIdAndPositionAndTier = championAnalysisRepository.findTop1ByChampionIdAndTier(QueueType.RANK_SOLO, ANIVIA, Tier.diamond.name().toUpperCase());
+        Optional<ChampionAnalysis> byChampionIdAndPositionAndTier = championAnalysisRepository.findTop1ByChampionIdAndTier(QueueType.RANK_SOLO, ANIVIA, Tier.diamond);
 
         System.out.println("byChampionIdAndPositionAndTier = " + byChampionIdAndPositionAndTier.get());
     }

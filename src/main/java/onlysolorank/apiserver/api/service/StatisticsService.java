@@ -16,6 +16,7 @@ import onlysolorank.apiserver.api.controller.dto.ChampionTierRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionTierRes.ChampionTierByPosition;
 import onlysolorank.apiserver.api.exception.CustomException;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
+import onlysolorank.apiserver.api.service.dto.LaneSelectDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
 import onlysolorank.apiserver.api.service.dto.SummonerPlayDto;
 import onlysolorank.apiserver.api.service.dto.SummonerPlayWithSummonerDto;
@@ -77,7 +78,7 @@ public class StatisticsService {
         for (Lane position : Lane.getActualLane()) {
 
             List<ChampionStatsRank> championTierList = championAnalysisRepository.findChampionTierList(
-                queueType, position, brief, tier.name().toUpperCase());
+                queueType, position, brief, tier);
 
             List<ChampionTierDto> championTierDtoList = championTierList.stream().map(
                         championTier -> ChampionTierDto.fromRankTier(championTier,
@@ -103,7 +104,7 @@ public class StatisticsService {
         Map<Long, String> championEnMap = getChampionMap();
 
         List<ChampionTierDto> results = championAnalysisRepository.findChampionAramTierList(
-            queueType, brief, tier.name().toUpperCase()).stream().map(
+            queueType, brief, tier).stream().map(
                 championTier -> ChampionTierDto.fromBaseTier(championTier,
                     championEnMap.getOrDefault(championTier.getChampionId(), null)))
             .toList();
@@ -112,6 +113,23 @@ public class StatisticsService {
             .version(version)
             .results(results)
             .build();
+    }
+
+    public List<LaneSelectDto> getLaneSelectRates(Long championId, Tier tier){
+        List<ChampionStatsRank> championTierList = championAnalysisRepository.findChampionLaneSelectRate(
+            championId, tier);
+
+        if (championTierList.isEmpty()){
+            return null;
+        }
+
+        // 전체 pick cnt 구하기
+        Integer totalCnt = championTierList.stream()
+            .mapToInt(c->c.getPlays().intValue()).sum();
+
+        return championTierList.stream()
+            .map(c-> LaneSelectDto.from(c, totalCnt))
+            .toList();
     }
 
 
@@ -126,13 +144,13 @@ public class StatisticsService {
         // db.getCollection("champion_statistics_detail").find({"championId":517, "tier":"EMERALD"}).sort({"gameVersion_":-1, "pickRate":-1}).limit(1)
         if (lane == Lane.UNKNOWN) {
             optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndTier(QUEUE_TYPE_ON_DETAIL,
-                champion.getChampionId(), tier.name().toUpperCase());
+                champion.getChampionId(), tier);
         }
 
         // 2. position이 지정되어 있다면 해당 정보들로 바로 쿼리
         else {
             optionalAnalysis = championAnalysisRepository.findTop1ByChampionIdAndPositionAndTier(QUEUE_TYPE_ON_DETAIL,
-                champion.getChampionId(), Lane.valueOf(lane.name()), tier.name().toUpperCase());
+                champion.getChampionId(), Lane.valueOf(lane.name()), tier);
         }
 
         if (!optionalAnalysis.isPresent()) {
@@ -176,7 +194,9 @@ public class StatisticsService {
                 .build())
             .toList();
 
-        return ChampionAnalysisRes.toRes(analysis, championTierDto, patches, specialistsResult);
+        List<LaneSelectDto> laneSelectRates = getLaneSelectRates(champion.getChampionId(), tier);
+
+        return ChampionAnalysisRes.toRes(analysis, championTierDto, patches, specialistsResult, laneSelectRates);
     }
 
 }

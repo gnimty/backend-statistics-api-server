@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.dto.QueueType;
+import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.analysis.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
@@ -36,7 +37,7 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
     @Qualifier("secondaryMongoTemplate")
     private final MongoTemplate mongoTemplate;
 
-    private String resolveTargetCollection(QueueType queueType, String upperTier) {
+    private String resolveTargetCollection(QueueType queueType, Tier tier) {
         String targetCol = "champion_statistics_";
 
         if (queueType == QueueType.ARAM) {
@@ -47,14 +48,14 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
             } else if (queueType == QueueType.RANK_FLEX) {
                 targetCol += "flex_";
             }
-            targetCol += upperTier.toLowerCase();
+            targetCol += tier.name().toLowerCase();
         }
         return targetCol;
     }
 
     @Override
     public Optional<ChampionAnalysis> findTop1ByChampionIdAndPositionAndTier(QueueType queueType, Long championId,
-        Lane position, String upperTier) {
+        Lane position, Tier upperTier) {
 
         Query query = new Query(Criteria.where("championId").is(championId).and("teamPosition").is(position));
 
@@ -66,7 +67,7 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
 
     @Override
     public Optional<ChampionAnalysis> findTop1ByChampionIdAndTier(QueueType queueType, Long championId,
-        String upperTier) {
+        Tier upperTier) {
 
         Query query = new Query(Criteria.where("championId").is(championId))
             .with(Sort.by(Sort.Order.desc("pick_cnt")));
@@ -78,7 +79,7 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
     }
 
     @Override
-    public List<ChampionStatsRank> findChampionTierList(QueueType queueType, Lane position, Boolean brief, String upperTier) {
+    public List<ChampionStatsRank> findChampionTierList(QueueType queueType, Lane position, Boolean brief, Tier upperTier) {
         Query query = new Query(Criteria.where("teamPosition").is(position))
             .with(Sort.by(Sort.Order.desc("score")));
 
@@ -91,7 +92,7 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
     }
 
     @Override
-    public List<BaseChampionStat> findChampionAramTierList(QueueType queueType, Boolean brief, String upperTier) {
+    public List<BaseChampionStat> findChampionAramTierList(QueueType queueType, Boolean brief, Tier upperTier) {
         Query query = new Query()
             .with(Sort.by(Sort.Order.desc("score")));
 
@@ -100,6 +101,16 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
         }
 
         return mongoTemplate.find(query, BaseChampionStat.class, resolveTargetCollection(queueType, upperTier));
+    }
+
+    @Override
+    public List<ChampionStatsRank> findChampionLaneSelectRate(Long championId, Tier tier) {
+        Query query = new Query(Criteria.where("championId").is(championId)
+            .and("teamPosition").ne(null))
+            .with(Sort.by(Sort.Order.desc("pick_cnt")));
+
+        return mongoTemplate.find(query, ChampionStatsRank.class,
+            resolveTargetCollection(QueueType.RANK_SOLO, tier));
     }
 
 
