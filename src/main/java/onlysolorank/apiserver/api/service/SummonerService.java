@@ -1,12 +1,10 @@
 package onlysolorank.apiserver.api.service;
 
-import static onlysolorank.apiserver.utils.CustomFunctions.keywordToInternalTagName;
 import static onlysolorank.apiserver.utils.CustomFunctions.splitInternalName;
 
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -50,7 +48,6 @@ import onlysolorank.apiserver.api.service.dto.TeamDto;
 import onlysolorank.apiserver.domain.Participant;
 import onlysolorank.apiserver.domain.Summoner;
 import onlysolorank.apiserver.domain.SummonerHistory;
-import onlysolorank.apiserver.domain.SummonerMatch;
 import onlysolorank.apiserver.domain.summoner_play.BaseSummonerPlay;
 import onlysolorank.apiserver.domain.Team;
 import onlysolorank.apiserver.domain.dto.QueueType;
@@ -123,21 +120,13 @@ public class SummonerService {
             .sorted(Comparator.comparing(m ->m.getMatchInfo().getGameStartAt(), Comparator.reverseOrder()))
             .toList();
 
-
         MatchSummaryDto matchSummary = MatchSummaryDto.from(matches.subList(0, Math.min(20, matches.size())));
 
         LocalDateTime renewableAfter = summoner.getUpdatedAt().toLocalDateTime();
 
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        String formattedDateTime = renewableAfter.format(formatter);
-//
-//        // 결과 출력
-//        System.out.println("Formatted DateTime: " + formattedDateTime);
-
         SummonerDto summonerInfo = SummonerDto.from(summoner);
 
         // 마스터 티어 이상의 유저라면 랭크 정보 추가
-
         if (Objects.nonNull(summonerInfo.getSoloTierInfo()) && summonerInfo.getSoloTierInfo().getTier().getBasisMMR()>= Tier.master.getBasisMMR()){
             Integer rank = getSummonerRanks(summonerInfo.getSoloTierInfo().getMmr(), QueueType.RANK_SOLO);
             summonerInfo.getSoloTierInfo().setRank(rank);
@@ -147,9 +136,6 @@ public class SummonerService {
             Integer rank = getSummonerRanks(summonerInfo.getFlexTierInfo().getMmr(), QueueType.RANK_FLEX);
             summonerInfo.getFlexTierInfo().setRank(rank);
         }
-
-
-
 
         return SummonerMatchRes.builder()
             .summoner(summonerInfo)
@@ -181,38 +167,47 @@ public class SummonerService {
     }
 
     public List<MatchBriefRes> getMatchBriefDtoList(List<String> matchIds, String puuid) {
-        // 1. matchIds로 매치 리스트 가져오기 (List<Match>)
+        // 1. matchId 리스트로 매치정보 리스트 가져오기
         List<MatchDto> matches = matchService.getMatchListByMatchIdList(matchIds);
 
         // 2. matchIds에 속하고 특정 puuid에 해당하는 소환사의 ParticipantBriefDto Map 가져오기 (Map<String, ParticipantBriefDto>)
-        List<Participant> myParticipantInfoList = participantService.getParticipantListByMatchIdIn(
-            matchIds, puuid);
+        List<Participant> myParticipantInfoList = participantService
+            .getParticipantListByMatchIdIn(matchIds, puuid);
         Map<String, Participant> myParticipantMap = myParticipantInfoList.stream()
             .collect(Collectors.toMap(p -> p.getMatchId(), p -> p));
 
         // 3. matchIds에 해당하는 모든 participant 간단 정보 가져오기
-        List<ParticipantBriefDto> allParticipantBriefs = participantService.getParticipantDtoListByMatchIds(
-                matchIds)
+        List<ParticipantBriefDto> allParticipantBriefs = participantService
+            .getParticipantDtoListByMatchIds(matchIds)
             .stream().toList();
 
-        // 4. matchIds에 해당하는 teamMap 가져오기 (Map<String, Team>)
-//        Map<String, List<Team>> teamMap = teamService.getTeamListByMatchIdList(matchIds).stream()
-//            .collect(Collectors.groupingBy(Team::getMatchId));
+        // 4. participants에 해당하는 소환사 이름 정보 가져오기
+        List<SummonerNameDto> foundSummoners = summonerRepository
+            .findSummonerNameDtosByPuuidIn(allParticipantBriefs.stream()
+                .map(ParticipantBriefDto::getPuuid)
+                .toList());
 
-        // 5. participants에 해당하는 summonerName 가져오기
         Map<String, SummonerNameDto> summonerMap = new HashMap<>();
 
-        List<SummonerNameDto> foundSummoners = summonerRepository.findSummonerNameDtosByPuuidIn(
-                allParticipantBriefs.stream().map(ParticipantBriefDto::getPuuid).toList());
-
-        for(SummonerNameDto summoner : foundSummoners){
-            if(!summonerMap.containsKey(summoner.getPuuid())){
-                summonerMap.put(summoner.getPuuid(), summoner);
+        for(SummonerNameDto summonerNameDto : foundSummoners){
+            if(!summonerMap.containsKey(summonerNameDto.getPuuid())){
+                summonerMap.put(summonerNameDto.getPuuid(), summonerNameDto);
             }
         }
 
+        // 5. allParticipant에 소환사 이름 정보 추가하기
+
         allParticipantBriefs.forEach(p -> {
-            SummonerNameDto target = summonerMap.get(p.getPuuid());
+            String targetPuuid = p.getPuuid();
+            SummonerNameDto target = summonerMap.get(targetPuuid);
+
+            // 5-1. 만약 puuid에 해당하는 소환사 정보가 summonerMap에 존재하지 않는다면 1회에 한해 lookup 수행
+            //      그 후 해당 소환사 정보를 쿼리 후 allParticipant에 소환사 이름 정보 추가하기
+            if (Objects.isNull(target)) {
+                lookupSummoner(targetPuuid);
+                target = summonerRepository.findSummonerNameDtoByPuuid(targetPuuid).orElseGet(null);
+            }
+
             if (Objects.nonNull(target)) {
                 p.setSummonerName(target.getName());
                 p.setInternalTagName(target.getInternalTagName());
@@ -410,9 +405,19 @@ public class SummonerService {
     }
 
     public void lookupSummoner(String gameName, String tagLine){
+        postQueryToBatch(String.format("/lookup/summoner/by-name/%s/%s", gameName, tagLine));
+    }
+
+    public void lookupSummoner(String puuid){
+        postQueryToBatch(String.format("/lookup/summoner/by-puuid/%s", puuid));
+    }
+
+
+    private void postQueryToBatch(String pathUri) {
+        String hostUri = String.format("http://%s:%s", BATCH_HOST, BATCH_PORT);
         URI uri = UriComponentsBuilder
-            .fromUriString(String.format("http://%s:%s", BATCH_HOST, BATCH_PORT))
-            .path(String.format("/lookup/summoner/%s/%s",gameName, tagLine ))
+            .fromUriString(hostUri)
+            .path(pathUri)
             .encode()
             .build()
             .toUri();
@@ -426,8 +431,8 @@ public class SummonerService {
         } catch (HttpClientErrorException.TooManyRequests tooManyRequestsException) {
 //            throw new CustomException(ErrorCode.TOO_MANY_REQUESTS);
         }
-
     }
+
 
     public CurrentGameRes getCurrentGame(String internalTagName) {
 

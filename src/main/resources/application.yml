@@ -39,12 +39,16 @@ springdoc:
     path: '/statistics/swagger-ui.html'
     enabled: true
 
+# logger setting
 logging:
-  # MongoRepository logger setting
   level:
-    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
-    com:
-      mongodb: DEBUG
+    root: INFO
+#    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+#    com:
+#      mongodb: DEBUG
+#    org.springframework.web.client.RestTemplate: WARN
+#    org.springframework.web: WARN
+
 
   # logger timezone setting
   pattern:
