@@ -47,10 +47,10 @@ public class LoggingFilter extends OncePerRequestFilter {
             byte[] content = StreamUtils.copyToByteArray(inputStream);
             if (content.length > 0) {
                 String contentString = new String(content);
-                log.info("{} Payload: {}", prefix, contentString);
+//                log.info("{} Payload: {}", prefix, contentString);
             }
         } else {
-            log.info("{} Payload: Binary Content", prefix);
+//            log.info("{} Payload: Binary Content", prefix);
         }
     }
 

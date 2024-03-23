@@ -128,11 +128,7 @@ public class SummonerController {
 
         String internalTagName = keywordToInternalTagName(summonerTagName, true);
 
-
-
         SummonerMatchRes result;
-
-
 
         if (lastMatchId.isEmpty() || lastMatchId.get().isBlank()) {
             result = summonerService.getSummonerMatchInfoBySummonerName(internalTagName, queueType);
@@ -142,7 +138,6 @@ public class SummonerController {
                 .matches(summonerService.get20MatchesByOptionalLastMatchId(internalTagName, lastMatchId.get(), queueType))
                 .build();
         }
-
 
         return CommonResponse.success(result);
     }
