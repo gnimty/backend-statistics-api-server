@@ -64,15 +64,16 @@ public class Perk {
     @ToString
     private static final class StatPerk {
 
-        private final Integer defense;
         private final Integer offense;
         private final Integer flex;
+        private final Integer defense;
+
 
         @Builder
         public StatPerk(Integer defense, Integer offense, Integer flex) {
-            this.defense = defense;
             this.offense = offense;
             this.flex = flex;
+            this.defense = defense;
         }
     }
 
