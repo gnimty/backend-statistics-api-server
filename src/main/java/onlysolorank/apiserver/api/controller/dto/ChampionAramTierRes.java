@@ -4,7 +4,9 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import onlysolorank.apiserver.api.service.dto.ChampionTierAramDto;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
+import onlysolorank.apiserver.domain.statistics.stat.AramStat;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -24,5 +26,5 @@ import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
 public class ChampionAramTierRes {
 
     private String version;
-    private List<ChampionTierDto> results;
+    private List<ChampionTierAramDto> results;
 }

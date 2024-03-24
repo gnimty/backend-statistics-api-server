@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
-import onlysolorank.apiserver.domain.statistics.analysis.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
-import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
+import onlysolorank.apiserver.domain.statistics.stat.ChampionStatsRank;
+import onlysolorank.apiserver.domain.statistics.stat.AramStat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
@@ -92,7 +92,7 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
     }
 
     @Override
-    public List<BaseChampionStat> findChampionAramTierList(QueueType queueType, Boolean brief, Tier upperTier) {
+    public List<AramStat> findChampionAramTierList(QueueType queueType, Boolean brief, Tier upperTier) {
         Query query = new Query()
             .with(Sort.by(Sort.Order.desc("score")));
 
@@ -100,7 +100,7 @@ public class ChampionAnalysisRepositoryImpl implements ChampionAnalysisRepositor
             query = query.limit(5);
         }
 
-        return mongoTemplate.find(query, BaseChampionStat.class, resolveTargetCollection(queueType, upperTier));
+        return mongoTemplate.find(query, AramStat.class, resolveTargetCollection(queueType, upperTier));
     }
 
     @Override

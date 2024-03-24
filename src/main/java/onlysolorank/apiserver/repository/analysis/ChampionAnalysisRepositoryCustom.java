@@ -5,9 +5,9 @@ import java.util.Optional;
 import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
-import onlysolorank.apiserver.domain.statistics.analysis.BaseChampionStat;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
-import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
+import onlysolorank.apiserver.domain.statistics.stat.ChampionStatsRank;
+import onlysolorank.apiserver.domain.statistics.stat.AramStat;
 
 /**
  * packageName    : onlysolorank.apiserver.repository.analysis
@@ -27,7 +27,7 @@ public interface ChampionAnalysisRepositoryCustom {
 
     List<ChampionStatsRank> findChampionTierList(QueueType queueType, Lane position, Boolean brief, Tier upperTier);
 
-    List<BaseChampionStat> findChampionAramTierList(QueueType queueType, Boolean brief, Tier upperTier);
+    List<AramStat> findChampionAramTierList(QueueType queueType, Boolean brief, Tier upperTier);
 
     List<ChampionStatsRank> findChampionLaneSelectRate(Long championId, Tier tier);
 }

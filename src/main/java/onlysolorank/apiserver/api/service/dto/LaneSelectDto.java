@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import onlysolorank.apiserver.domain.dto.Lane;
-import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
+import onlysolorank.apiserver.domain.statistics.stat.ChampionStatsRank;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
