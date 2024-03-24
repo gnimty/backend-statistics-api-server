@@ -59,22 +59,4 @@ public class ChampionAnalysis extends ChampionStatsRank {
         super(tier, championId, winRate, pickRate, plays, score, position, banRate, counters);
     }
 
-//    public ChampionAnalysis(String tier, Long championId, Lane position, Double winRate,
-//        Double pickRate, Double banRate, Long plays, Double score, List<StatPerkComponentStat> statPerks,
-//        List<PerkComponentStat> perks, List<SpellComponentStat> summonerSpell, List<SkillComponentStat> skillTree,
-//        List<ItemStartComponentStat> itemStart, List<ItemBuildComponentStat> itemBuild, List<CounterStat> counters) {
-//
-//        super(tier, championId, winRate, pickRate, plays, score, position, banRate);
-//        this.perks = perks;
-//        this.statPerks = statPerks;
-//        this.summonerSpell = summonerSpell;
-//        this.skillTree = skillTree;
-//        this.itemStart = itemStart;
-//        this.itemBuild = itemBuild;
-//        this.itemBoots = itemBoots;
-//        this.counters = counters;
-//    }
-
-    //    @Field("gameVersion_")
-    //    private String version;
 }

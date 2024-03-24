@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * 2023/09/13        solmin       최초 생성
  */
 public interface ChampionPatchRepository extends MongoRepository<ChampionPatch, String>{
-    List<ChampionPatch> findByVersionLessThanEqualAndAndChampionId(String version, String championId);
+    List<ChampionPatch> findByVersionLessThanEqualAndAndChampionIdOrderByVersionDesc(String version, String championId);
     List<ChampionPatch> findByChampionId(String championId);
     List<ChampionPatch> findAll();
 }

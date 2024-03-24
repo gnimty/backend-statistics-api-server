@@ -163,7 +163,7 @@ public class StatisticsService {
         ChampionAnalysis analysis = optionalAnalysis.get();
 
         String version = assetService.getLatestVersionString();
-        List<ChampionPatch> patches = championPatchRepository.findByVersionLessThanEqualAndAndChampionId(version, analysis.getChampionId().toString());
+        List<ChampionPatch> patches = championPatchRepository.findByVersionLessThanEqualAndAndChampionIdOrderByVersionDesc(version, analysis.getChampionId().toString());
 //        List<BaseCounter> easyChampions = championCounterRepository.findCounterChampions(
 //            champion.getChampionId(), analysis.getPosition(), false);
 
