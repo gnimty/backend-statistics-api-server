@@ -5,7 +5,6 @@ import java.util.List;
 import onlysolorank.apiserver.config.converter.LongToStringConverter;
 import onlysolorank.apiserver.config.converter.StringToLaneConverter;
 import onlysolorank.apiserver.config.converter.StringToTierConverter;
-import onlysolorank.apiserver.config.converter.StringToTierStatConverter;
 import onlysolorank.apiserver.utils.DateToZonedDateTimeConverter;
 import onlysolorank.apiserver.utils.ZonedDateTimeToDateConverter;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +35,6 @@ public class MongoConfig {
         converters.add(new ZonedDateTimeToDateConverter());
         converters.add(new StringToTierConverter());
         converters.add(new StringToLaneConverter());
-        converters.add(new StringToTierStatConverter());
         converters.add(new LongToStringConverter());
         return new MongoCustomConversions(converters);
     }

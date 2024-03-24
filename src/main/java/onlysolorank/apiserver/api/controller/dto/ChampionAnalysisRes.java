@@ -13,11 +13,13 @@ import onlysolorank.apiserver.domain.statistics.analysis.ChampionPatch;
 import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBootsComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemBuildComponentStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.ItemMiddleComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.ItemStartComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.PerkComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.SkillComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.SpellComponentStat;
 import onlysolorank.apiserver.domain.statistics.analysis.component.StatPerkComponentStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.SynergyStat;
 
 /**
  * packageName    : onlysolorank.apiserver.api.controller.dto
@@ -41,6 +43,7 @@ public class ChampionAnalysisRes {
     private ChampionTierDto championTier;
     private List<CounterStat> counterChampions;
     private List<CounterStat> easyChampions;
+    private List<SynergyStat> synergies;
 
     private List<SpellComponentStat> spellBuilds;
 
@@ -48,6 +51,7 @@ public class ChampionAnalysisRes {
 //    private List<StatPerkComponentStat> statPerkBuilds;
 
     private List<ItemStartComponentStat> initialItemBuilds;
+    private List<ItemMiddleComponentStat> itemMiddleBuilds;
     private List<ItemBootsComponentStat> shoesBuilds;
     private List<ItemBuildComponentStat> itemBuilds;
     private List<SkillComponentStat> skillBuilds;
@@ -70,9 +74,11 @@ public class ChampionAnalysisRes {
             .championId(analysis.getChampionId())
             .counterChampions(analysis.getCounters())
             .easyChampions(analysis.getEasy())
+            .synergies(analysis.getSynergies())
             .spellBuilds(analysis.getSummonerSpell())
             .perkBuilds(analysis.getPerks().subList(0, Math.min(analysis.getPerks().size(), 3)))
             .initialItemBuilds(analysis.getItemStart().subList(0, Math.min(analysis.getItemStart().size(), 2)))
+            .itemMiddleBuilds(analysis.getItemMiddle().subList(0, Math.min(analysis.getItemStart().size(), 3)))
             .patches(patches)
             .shoesBuilds(analysis.getItemBoots().subList(0, Math.min(analysis.getItemBoots().size(), 2)))
             .itemBuilds(analysis.getItemBuild().subList(0, Math.min(analysis.getItemBuild().size(), 4)))

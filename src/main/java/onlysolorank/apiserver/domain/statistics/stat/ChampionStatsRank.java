@@ -1,9 +1,10 @@
-package onlysolorank.apiserver.domain.statistics.analysis;
+package onlysolorank.apiserver.domain.statistics.stat;
 
 import java.util.List;
 import lombok.Getter;
 import onlysolorank.apiserver.domain.dto.Lane;
 import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStat;
+import onlysolorank.apiserver.domain.statistics.stat.BaseChampionStat;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 

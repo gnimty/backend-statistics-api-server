@@ -15,6 +15,7 @@ import onlysolorank.apiserver.api.controller.dto.ChampionAramTierRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionTierRes;
 import onlysolorank.apiserver.api.controller.dto.ChampionTierRes.ChampionTierByPosition;
 import onlysolorank.apiserver.api.exception.CustomException;
+import onlysolorank.apiserver.api.service.dto.ChampionTierAramDto;
 import onlysolorank.apiserver.api.service.dto.ChampionTierDto;
 import onlysolorank.apiserver.api.service.dto.LaneSelectDto;
 import onlysolorank.apiserver.api.service.dto.SummonerDto;
@@ -28,7 +29,7 @@ import onlysolorank.apiserver.domain.dto.QueueType;
 import onlysolorank.apiserver.domain.dto.Tier;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionAnalysis;
 import onlysolorank.apiserver.domain.statistics.analysis.ChampionPatch;
-import onlysolorank.apiserver.domain.statistics.analysis.ChampionStatsRank;
+import onlysolorank.apiserver.domain.statistics.stat.ChampionStatsRank;
 import onlysolorank.apiserver.domain.summoner_play.SummonerPlay;
 import onlysolorank.apiserver.repository.analysis.ChampionAnalysisRepository;
 import onlysolorank.apiserver.repository.champion.ChampionRepository;
@@ -103,10 +104,10 @@ public class StatisticsService {
 
         Map<Long, String> championEnMap = getChampionMap();
 
-        List<ChampionTierDto> results = championAnalysisRepository.findChampionAramTierList(
+        List<ChampionTierAramDto> results = championAnalysisRepository.findChampionAramTierList(
             queueType, brief, tier).stream().map(
-                championTier -> ChampionTierDto.fromBaseTier(championTier,
-                    championEnMap.getOrDefault(championTier.getChampionId(), null)))
+                c -> ChampionTierAramDto.fromAramStat(c,
+                    championEnMap.getOrDefault(c.getChampionId(), null)))
             .toList();
 
         return ChampionAramTierRes.builder()

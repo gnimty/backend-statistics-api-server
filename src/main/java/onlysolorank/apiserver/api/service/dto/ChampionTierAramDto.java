@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-import onlysolorank.apiserver.domain.statistics.stat.ChampionStatsRank;
-import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStat;
+import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStatAram;
+import onlysolorank.apiserver.domain.statistics.stat.AramStat;
 
 /**
  * packageName    : onlysolorank.apiserver.api.service.dto
@@ -22,9 +22,7 @@ import onlysolorank.apiserver.domain.statistics.analysis.component.CounterStat;
 
 @Data
 @Builder
-public class ChampionTierDto {
-
-    //    private Double adjustWinRate;
+public class ChampionTierAramDto {
     private Long championId;
     private String championName;
     private Double winRate;
@@ -34,18 +32,17 @@ public class ChampionTierDto {
     private Long plays;
     private String tier;
     private Double score;
-    private List<CounterStat> counters;
+    private List<CounterStatAram> counters;
 
-    public static ChampionTierDto fromRankTier(ChampionStatsRank stat, String championName) {
-        return ChampionTierDto.builder()
+    public static ChampionTierAramDto fromAramStat(AramStat stat, String championName) {
+        return ChampionTierAramDto.builder()
             .championName(championName)
             .winRate(stat.getWinRate())
             .pickRate(stat.getPickRate())
-            .banRate(stat.getBanRate())
             .plays(stat.getPlays())
             .tier(stat.getTier())
-            .counters(stat.getCounters())
             .championId(stat.getChampionId())
+            .counters(stat.getCounters())
             .score(stat.getScore())
             .build();
     }
